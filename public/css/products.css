@@ -1,0 +1,91 @@
+/* tytul */
+.title{
+    font-weight: 700;
+}
+.title > div:nth-child(2){
+    display: flex;
+}
+.title > div:nth-child(2) > div{
+    color: white;
+    background-color: black;
+}
+
+/* filtry produktow */
+.filter-bar{
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+    position: relative;
+}
+.filter-bar .nav-link{
+    color: black !important;
+}
+@media (width >= 768px){
+    .filter-bar .nav-link:hover{
+        background-color: black;
+        color: white !important;
+    }
+}
+.filter-bar .filter-submit > div,
+.filter-bar .filter-submit > div:active,
+.filter-bar .filter-submit > div:focus{
+    background-color: black;
+    color: white;
+    border: 0;
+    outline: 0;
+    border-radius: 0;
+}
+.filter-bar input{
+    border: 1px solid black;
+    border-radius: 0;
+}
+
+.filter-size-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.filter-price-grid{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+}
+.filter-price-grid > label{
+    display: flex;
+    align-items: center;
+}
+
+.filter-bar .navbar-toggler,
+.filter-bar .navbar-toggler:active,
+.filter-bar .navbar-toggler:focus{
+    padding: 0;
+    border: unset;
+    outline: unset;
+    box-shadow: none;
+    color: black;
+}
+.filter-bar .navbar-toggler:focus > span{
+    font-weight: 700;
+}
+.filter-bar .navbar-toggler > img{
+    height: 40px;
+}
+.filter-bar .dropdown-toggle:focus{
+    background-color: black;
+    color: white !important;
+    padding-left: .9rem;
+}
+.filter-bar .dropdown-menu{
+    border-radius: 0;
+    padding: 20px;
+    border: 1px solid black;
+}
+/* dropdown for md+ */
+@media (width >= 768px){
+    .filter-bar .dropdown-menu {
+        width: 300px;
+        border-top: 0;
+    }
+}
+
+
+#m-product-tile-container{
+    min-height: 60vh;
+}

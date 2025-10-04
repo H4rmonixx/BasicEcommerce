@@ -1,0 +1,220 @@
+/*------------------*/
+/* STYLE FOR HEADER */
+/*------------------*/
+/* icons size */
+header object[name="shopping-bag-icon"]{
+    height: 35px;
+}
+header object[name="left-arrow-icon"]{
+    height: 30px;
+}
+@media (min-width: 768px){
+    header object[name="brand-icon"]{
+        height: 100px;
+    }
+}
+
+/* underline animation */
+@media (width >= 992px){
+    .m-underline-onhover{
+        position: relative;
+    }
+    .m-underline-onhover::before{
+        position: absolute;
+        content: "";
+        left: 0;
+        bottom: 0;
+        height: 2px;
+        width: 0;
+        background-color: black;
+        transition: width .3s;
+    }
+    .m-underline-onhover:hover::before{
+        width: 100%;
+    }
+}
+
+/* navbar for lg+  */
+.m-dropdown-menu-blur{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: calc(100% - 375px);
+    height: 100vh;
+    background-color: rgba(20, 20, 20, 0.08);
+    display: none;
+}
+@media (width >= 992px){
+    header .dropdown-menu{
+        right: 0 !important;
+        top: 0 !important;
+        left: unset !important;
+        width: 375px;
+        position: fixed !important;
+        height: 100vh;
+        border: 0;
+        background-color: white;
+        border-radius: 0;
+        box-shadow: -1px 0 6px lightgray;
+    }
+    header .dropdown-item{
+        padding: 5px 3rem;
+    }
+    header .dropdown-item:hover{
+        background-color: rgb(230, 230, 230);
+    }
+    header .dropdown-item:active{
+        background-color: black;
+    }
+    .m-dropdown-menu-blur{
+        display: block;
+    }
+    header .nav-link{
+        margin: 0 .5rem;
+    }
+}
+
+/* navbar for small screens  */
+@media (max-width: 992px){
+    header .navbar-toggler,
+    header .navbar-toggler:active,
+    header .navbar-toggler:focus{
+        border: none;
+        outline: none;
+        box-shadow: none;
+    }
+    header .nav-link{
+        padding: 5px 2rem;
+    }
+    header .nav-link:active{
+        color: white !important;
+        transition: none;
+        background-color: black;
+    }
+}
+
+
+/*------------------*/
+/* STYLE FOR FOOTER */
+/*------------------*/
+@media (min-width: 768px){
+    footer object[data="assets/graphics/logo2.svg"]{
+        height: 100px;
+    }
+}
+footer{
+    background-color: black;
+}
+
+/*------------------*/
+/* OWN CLASSES FOR GLOBAL USE */
+/*------------------*/
+.m-b-800{
+    font-weight: 800;
+}
+.m-b-700{
+    font-weight: 700;
+}
+.m-b-400{
+    font-weight: 400;
+}
+.m-b-500{
+    font-weight: 500;
+}
+.m-text-underline{
+    text-decoration: underline;
+}
+/* not click highlight */
+.m-no-click-highlight:active{
+    background-color: unset !important;
+    color: unset !important;
+}
+.m-hr{
+    height: 2px;
+    background-color: black;
+}
+.m-infobox{
+    position: fixed;
+    width: 100%;
+    bottom: -100%;
+    left: 0;
+    transition: bottom .4s;
+    display: none;
+    text-transform: uppercase;
+    z-index: 2;
+}
+.m-infobox > div{
+    min-width: 50%;
+    background-color: rgb(119, 18, 18);
+    color: white;
+    text-transform: uppercase;
+    border: 1px solid white;
+    text-align: center;
+}
+
+
+/* kafelki z produktami */
+.m-product-tile{
+    display: grid;
+    grid-template-columns: 1fr;
+    color: black;
+    text-decoration: none;
+    padding: 2rem 1rem;
+}
+.m-product-tile > img{
+    width: 100%;
+    background-color: rgb(240, 240, 240);
+    margin-bottom: 1rem;
+    border-radius: .7rem;
+}
+.m-product-tile > img:nth-child(2),
+.m-product-tile:hover > img:nth-child(1){
+    display: none;
+}
+.m-product-tile:hover > img:nth-child(2){
+    display: block;
+}
+.m-product-tile > div{
+    text-align: center;
+    padding: 1px 0;
+}
+
+/* form style */
+.form-control{
+    border-radius: 0 !important;
+    border: 1px solid black !important;
+}
+.form-control:active,
+.form-control:focus{
+    outline: 2px solid gray !important;
+}
+.btn-primary{
+    border-radius: 0 !important;
+    outline: 0;
+    border: 0;
+    background-color: black;
+}
+.btn-primary:active{
+    background-color: black !important;
+}
+.btn-primary:hover{
+    background-color: rgb(80, 80, 80);
+}
+
+.header-cart-icon{
+    position: relative;
+}
+.header-cart-size-preview{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: black;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 11px;
+}

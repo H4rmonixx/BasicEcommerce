@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H.R.M.X</title>
+    <link rel="shortcut icon" href="/assets/graphics/logo1.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/frameworks/bootstrap-5.3.8-dist/css/bootstrap.min.css">
+    <script src="/frameworks/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/frameworks/jquery-3.7.1.min.js"></script>
+    <?php if(isset($styles)) echo $styles; ?>
+    <?php if(isset($scripts)) echo $scripts; ?>
+</head>
+<body>
+    <header class="navbar navbar-expand-lg bg-white">
+        <div class="container-xxl pe-4 ps-4 pe-xxl-0 ps-xxl-0 pb-5 pt-4">
+            <a class="navbar-brand" href="/">
+                <object style="pointer-events: none;" data="/assets/graphics/logo1.svg" type="image/svg+xml" name="brand-icon"></object>
+            </a>
+            <div class="d-flex align-items-center">
+                <a href="shoppingcart_page.php" class="d-lg-none header-cart-icon">
+                    <div class="header-cart-size-preview"></div>
+                    <object data="/assets/icons/shopping-bag.png" type="image/png" name="shopping-bag-icon"></object>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target=".offcanvas">
+                    <span class="navbar-toggler-icon fs-2"></span>
+                </button>
+            </div>
+            <div class="offcanvas offcanvas-end" tabindex="-1">
+                <div class="offcanvas-header p-5 p-lg-0">
+                    <h5 class="offcanvas-title"><object data="/assets/graphics/logo1.svg" type="image/svg+xml"></object></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body justify-content-end">
+                    <ul class="navbar-nav align-items-lg-center">
+                        <li class="nav-item"><a href="/products/tops" class="nav-link active m-underline-onhover">TOPS</a></li>
+                        <li class="nav-item"><a href="/products/pants" class="nav-link active m-underline-onhover">PANTS</a></li>
+                        <li class="nav-item"><a href="/products/footwear" class="nav-link active m-underline-onhover">FOOTWEAR</a></li>
+                        <li class="nav-item"><a href="/products/accessories" class="nav-link active m-underline-onhover">ACCESSORIES</a></li>
+                        <li class="nav-item me-lg-5"><a href="allproducts_page.php" class="nav-link active m-underline-onhover">VIEW ALL</a></li>
+                        <li class="nav-item d-none d-lg-block">
+                            <a href="shoppingcart_page.php" class="nav-link active header-cart-icon">
+                                <div class="header-cart-size-preview"></div>
+                                <object data="/assets/icons/shopping-bag.png" type="image/png" name="shopping-bag-icon"></object>
+                            </a>
+                        </li>
+                        <li class="nav-item d-lg-none mt-4"><a href="about_page.php" class="nav-link active">ABOUT US</a></li>
+                        <li class="nav-item d-lg-none"><a href="info_page.php?p=5" class="nav-link active">CONTACT</a></li>
+                        <li class="nav-item d-lg-none mb-4"><a href="login_page.php" class="nav-link active">ACCOUNT</a></li>
+                        <li class="nav-item dropdown d-none d-lg-block">
+                            <a href="#" class="nav-link" data-bs-toggle="dropdown"><span class="navbar-toggler-icon fs-3"></span></a>
+                            <ul class="dropdown-menu">
+                                <div class="m-dropdown-menu-blur"></div>
+                                <li class="mb-4 mt-3 d-none d-lg-flex align-items-center justify-content-between p-5">
+                                    <a class=""><object data="/assets/graphics/logo1.svg" type="image/svg+xml"></object></a>
+                                    <button type="button" class="btn-close" data-bs-dismiss="dropdown"></button>
+                                </li>
+                                <li><a href="about_page.php" class="dropdown-item">ABOUT US</a></li>
+                                <li><a href="info_page.php?p=5" class="dropdown-item">CONTACT</a></li>
+                                <li><a href="login_page.php" class="dropdown-item">ACCOUNT</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <?php if(isset($body)) echo $body; ?>
+    <footer>
+        <div class="container-xxl ps-4 pe-4 pe-xxl-0 ps-xxl-0 pt-5 pb-5">
+            <div class="row gy-4">
+                <div class="order-1 col-6 col-sm-4 col-md-5 col-lg-6"><object data="/assets/graphics/logo2.svg" type="image/svg+xml"></object></div>
+                <div class="order-3 order-sm-2 col-12 col-sm-4 col-md-2 d-sm-flex justify-content-sm-center align-items-sm-center">
+                    <a href="#"><img src="/assets/icons/icons8-facebook-48.png" alt="FB"></a>
+                    <a href="#"><img src="/assets/icons/icons8-instagram-48.png" alt="IG"></a>
+                </div>
+                <div class="order-2 order-sm-3 col-6 col-sm-4 col-md-5 col-lg-4 d-flex align-items-center justify-content-center">
+                    <div class="row gy-3 footer-links">
+                        <div class="col-6 d-flex justify-content-end"><a href="info_page.php?p=1" class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Shipping</a></div>
+                        <div class="col-6 d-flex justify-content-end"><a href="info_page.php?p=6" class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">FAQ</a></div>
+                        <div class="col-6 d-flex justify-content-end"><a href="info_page.php?p=7" class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Terms</a></div>
+                        <div class="col-6 d-flex justify-content-end"><a href="info_page.php?p=8" class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Returns</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

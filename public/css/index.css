@@ -1,0 +1,69 @@
+/* banner z reklama */
+.banner{
+    position: relative;
+    background-color: black;
+}
+.banner::before{
+    position: absolute;
+    content: "";
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("../assets/graphics/banner.png");
+    background-position: top;
+    filter: blur(5px);
+    z-index: 0;
+}
+.banner > img{
+    z-index: 1;
+}
+@media (min-width: 1400px){
+    .banner > img{
+        width: 1400px !important;
+    }
+}
+@media (max-width: 576px){
+    .banner::before{
+        background-image: url("../assets/graphics/banner_small.png");
+    }
+}
+
+
+/* cut down */
+.hr{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.hr div{
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 3px;
+    background-color: black;
+    z-index: 0;
+}
+.hr a{
+    z-index: 1;
+}
+.hr img{
+    width: 150px;
+}
+@media (max-width: 420px){
+    .hr img{
+        width: 120px;
+    }
+}
+
+
+/* newsletter */
+.newsletter-header{
+    font-weight: 600;
+    letter-spacing: 3px;
+}
+#newsletter-callback{
+    color: darkred;
+}

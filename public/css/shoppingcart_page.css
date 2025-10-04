@@ -1,0 +1,30 @@
+.payment-way img, .payment-way object{
+    height: 4rem;
+    background-color: rgb(230, 230, 230);
+}
+.payment-way label{
+    cursor: pointer;
+}
+.payment-way input[type="radio"]:checked + *{
+    outline: 3px solid black;
+    background-color: white;
+}
+
+.prod-in-cart img{
+    background-color: rgb(240, 240, 240);
+    border-radius: .6rem;
+}
+.prod-in-cart-quantity-btn:hover{
+    cursor: pointer;
+}
+#prods-in-cart-container{
+    max-height: 600px;
+    overflow-y: scroll;
+}
+#prods-in-cart-container::-webkit-scrollbar{
+    display: none;
+}
+
+main{
+    min-height: 60vh;
+}
