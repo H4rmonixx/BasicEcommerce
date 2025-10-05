@@ -5,15 +5,16 @@ namespace App\Core;
 class Router
 {
     private array $routes = [];
+    private array $middleware = [];
 
-    public function get(string $pattern, callable|array $handler): void
+    public function get(string $pattern, callable|array $handler, array $middleware = []): void
     {
-        $this->routes['GET'][] = ['pattern' => $pattern, 'handler' => $handler];
+        $this->routes['GET'][] = ['pattern' => $pattern, 'handler' => $handler, 'middleware' => $middleware];
     }
 
-    public function post(string $pattern, callable|array $handler): void
+    public function post(string $pattern, callable|array $handler, array $middleware = []): void
     {
-        $this->routes['POST'][] = ['pattern' => $pattern, 'handler' => $handler];
+        $this->routes['POST'][] = ['pattern' => $pattern, 'handler' => $handler, 'middleware' => $middleware];
     }
 
     public function dispatch(string $method, string $uri, Request $request): bool
@@ -30,9 +31,21 @@ class Router
                         $request->setParam($name, $matches[$name]);
                     }
                 }
-                
+
                 $handler = $route['handler'];
 
+                $pipeline = array_reduce(
+                    array_reverse($route['middleware']),
+                    fn($next, $middleware) => function($request) use ($middleware, $next) {
+                        $m = new $middleware();
+                        return $m->handle($request, $next);
+                    },
+                    fn($request) => $this->callHandler($handler, $request)
+                );
+                
+                return $pipeline($request);
+                
+                /*
                 if (is_array($handler)) {
                     [$class, $method] = $handler;
                     $controller = new $class;
@@ -40,10 +53,23 @@ class Router
                 }
 
                 return call_user_func($handler, $request);
+                */
             }
         }
 
         return false;
+    }
+
+    private function callHandler($handler, $request){
+        if (is_callable($handler)) {
+            return $handler($request);
+        }
+
+        if (is_array($handler)) {
+            [$class, $method] = $handler;
+            $controller = new $class();
+            return $controller->$method($request);
+        }
     }
 
     private function convertPatternToRegex(string $pattern, &$params): string

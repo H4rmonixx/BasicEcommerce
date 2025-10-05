@@ -11,7 +11,7 @@ $routers[] = require __DIR__ . '/../app/Routes/web.php';
 $routers[] = require __DIR__ . '/../app/Routes/api.php';
 
 foreach ($routers as $router) {
-    if ($router->dispatch($request->method(), $request->uri(), $request)) {
+    if ($router->dispatch($request->method(), $request->path(), $request)) {
         exit;
     }
 }

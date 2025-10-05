@@ -8,7 +8,8 @@ use App\Core\Request;
 class ProductController {
     public function productsList(Request $request) {
 
-        $body = file_get_contents(__DIR__ . '/../Views/productsList.html');
+        $title = "View products";
+        $body = file_get_contents(__DIR__ . '/../Views/products.html');
         $styles = <<<EOD
         <link rel="stylesheet" href="/css/style.css">
         <link rel="stylesheet" href="/css/products.css">

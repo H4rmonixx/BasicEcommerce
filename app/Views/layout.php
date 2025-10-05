@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>H.R.M.X</title>
+    <title><?php if(isset($title)) {echo $title;} else {echo "H.R.M.X";}?></title>
     <link rel="shortcut icon" href="/assets/graphics/logo1.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/frameworks/bootstrap-5.3.8-dist/css/bootstrap.min.css">
     <script src="/frameworks/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
@@ -37,7 +37,7 @@
                         <li class="nav-item"><a href="/products/pants" class="nav-link active m-underline-onhover">PANTS</a></li>
                         <li class="nav-item"><a href="/products/footwear" class="nav-link active m-underline-onhover">FOOTWEAR</a></li>
                         <li class="nav-item"><a href="/products/accessories" class="nav-link active m-underline-onhover">ACCESSORIES</a></li>
-                        <li class="nav-item me-lg-5"><a href="allproducts_page.php" class="nav-link active m-underline-onhover">VIEW ALL</a></li>
+                        <li class="nav-item me-lg-5"><a href="/products/" class="nav-link active m-underline-onhover">VIEW ALL</a></li>
                         <li class="nav-item d-none d-lg-block">
                             <a href="shoppingcart_page.php" class="nav-link active header-cart-icon">
                                 <div class="header-cart-size-preview"></div>

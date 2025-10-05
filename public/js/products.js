@@ -57,7 +57,6 @@ function refreshList(){
     })
     .then((success) => {
         try{
-            alert(success);
             let json = JSON.parse(success);
             return json;
         } catch(e){

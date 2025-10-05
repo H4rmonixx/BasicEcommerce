@@ -14,6 +14,12 @@ class Request
         $this->get = $_GET;
         $this->post = $_POST;
         $this->server = $_SERVER;
+        
+        if($this->uri() !== '/' && str_ends_with($this->uri(), '/')){
+            $cleanUri = rtrim($this->uri(), '/');
+            header("Location: $cleanUri", true, 301);
+            exit;
+        }
     }
 
     public function method(): string
