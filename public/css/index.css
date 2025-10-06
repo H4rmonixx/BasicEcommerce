@@ -29,41 +29,11 @@
     }
 }
 
-
-/* cut down */
-.hr{
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.more-btn{
+    text-decoration: none;
+    color: black;
 }
-.hr div{
-    position: absolute;
-    left: 0;
-    top: 50%;
-    width: 100%;
-    height: 3px;
+.more-btn:hover{
     background-color: black;
-    z-index: 0;
-}
-.hr a{
-    z-index: 1;
-}
-.hr img{
-    width: 150px;
-}
-@media (max-width: 420px){
-    .hr img{
-        width: 120px;
-    }
-}
-
-
-/* newsletter */
-.newsletter-header{
-    font-weight: 600;
-    letter-spacing: 3px;
-}
-#newsletter-callback{
-    color: darkred;
+    color: white;
 }

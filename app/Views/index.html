@@ -1,4 +1,21 @@
-<a href="allproducts_page.php?collection=1" class="banner container-fluid d-flex justify-content-center mb-4 mb-sm-5 p-0">
+@section("title")
+H.R.M.X
+@endsection
+
+@section("styles")
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/index.css">
+@endsection
+
+@section("scripts")
+<script src="/js/index.js"></script>
+<script src="/js/loadProductTiles.js"></script>
+<script src="/js/loadCartSize.js"></script>
+<script src="/js/infobox.js"></script>
+@endsection
+
+@section("content")
+<a href="/products" class="banner container-fluid d-flex justify-content-center mb-4 mb-sm-5 p-0">
     <img class="d-none d-sm-block w-100" src="/assets/graphics/banner.png" alt="banner with ad">
     <img class="d-sm-none w-100" src="/assets/graphics/banner_small.png" alt="banner with ad">
 </a>
@@ -7,17 +24,5 @@
         <!-- inserted from database -->
     </div>
 </main>
-<div class="hr mb-5 pb-3 pt-3"><div></div><a href="allproducts_page.php"><img src="/assets/graphics/seemore.png" alt="See more"></a></div>
-<div class="container-xxl mb-5 pb-5 pt-5 ps-4 pe-4 ps-xxl-0 pe-xxl-0">
-    <div class="row gy-3 gx-5">
-        <div class="col-12 fs-1 newsletter-header">NEWSLETTER</div>
-        <div class="col-12 col-md-6 col-lg-4">Receive notifications about new arrivals, discounts and changes earlier than others!</div>
-        <div class="col-12 col-md-6 col-lg-8">
-            <form>
-                <input type="text" class="form-control mb-2" placeholder="Enter your email." id="newsletter-input-mail">
-                <div class="btn btn-primary" id="newsletter-button">Sign up</div>
-                <div class="mt-3" id="newsletter-callback"></div>
-            </form>
-        </div>
-    </div>
-</div>
+<a class="d-block text-center py-2 border-top border-3 border-black fs-5 more-btn" href="/products">See more</a>
+@endsection

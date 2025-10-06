@@ -218,3 +218,18 @@ footer{
     align-items: center;
     font-size: 11px;
 }
+
+/* newsletter */
+.newsletter-header{
+    font-weight: 600;
+    letter-spacing: 3px;
+}
+#newsletter-callback{
+    color: darkred;
+}
+
+/* horizontal line */
+.m-horizontal-line{
+    height: 3px;
+    background-color: black;
+}
