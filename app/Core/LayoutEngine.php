@@ -4,9 +4,8 @@ namespace App\Core;
 
 class LayoutEngine {
 
-    public static function resolveLayout($viewName){
+    public static function resolveLayout($view){
         $pattern = '/@section\("([^"]+)"\)\s*(.*?)\s*@endsection/s';
-        $view = file_get_contents(__DIR__ . '/../Views/' . $viewName);
 
         preg_match_all($pattern, $view, $matches);
 
@@ -19,6 +18,15 @@ class LayoutEngine {
         $website = preg_replace('/@showsection\(\"([^"]+)\"\)/', "", $website);
 
         return $website;
+    }
+
+    public static function updateView(&$view, $section, $str){
+        $pattern = '/(@section\("'.$section.'"\)\s*)(.*?)(\s*@endsection)/s';
+        preg_match_all($pattern, $view, $matches);
+        $old = $matches[2][0];
+        $view = preg_replace($pattern,
+        "$1" . "$2" . $str . "$3",
+        $view);
     }
 
 };

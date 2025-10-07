@@ -10,7 +10,9 @@ use App\Core\LayoutEngine;
 class HomeController {
     public function index(Request $request) {
 
-        echo LayoutEngine::resolveLayout('index.html');
+        $view = file_get_contents(__DIR__ . '/../Views/index.html');
+
+        echo LayoutEngine::resolveLayout($view);
 
         return true;
     }

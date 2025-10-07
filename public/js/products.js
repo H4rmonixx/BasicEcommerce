@@ -1,17 +1,14 @@
 let linkCategory = "";
 
 function get_filters(){
+    
+    let new_url = "/products/";
+    
     let active_filters = {
         categories: [],
-        size: {
-            tops: [],
-            pants: [],
-            footwear: []
-        },
-        price: {
-            from: "none",
-            to: "none"
-        },
+        sizes: [],
+        price_from: null,
+        price_to: null,
         omit_ids: []
     };
 
@@ -22,14 +19,8 @@ function get_filters(){
             if(id[0] + id[1]==="filtercategory"){
                 active_filters.categories.push(id[2]);
             }
-            if(id[0] + id[1]==="filtertops_size"){
-                active_filters.size.tops.push(id[2]);
-            }
-            if(id[0] + id[1]==="filterpants_size"){
-                active_filters.size.pants.push(id[2]);
-            }
-            if(id[0] + id[1]==="filterfootwear_size"){
-                active_filters.size.footwear.push(id[2]);
+            if(id[0] + id[1]==="filtersize"){
+                active_filters.sizes.push(id[2]);
             }
         }
     }
@@ -37,19 +28,22 @@ function get_filters(){
     let input_numbers = document.getElementsByClassName("filter-number");
     for(let i=0; i<input_numbers.length; i++){
         if(input_numbers[i].value){
-            if(input_numbers[i].id==="filter-price-from") active_filters.price.from = parseInt(input_numbers[i].value);
-            if(input_numbers[i].id==="filter-price-to") active_filters.price.to = parseInt(input_numbers[i].value);
+            if(input_numbers[i].id==="filter-price-from") active_filters.price_from = parseInt(input_numbers[i].value);
+            if(input_numbers[i].id==="filter-price-to") active_filters.price_to = parseInt(input_numbers[i].value);
         }
     }
 
-    if(active_filters.size.tops.length > 0 && !active_filters.categories.includes("tops")) active_filters.categories.push("tops");
-    if(active_filters.size.pants.length > 0 && !active_filters.categories.includes("pants")) active_filters.categories.push("pants");
-    if(active_filters.size.footwear.length > 0 && !active_filters.categories.includes("footwear")) active_filters.categories.push("footwear");
+    history.replaceState(active_filters, "", new_url);
 
     return active_filters;
 }
 
+function set_filters(cat, size, price){
+
+}
+
 function refreshList(){
+    console.log(get_filters())
     $.ajax({
         type: "post",
         url: "/api/load/products/all",
@@ -58,6 +52,7 @@ function refreshList(){
     .then((success) => {
         try{
             let json = JSON.parse(success);
+            console.log(json);
             return json;
         } catch(e){
             return $.Deferred().reject("Error occurred while loading items...").promise();

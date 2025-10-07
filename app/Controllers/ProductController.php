@@ -10,11 +10,16 @@ use App\Core\LayoutEngine;
 class ProductController {
     public function productsList(Request $request) {
 
-        echo LayoutEngine::resolveLayout('products.html');
-
-        if($request->param("category") != null){
-            echo '<script>linkCategory = "'.$request->param("category").'";</script>';
+        $view = file_get_contents(__DIR__ . '/../Views/products.html');
+        
+        $js = "<script>";
+        if($request->param("filters") != null){
+            $js .= '<script>alert("'.$request->param("filters").')";</script>';
         }
+        $js .= "</script>";
+
+        LayoutEngine::updateView($view, "scripts", $js);
+        echo LayoutEngine::resolveLayout($view);
 
         return true;
     }

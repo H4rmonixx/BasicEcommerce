@@ -111,31 +111,10 @@ class ApiController {
                 if(!in_array($product["category"], $filters["categories"])) continue;
             }
 
-            $filters_size = $filters["size"];
-            if($product["category"] == "tps" && count($filters_size["tops"])>0){
+            if(count($filters["sizes"]) > 0){
                 $add_prod = false;
                 foreach($product["sizes_available"] as $size_available){
-                    if(in_array($size_available, $filters_size["tops"])){
-                        $add_prod=true;
-                        break;
-                    }
-                }
-                if(!$add_prod) continue;
-            }
-            if($product["category"] == "pnts" && count($filters_size["pants"])>0){
-                $add_prod = false;
-                foreach($product["sizes_available"] as $size_available){
-                    if(in_array($size_available, $filters_size["pants"])){
-                        $add_prod=true;
-                        break;
-                    }
-                }
-                if(!$add_prod) continue;
-            }
-            if($product["category"] == "ftwr" && count($filters_size["footwear"])>0){
-                $add_prod = false;
-                foreach($product["sizes_available"] as $size_available){
-                    if(in_array($size_available, $filters_size["footwear"])){
+                    if(in_array($size_available, $filters["sizes"])){
                         $add_prod=true;
                         break;
                     }
@@ -143,12 +122,11 @@ class ApiController {
                 if(!$add_prod) continue;
             }
 
-            $filters_price = $filters["price"];
-            if($filters_price["from"] != "none"){
-                if($product["price"] < $filters_price["from"]) continue;
+            if($filters["price_from"] != null){
+                if($product["price"] < $filters["price_from"]) continue;
             }
-            if($filters_price["to"] != "none"){
-                if($product["price"] > $filters_price["to"]) continue;
+            if($filters["price_to"] != null){
+                if($product["price"] > $filters["price_to"]) continue;
             }
 
             $needed_data = [

@@ -14,6 +14,6 @@ $router = new Router();
 
 $router->get('/', [HomeController::class, 'index']);
 $router->get('/products', [ProductController::class, 'productsList']);
-$router->get('/products/{category}', [ProductController::class, 'productsList']);
+$router->get('/products/{filters}', [ProductController::class, 'productsList']);
 
 return $router;
