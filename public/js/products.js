@@ -1,8 +1,29 @@
-let linkCategory = "";
+function decodeFilterFromURL(){
+    return new Promise((resolve, reject) => {
+        let path = $(location).prop("pathname");
+        let matches = path.match(/\/products\/(?<category>category=[\w\.]*)*[&]*(?<size>size=[\w\.]*)*[&]*(?<price>price=[\w\.]*)*/);
+        if(matches == null){
+            resolve();
+            return;
+        }
+        if(matches.groups.category != undefined){
+            let cats = matches.groups.category.substring("category=".length).split(".");
+            cats.forEach(element => {
+                $("#filter-category-"+element).prop("checked", true);
+            });
+        }
+        if(matches.groups.size != undefined){
+            let sizes = matches.groups.size.substring("size=".length).split(".");
+            sizes.forEach(element => {
+                $("#filter-size-"+element).prop("checked", true);
+            });
+        }
+        resolve();
+    });
+    
+}
 
 function get_filters(){
-    
-    let new_url = "/products/";
     
     let active_filters = {
         categories: [],
@@ -33,26 +54,24 @@ function get_filters(){
         }
     }
 
-    history.replaceState(active_filters, "", new_url);
+    let new_url = "/products/";
+    if(active_filters.categories.length > 0) new_url += "category=" + active_filters.categories.join(".");
+    if(active_filters.sizes.length > 0) new_url += "&size=" + active_filters.sizes.join(".");
+
+    history.pushState(active_filters, "", new_url);
 
     return active_filters;
 }
 
-function set_filters(cat, size, price){
-
-}
-
 function refreshList(){
-    console.log(get_filters())
     $.ajax({
         type: "post",
-        url: "/api/load/products/all",
+        url: "/products/load",
         data: JSON.stringify(get_filters())
     })
     .then((success) => {
         try{
             let json = JSON.parse(success);
-            console.log(json);
             return json;
         } catch(e){
             return $.Deferred().reject("Error occurred while loading items...").promise();
@@ -60,17 +79,21 @@ function refreshList(){
     })
     .then(loadProductTiles)
     .fail((error)=>{
-        infobox_show(error, 5000);
+        if(error.statusText)
+            infobox_show(error.statusText, 5000);
+        else
+            infobox_show(error, 5000);
     });
 }
 
 $(document).ready(()=>{
     
-    if(linkCategory.length > 0){
-        $(`#filter-category-${linkCategory}`).prop("checked", true);
-    }
-    
-    refreshList();
+    $(".filter-number").on("input", function () {
+        if($(this).val())
+            $(this).val(parseInt($(this).val()));
+    })
+
+    decodeFilterFromURL().then(refreshList);
     loadCartSize();
 
     let $submitBtns = $(".filter-submit");

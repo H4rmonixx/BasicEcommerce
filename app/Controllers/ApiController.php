@@ -89,60 +89,7 @@ class ApiController {
     
     public function loadAllProducts(Request $request) : bool {
         
-        require_once __DIR__ . '/../Core/db.php';
-
-        $filters = $request->json();
-        if($filters == null){
-            echo json_encode($data_from_db_example);
-            exit();
-        }
-
-        // filters mechanism only for page template
-        // when database implemented, filters would work via sql queries
-        $returned_products = [];
-        for($i=0; $i<count($data_from_db_example); $i++){
-            $product = $data_from_db_example[$i];
-
-            if(count($filters["omit_ids"])>0){
-                if(in_array($product["id"], $filters["omit_ids"])) continue;
-            }
-
-            if(count($filters["categories"])>0){
-                if(!in_array($product["category"], $filters["categories"])) continue;
-            }
-
-            if(count($filters["sizes"]) > 0){
-                $add_prod = false;
-                foreach($product["sizes_available"] as $size_available){
-                    if(in_array($size_available, $filters["sizes"])){
-                        $add_prod=true;
-                        break;
-                    }
-                }
-                if(!$add_prod) continue;
-            }
-
-            if($filters["price_from"] != null){
-                if($product["price"] < $filters["price_from"]) continue;
-            }
-            if($filters["price_to"] != null){
-                if($product["price"] > $filters["price_to"]) continue;
-            }
-
-            $needed_data = [
-                "name" => $product["name"],
-                "price" => $product["price"],
-                "photos" => $product["photos"],
-                "id" => $product["id"]
-            ];
-
-            array_push($returned_products, $needed_data);
-        }
-
-
-        echo json_encode($returned_products);
         
-        return true;
     }
 
     public function loadCartSize(Request $request) : bool {
