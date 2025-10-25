@@ -11,9 +11,11 @@ use App\Controllers\ProductController;
 $router = new Router();
 
 $router->get('/', [HomeController::class, 'index']);
-$router->get('/products', [ProductController::class, 'showProductsList']);
-$router->get('/products/{filters}', [ProductController::class, 'showProductsList']);
+$router->get('/products', [ProductController::class, 'showProducts']);
+$router->get('/products/{filters}', [ProductController::class, 'showProducts']);
 
-$router->post('/products/load', [ProductController::class, 'loadProductsList']);
+$router->post('/products/load', [ProductController::class, 'loadProducts']);
+$router->post('/categories/load', [ProductController::class, 'loadAllCategories']);
+$router->post('/sizes/load', [ProductController::class, 'loadAllSizes']);
 
 return $router;

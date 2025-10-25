@@ -18,6 +18,11 @@ function decodeFilterFromURL(){
                 $("#filter-size-"+element).prop("checked", true);
             });
         }
+        if(matches.groups.price != undefined){
+            let prices = matches.groups.price.substring("price=".length).split(".");
+            if(prices.length > 0) $("#filter-price-from").val(prices[0]);
+            if(prices.length > 1) $("#filter-price-to").val(prices[1]);
+        }
         resolve();
     });
     
@@ -30,7 +35,8 @@ function get_filters(){
         sizes: [],
         price_from: null,
         price_to: null,
-        omit_ids: []
+        omit_ids: [],
+        limit: null
     };
 
     let checkboxes = document.getElementsByClassName("filter-checkbox");
@@ -55,8 +61,23 @@ function get_filters(){
     }
 
     let new_url = "/products/";
-    if(active_filters.categories.length > 0) new_url += "category=" + active_filters.categories.join(".");
-    if(active_filters.sizes.length > 0) new_url += "&size=" + active_filters.sizes.join(".");
+    let filter_added = false;
+    if(active_filters.categories.length > 0){
+        if(filter_added) new_url += "&";
+        new_url += "category=" + active_filters.categories.join(".");
+        filter_added = true;
+    }
+    if(active_filters.sizes.length > 0) {
+        if(filter_added) new_url += "&";
+        new_url += "size=" + active_filters.sizes.join(".");
+        filter_added = true;
+    }
+    if(active_filters.price_from != null || active_filters.price_to != null){
+        if(filter_added) new_url += "&";
+        new_url += "price=" + (active_filters.price_from != null ? active_filters.price_from : 0) + (active_filters.price_to != null ? "." + active_filters.price_to : "");
+        filter_added = true;
+    }
+    
 
     history.pushState(active_filters, "", new_url);
 
@@ -82,7 +103,77 @@ function refreshList(){
         if(error.statusText)
             infobox_show(error.statusText, 5000);
         else
-            infobox_show(error, 5000);
+            infobox_show(error, 5000)
+    });
+}
+
+function loadCategories(){
+    return $.ajax({
+        type: "post",
+        url: "/categories/load"
+    }).then((success) => {
+
+        let json;
+        try{
+            json = JSON.parse(success);
+        } catch(e){
+            return $.Deferred().reject("Error occurred while loading categories...").promise();
+        }
+        let $root = $("#filter-category-container");
+        json.forEach((category) => {
+            let $div = $("<div>", {class: "form-check"});
+            let $input = $("<input>", {
+                class: "form-check-input filter-checkbox",
+                type: "checkbox",
+                id: "filter-category-" + category.category_id
+            });
+            let $label = $("<label>", {
+                class: "form-check-label",
+                for: "filter-category-" + category.category_id
+            })
+            $label.text(category.name.toUpperCase());
+            
+            $div.append($input);
+            $div.append($label);
+
+            $root.append($div);
+        });
+
+    });
+}
+
+function loadSizes(){
+    return $.ajax({
+        type: "post",
+        url: "/sizes/load"
+    }).then((success) => {
+
+        let json;
+        try{
+            json = JSON.parse(success);
+        } catch(e){
+            return $.Deferred().reject("Error occurred while loading sizes...").promise();
+        }
+        let $root = $(".filter-size-grid");
+        json.forEach((size) => {
+            let $div = $("<div>", {class: "form-check"});
+            let $input = $("<input>", {
+                class: "form-check-input filter-checkbox",
+                type: "checkbox",
+                id: "filter-size-" + size.variant_id
+            });
+            let $label = $("<label>", {
+                class: "form-check-label",
+                for: "filter-size-" + size.variant_id
+            })
+            $label.text(size.name.toUpperCase());
+            
+            $div.append($input);
+            $div.append($label);
+
+            $root.append($div);
+        });
+
     });
 }
 
@@ -93,9 +184,16 @@ $(document).ready(()=>{
             $(this).val(parseInt($(this).val()));
     })
 
-    decodeFilterFromURL().then(refreshList);
-    loadCartSize();
-
+    loadCategories().then(loadSizes).then(()=>{
+        decodeFilterFromURL().then(refreshList);
+        loadCartSize();
+    }).fail((error)=>{
+        if(error.statusText)
+            infobox_show(error.statusText, 5000);
+        else
+            infobox_show(error, 5000)
+    });
+    
     let $submitBtns = $(".filter-submit");
     $submitBtns.on("click", refreshList);
 

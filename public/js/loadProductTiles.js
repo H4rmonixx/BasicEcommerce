@@ -10,7 +10,7 @@ function loadProductTiles(products_data){
     products_data.forEach((product) => {
         let $a_tag = $("<a>", {
             class: "col-6 col-sm-6 col-md-4 col-lg-3 m-product-tile",
-            href: "/product/"+product.id
+            href: "/product/"+product.product_id
         });
         let $img_first = $("<img>", {
             src: "/assets/products/"+product.photos[0],

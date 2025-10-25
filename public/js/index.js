@@ -10,7 +10,15 @@ function signToNewsletter(){
 $(document).ready(()=>{
     $.ajax({
         type: "post",
-        url: "/api/load/products/latest",
+        url: "/products/load",
+        data: JSON.stringify({
+            categories: [],
+            sizes: [],
+            price_from: null,
+            price_to: null,
+            omit_ids: [],
+            limit: 8
+        })
     })
     .then((success) => {
         try{

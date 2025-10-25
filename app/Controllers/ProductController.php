@@ -4,11 +4,13 @@ namespace App\Controllers;
 
 require_once __DIR__ . '/../Core/Request.php';
 require_once __DIR__ . '/../Core/LayoutEngine.php';
+require_once __DIR__ . '/../Models/Product.php';
 use App\Core\Request;
 use App\Core\LayoutEngine;
+use App\Models\Product;
 
 class ProductController {
-    public function showProductsList(Request $request) {
+    public function showProducts(Request $request) {
 
         $view = file_get_contents(__DIR__ . '/../Views/products.html');
         echo LayoutEngine::resolveLayout($view);
@@ -16,63 +18,35 @@ class ProductController {
         return true;
     }
 
-    public function test(Request $request) {
-        echo $request->param('id');
+    public function loadProducts(Request $request){
+        
+        $filters = $request->json();
+        if($filters == null){
+            echo json_encode([]);
+            return true;
+        }
+        $products = Product::getTilesInfoArray($filters);
+
+        echo json_encode($products);
+        
+        return true;
+    }
+
+    public function loadAllCategories(Request $request){
+        
+        $categories = Product::getAllCategories();
+
+        echo json_encode($categories);
 
         return true;
     }
 
-    public function loadProductsList(Request $request){
-        require_once __DIR__ . '/../Core/db.php';
-
-        $filters = $request->json();
-        if($filters == null){
-            echo json_encode($data_from_db_example);
-            exit();
-        }
-
-        $returned_products = [];
-        for($i=0; $i<count($data_from_db_example); $i++){
-            $product = $data_from_db_example[$i];
-
-            if(count($filters["omit_ids"])>0){
-                if(in_array($product["id"], $filters["omit_ids"])) continue;
-            }
-
-            if(count($filters["categories"])>0){
-                if(!in_array($product["category"], $filters["categories"])) continue;
-            }
-
-            if(count($filters["sizes"]) > 0){
-                $add_prod = false;
-                foreach($product["sizes_available"] as $size_available){
-                    if(in_array($size_available, $filters["sizes"])){
-                        $add_prod=true;
-                        break;
-                    }
-                }
-                if(!$add_prod) continue;
-            }
-
-            if($filters["price_from"] != null){
-                if($product["price"] < $filters["price_from"]) continue;
-            }
-            if($filters["price_to"] != null){
-                if($product["price"] > $filters["price_to"]) continue;
-            }
-
-            $needed_data = [
-                "name" => $product["name"],
-                "price" => $product["price"],
-                "photos" => $product["photos"],
-                "id" => $product["id"]
-            ];
-
-            array_push($returned_products, $needed_data);
-        }
-
-        echo json_encode($returned_products);
+    public function loadAllSizes(Request $request){
         
+        $sizes = Product::getAllSizes();
+
+        echo json_encode($sizes);
+
         return true;
     }
 }
