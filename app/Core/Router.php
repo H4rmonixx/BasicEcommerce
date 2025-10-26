@@ -28,6 +28,7 @@ class Router
 
                 if($params != null){
                     foreach ($params as $name) {
+                        if(!isset($matches[$name])) continue;
                         $request->setParam($name, $matches[$name]);
                     }
                 }

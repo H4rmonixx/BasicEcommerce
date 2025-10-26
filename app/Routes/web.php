@@ -11,10 +11,14 @@ use App\Controllers\ProductController;
 $router = new Router();
 
 $router->get('/', [HomeController::class, 'index']);
+
 $router->get('/products', [ProductController::class, 'showProducts']);
 $router->get('/products/{filters}', [ProductController::class, 'showProducts']);
 
+$router->get('/product/{id}', [ProductController::class, 'showProduct']);
+
 $router->post('/products/load', [ProductController::class, 'loadProducts']);
+$router->post('/product/load/{id}', [ProductController::class, 'loadProduct']);
 $router->post('/categories/load', [ProductController::class, 'loadAllCategories']);
 $router->post('/sizes/load', [ProductController::class, 'loadAllSizes']);
 

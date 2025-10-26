@@ -60,19 +60,22 @@ function get_filters(){
         }
     }
 
-    let new_url = "/products/";
+    let new_url = "/products";
     let filter_added = false;
     if(active_filters.categories.length > 0){
+        if(!filter_added) new_url += "/";
         if(filter_added) new_url += "&";
         new_url += "category=" + active_filters.categories.join(".");
         filter_added = true;
     }
     if(active_filters.sizes.length > 0) {
+        if(!filter_added) new_url += "/";
         if(filter_added) new_url += "&";
         new_url += "size=" + active_filters.sizes.join(".");
         filter_added = true;
     }
     if(active_filters.price_from != null || active_filters.price_to != null){
+        if(!filter_added) new_url += "/";
         if(filter_added) new_url += "&";
         new_url += "price=" + (active_filters.price_from != null ? active_filters.price_from : 0) + (active_filters.price_to != null ? "." + active_filters.price_to : "");
         filter_added = true;
@@ -85,7 +88,7 @@ function get_filters(){
 }
 
 function refreshList(){
-    $.ajax({
+    return $.ajax({
         type: "post",
         url: "/products/load",
         data: JSON.stringify(get_filters())
@@ -98,13 +101,7 @@ function refreshList(){
             return $.Deferred().reject("Error occurred while loading items...").promise();
         }
     })
-    .then(loadProductTiles)
-    .fail((error)=>{
-        if(error.statusText)
-            infobox_show(error.statusText, 5000);
-        else
-            infobox_show(error, 5000)
-    });
+    .then(loadProductTiles);
 }
 
 function loadCategories(){
@@ -184,15 +181,14 @@ $(document).ready(()=>{
             $(this).val(parseInt($(this).val()));
     })
 
-    loadCategories().then(loadSizes).then(()=>{
-        decodeFilterFromURL().then(refreshList);
-        loadCartSize();
-    }).fail((error)=>{
+    loadCategories().then(loadSizes).then(decodeFilterFromURL).then(refreshList).catch((error)=>{
         if(error.statusText)
             infobox_show(error.statusText, 5000);
         else
             infobox_show(error, 5000)
     });
+
+    loadCartSize();
     
     let $submitBtns = $(".filter-submit");
     $submitBtns.on("click", refreshList);

@@ -14,23 +14,41 @@ class Product {
     public $description;
     public $price;
     public $photos;
+    public $variants;
 
 
-    public static function findById(int $id) {
+    public static function getByID(int $id) {
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare("SELECT * FROM user");
+        $stmt = $pdo->prepare("SELECT * FROM Product WHERE product_id = ?");
+        $stmt->execute([$id]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$data) {
             return null;
         }
 
-        $user = new self();
-        $user->id = $data['id'];
-        $user->nazwa = $data['nazwa'];
-        $user->email = $data['email'];
+        $product = new self();
+        $product->product_id = $data['product_id'];
+        $product->category_id = $data['category_id'];
+        $product->name = $data['name'];
+        $product->description = $data['description'];
+        $product->price = $data['price'];
 
-        return $user;
+        $stmt2 = $pdo->prepare("SELECT filename FROM Photo WHERE product_id = ?");
+        $stmt2->execute([$id]);
+        while($row = $stmt2->fetch(PDO::FETCH_ASSOC)){
+            $product->photos[] = $row['filename'];
+        }
+        $stmt2->closeCursor();
+
+        $stmt2 = $pdo->prepare("SELECT product_variant_id, name, quantity FROM product_variant pv INNER JOIN variant v ON pv.variant_id = v.variant_id WHERE product_id = ? ORDER BY name");
+        $stmt2->execute([$id]);
+        while($row = $stmt2->fetch(PDO::FETCH_ASSOC)){
+            $product->variants[] = $row;
+        }
+        $stmt2->closeCursor();
+
+        return $product;
     }
 
     public static function getTilesInfoArray($filters) {

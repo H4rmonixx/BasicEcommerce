@@ -18,6 +18,14 @@ class ProductController {
         return true;
     }
 
+    public function showProduct(Request $request) {
+
+        $view = file_get_contents(__DIR__ . '/../Views/product.html');
+        echo LayoutEngine::resolveLayout($view);
+
+        return true;
+    }
+
     public function loadProducts(Request $request){
         
         $filters = $request->json();
@@ -28,6 +36,21 @@ class ProductController {
         $products = Product::getTilesInfoArray($filters);
 
         echo json_encode($products);
+        
+        return true;
+    }
+
+    public function loadProduct(Request $request){
+        
+        $id = $request->param("id");
+        if($id == null){
+            echo json_encode([]);
+            return true;
+        }
+
+        $product = Product::getByID($id);
+
+        echo json_encode($product);
         
         return true;
     }
