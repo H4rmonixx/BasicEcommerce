@@ -21,5 +21,6 @@ $router->post('/products/load', [ProductController::class, 'loadProducts']);
 $router->post('/product/load/{id}', [ProductController::class, 'loadProduct']);
 $router->post('/categories/load', [ProductController::class, 'loadAllCategories']);
 $router->post('/sizes/load', [ProductController::class, 'loadAllSizes']);
+$router->post('/pages/load', [ProductController::class, 'loadPages']);
 
 return $router;

@@ -9,5 +9,4 @@ function loadCartSize(){
     }).fail(()=>{
         infobox_show("Cannot load cart size...");
     });
-
 }

@@ -1,8 +1,8 @@
-1. database foreign keys review (on update, on delete)
 2. size chart (modify database, product page)
-3. omit ids
 4. add to cart
 5. newsletter
 6. articles
 7. cart page
 8. login
+
+!!! pagination of products

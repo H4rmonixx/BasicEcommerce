@@ -35,8 +35,8 @@ function get_filters(){
         sizes: [],
         price_from: null,
         price_to: null,
-        omit_ids: [],
-        limit: null
+        omit_id: null,
+        limit: 1
     };
 
     let checkboxes = document.getElementsByClassName("filter-checkbox");

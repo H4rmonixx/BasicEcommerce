@@ -1,12 +1,3 @@
-function signToNewsletter(){
-    let mail = document.getElementById("newsletter-input-mail").value;
-    if(mail.length > 0){
-        // zapisz na newsletter
-    } else {
-        document.getElementById("newsletter-callback").textContent = "Wrong email address!";
-    }
-}
-
 $(document).ready(()=>{
     $.ajax({
         type: "post",
@@ -16,7 +7,7 @@ $(document).ready(()=>{
             sizes: [],
             price_from: null,
             price_to: null,
-            omit_ids: [],
+            omit_id: null,
             limit: 8
         })
     })
@@ -29,11 +20,14 @@ $(document).ready(()=>{
         }
     })
     .then(loadProductTiles)
-    .then(()=>{
-        $("#newsletter-button").on("click", signToNewsletter);
-        loadCartSize();
-    })
-    .fail((error)=>{
-        infobox_show(error, 5000);
+    .catch((error)=>{
+        if(error.statusText)
+            infobox_show(error.statusText, 5000);
+        else
+            infobox_show(error, 5000)
     });
+
+    
+    loadCartSize();
+
 });

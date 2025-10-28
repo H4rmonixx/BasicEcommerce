@@ -16,38 +16,6 @@ function decodeFilterFromURL(){
     
 }
 
-function get_related_products(product) {
-    return new Promise((resolve, reject) => {
-        if(product === null){
-            resolve(null);
-            return;
-        }
-
-        server_request("POST", "php/get_products_preview.php", (result) => {
-            try{
-                let json = JSON.parse(result);
-                resolve(json);
-            } catch (e) {
-                infobox_show_message("ERROR OCCURRED WHILE LOADING RELATED PRODUCTS");
-                resolve(null);
-            }
-        }, JSON.stringify({
-            collections: [product.collection],
-            categories: [],
-            size: {
-                tops: [],
-                pants: [],
-                footwear: []
-            },
-            price: {
-                from: "none",
-                to: "none"
-            },
-            omit_ids: [product.id]
-        }));
-    });
-}
-
 function loadProduct(id){
     return $.ajax({
         type: "post",
@@ -76,8 +44,7 @@ function showProductData(product){
         let $photos = $("#product-photos-container");
         let $desc = $("#product-description-container");
         let $size = $(".product-size");
-        let width_con = document.getElementById("product-sizechart-widths");
-        let length_con = document.getElementById("product-sizechart-lengths");
+        let $sizechart = $("#product-sizechart-table");
 
         product.photos.forEach((path) => {
             let $img = $("<img>", {
@@ -90,22 +57,9 @@ function showProductData(product){
 
         $desc.html(product.description);
 
-        /*
-        product.sizes_widths.forEach((x) => {
-            let new_td = document.createElement("td");
-            new_td.textContent = x;
-            width_con.appendChild(new_td);
-        });
-
-        product.sizes_lengths.forEach((x) => {
-            let new_td = document.createElement("td");
-            new_td.textContent = x;
-            length_con.appendChild(new_td);
-        });
-        */
-
-
         product.variants.forEach((variant) => {
+
+            // SIZE BUTTON
             let $newsize = $("<fieldset>");
             let $label = $("<label>");
             let $input = $("<input>", {
@@ -115,14 +69,16 @@ function showProductData(product){
             });
             let $a = $("<a>", {class: "p-size"});
             $a.text(variant.name);
-
             $label.append($input);
             $label.append($a);
             $newsize.append($label);
-
             $size.prepend($newsize);
-
             if(variant.quantity == 0) $newsize.prop("disabled", true);
+
+            // SIZE CHART
+            let $tr = $("<tr>");
+            $tr.html(`<td class="fw-bold">${variant.name}</td><td>${variant.width}</td><td>${variant.height}</td>`);
+            $sizechart.append($tr);
 
         });
 
@@ -131,7 +87,7 @@ function showProductData(product){
 }
 
 function loadRelatedProducts(product){
-    return $.ajax({
+    $.ajax({
         type: "post",
         url: "/products/load",
         data: JSON.stringify({
@@ -139,7 +95,7 @@ function loadRelatedProducts(product){
             sizes: [],
             price_from: null,
             price_to: null,
-            omit_ids: [product.id],
+            omit_id: product.product_id,
             limit: null
         })
     })
@@ -151,7 +107,13 @@ function loadRelatedProducts(product){
             return $.Deferred().reject("Error occurred while loading related items...").promise();
         }
     })
-    .then(loadProductTiles);
+    .then(loadProductTiles)
+    .catch((error) => {
+        if(error.statusText)
+            infobox_show(error.statusText, 5000);
+        else
+            infobox_show(error, 5000)
+    });
 }
 
 function initPage(){

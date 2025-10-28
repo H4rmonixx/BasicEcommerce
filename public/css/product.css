@@ -8,6 +8,7 @@
 }
 .product-photos .col-3:hover{
     cursor: pointer;
+    background-color: rgba(0,0,0,.1);
 }
 .product-title{
     font-weight: 900;
@@ -16,7 +17,7 @@
     color: black;
 }
 .product-sizechart table{
-    width: 100%;
+    min-width: 60%;
 }
 .product-sizechart td{
     border: 1px solid black;
@@ -75,6 +76,9 @@
     .p-size{
         width: 30px;
         height: 30px;
+    }
+    .product-sizechart table{
+        min-width: 100%;
     }
 }
 

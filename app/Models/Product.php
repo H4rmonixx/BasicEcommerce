@@ -19,7 +19,7 @@ class Product {
 
     public static function getByID(int $id) {
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare("SELECT * FROM Product WHERE product_id = ?");
+        $stmt = $pdo->prepare("SELECT * FROM Product WHERE product_id = ? AND visible = 1");
         $stmt->execute([$id]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -41,7 +41,7 @@ class Product {
         }
         $stmt2->closeCursor();
 
-        $stmt2 = $pdo->prepare("SELECT product_variant_id, name, quantity FROM product_variant pv INNER JOIN variant v ON pv.variant_id = v.variant_id WHERE product_id = ? ORDER BY name");
+        $stmt2 = $pdo->prepare("SELECT product_variant_id, name, quantity, width, height FROM product_variant pv INNER JOIN variant v ON pv.variant_id = v.variant_id WHERE product_id = ? ORDER BY name");
         $stmt2->execute([$id]);
         while($row = $stmt2->fetch(PDO::FETCH_ASSOC)){
             $product->variants[] = $row;
@@ -55,7 +55,7 @@ class Product {
         
         $pdo = Database::getConnection();
 
-        $sql = "SELECT DISTINCT p.product_id as product_id, p.name as name, p.price as price FROM Product p INNER JOIN Product_Variant pv ON p.product_id = pv.product_id WHERE 1";
+        $sql = "SELECT DISTINCT p.product_id as product_id, p.name as name, p.price as price FROM Product p INNER JOIN Product_Variant pv ON p.product_id = pv.product_id WHERE visible = 1";
         $params = [];
 
         if(count($filters['categories']) > 0){
@@ -75,6 +75,10 @@ class Product {
         if($filters['price_to'] != null){
             $sql .= " AND p.price <= ?";
             array_push($params, intval($filters['price_to']));
+        }
+        if($filters['omit_id'] != null){
+            $sql .= " AND p.product_id <> ?";
+            array_push($params, intval($filters['omit_id']));
         }
         if($filters['limit'] != null){
             $sql .= " LIMIT ".intval($filters['limit']);
@@ -121,6 +125,10 @@ class Product {
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $data;
+    }
+
+    public static function getCount(){
+        
     }
 
 }

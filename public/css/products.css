@@ -89,3 +89,23 @@
 #m-product-tile-container{
     min-height: 30vh;
 }
+
+#filter-category-container, #filter-size-container{
+    overflow-y: auto;
+    max-height: 200px;
+}
+
+.page-link{
+    border-color: lightgray;
+    border-radius: 0 !important;
+    color: black;
+}
+.page-link.active{
+    background-color: black;
+    color: white !important;
+    border-color: lightgray;
+}
+.page-link:hover{
+    cursor: pointer;
+    color: black;
+}

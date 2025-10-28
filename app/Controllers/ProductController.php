@@ -34,7 +34,6 @@ class ProductController {
             return true;
         }
         $products = Product::getTilesInfoArray($filters);
-
         echo json_encode($products);
         
         return true;
@@ -71,5 +70,9 @@ class ProductController {
         echo json_encode($sizes);
 
         return true;
+    }
+
+    public function loadPages(Request $request){
+        
     }
 }

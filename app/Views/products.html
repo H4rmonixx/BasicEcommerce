@@ -83,9 +83,24 @@ View products
         </div>
     </div>
 </div>
-<div class="container-xxl mb-5 pe-xxl-0 ps-xxl-0 pe-4 ps-4">
-    <div class="row" id="m-product-tile-container">
+<div class="container-xxl mb-4 pe-xxl-0 ps-xxl-0 pe-4 ps-4">
+    <div class="row mb-3" id="m-product-tile-container">
         <!-- inserted from database -->
     </div>
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item">
+                <a class="page-link"><span>&laquo;</span></a>
+            </li>
+            <div class="d-flex">
+                <li class="page-item"><a class="page-link active">1</a></li>
+                <li class="page-item"><a class="page-link">2</a></li>
+                <li class="page-item"><a class="page-link">3</a></li>
+            </div>
+            <li class="page-item">
+                <a class="page-link"><span>&raquo;</span></a>
+            </li>
+        </ul>
+    </nav>
 </div>
 @endsection
