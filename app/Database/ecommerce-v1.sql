@@ -103,8 +103,6 @@ INSERT INTO Product (category_id, name, description, price, visible) VALUES
 INSERT INTO Photo (product_id, filename) VALUES
 ("1", "tshirt-loopsports.png"),
 ("1", "tshirt-loopsports-2.png"),
-("1", "tshirt-loopsports-3.png"),
-("1", "tshirt-loopsports-4.png"),
 ("2", "tshirt-planetearth.png"),
 ("2", "tshirt-planetearth-2.png"),
 ("3", "pants-halfcutworn.png"),

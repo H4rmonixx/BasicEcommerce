@@ -1,6 +1,6 @@
 let product_data = null;
 
-function decodeFilterFromURL(){
+function decodeIDFromURL(){
     return new Promise((resolve, reject) => {
         let path = $(location).prop("pathname");
         let matches = path.match(/\/product\/(?<id>[\d]+)/);
@@ -50,7 +50,8 @@ function showProductData(product){
             let $img = $("<img>", {
                 src: "/assets/products/" + path,
                 alt: "Product photo",
-                name: "product-photo"
+                name: "product-photo",
+                class: "p-3 p-lg-5"
             });
             $photos.append($img);
         });
@@ -96,7 +97,8 @@ function loadRelatedProducts(product){
             price_from: null,
             price_to: null,
             omit_id: product.product_id,
-            limit: null
+            limit: 8,
+            page: 1
         })
     })
     .then((success) => {
@@ -147,15 +149,19 @@ function initPage(){
         if($inputs.length > 0){
             $.ajax({
                 type: "post",
-                url: "/api/cart/add",
+                url: "/cart/add",
                 data: JSON.stringify({
-                    id: product_data.id,
-                    quantity: 1,
-                    variant: $($inputs[0]).val()
+                    product_variant_id: $($inputs[0]).val(),
+                    quantity: 1
                 })
             }).then((success) => {
 
-                //
+                if(success == "Success"){
+                    infobox_show("Product added to cart.", 4000, [8, 100, 48]);
+                    loadCartSize();
+                } else {
+                    infobox_show("Error occured while adding product to cart!");
+                }
 
             }).catch((error) => {
                 if(error.statusText)
@@ -167,11 +173,10 @@ function initPage(){
             infobox_show("No size selected");
         }
     });
-
 }
 
 $(document).ready(() => {
-    decodeFilterFromURL().then(loadProduct).then(showProductData).then(loadRelatedProducts).then(initPage).catch((error) => {
+    decodeIDFromURL().then(loadProduct).then(showProductData).then(loadRelatedProducts).then(initPage).catch((error) => {
         if(error.statusText)
             infobox_show(error.statusText, 5000);
         else

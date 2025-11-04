@@ -8,7 +8,8 @@ $(document).ready(()=>{
             price_from: null,
             price_to: null,
             omit_id: null,
-            limit: 8
+            limit: 8,
+            page: 1
         })
     })
     .then((success) => {

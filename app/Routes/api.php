@@ -1,14 +1,14 @@
 <?php
 
 require_once __DIR__ . '/../Core/Router.php';
-require_once __DIR__ . '/../Controllers/ApiController.php';
+require_once __DIR__ . '/../Controllers/CartController.php';
 
 use App\Core\Router;
-use App\Controllers\ApiController;
+use App\Controllers\CartController;
 
 $router = new Router();
 
-$router->post('/api/load/products/latest', [ApiController::class, 'loadLatestProducts']);
-$router->post('/api/load/cart/size', [ApiController::class, 'loadCartSize']);
+$router->post('/cart/size', [CartController::class, 'getSize']);
+$router->post('/cart/add', [CartController::class, 'addToCart']);
 
 return $router;

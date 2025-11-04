@@ -23,6 +23,7 @@ function loadProductTiles(products_data){
                 class: "col-6 col-sm-6 col-md-4 col-lg-3 m-product-tile",
                 href: "/product/"+product.product_id
             });
+            
             let $img_first = $("<img>", {
                 src: "/assets/products/"+product.photos[0],
                 alt: "Product photo"

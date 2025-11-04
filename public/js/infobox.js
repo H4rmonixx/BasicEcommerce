@@ -8,7 +8,7 @@ function infobox_close(){
     infoboxTimeout = null;
 }
 
-function infobox_show(message, delay=4000){
+function infobox_show(message, delay=4000, color = null){
     if(infoboxTimeout !== null){
         clearTimeout(infoboxTimeout);
     }
@@ -23,6 +23,12 @@ function infobox_show(message, delay=4000){
     $box.html(`<div class="pb-3 pt-3 pe-5 ps-5">${message}</div>`);
     $box.css("bottom", "15px");
     $box.css("display", "flex");
+
+    if(color != null){
+        $box.find("div").css("background-color", `rgb(${color[0]}, ${color[1]}, ${color[2]})`);
+    } else {
+        $box.find("div").css("background-color", "");
+    }
 
     if(delay !== null){
         infoboxTimeout = setTimeout(infobox_close, delay);

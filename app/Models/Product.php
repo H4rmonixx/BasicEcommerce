@@ -82,6 +82,9 @@ class Product {
         }
         if($filters['limit'] != null){
             $sql .= " LIMIT ".intval($filters['limit']);
+            if($filters['page'] != null){
+                $sql .= " OFFSET ".(intval($filters['page']) - 1);
+            }
         }
 
         $stmt = $pdo->prepare($sql);
@@ -127,8 +130,45 @@ class Product {
         return $data;
     }
 
-    public static function getCount(){
-        
+    public static function getCount($filters){
+        $pdo = Database::getConnection();
+
+        $sql = "SELECT Count(*) FROM Product WHERE product_id IN (SELECT p.product_id FROM Product p INNER JOIN Product_Variant pv ON p.product_id = pv.product_id WHERE visible = 1";
+        $params = [];
+
+        if(count($filters['categories']) > 0){
+            $placeholders = implode(',', array_fill(0, count($filters['categories']), '?'));
+            $sql .= " AND p.category_id IN ($placeholders)";
+            $params = array_merge($params, $filters['categories']);
+        }
+        if(count($filters['sizes']) > 0){
+            $placeholders = implode(',', array_fill(0, count($filters['sizes']), '?'));
+            $sql .= " AND pv.variant_id IN ($placeholders)";
+            $params = array_merge($params, $filters['sizes']);
+        }
+        if($filters['price_from'] != null){
+            $sql .= " AND p.price >= ?";
+            array_push($params, intval($filters['price_from']));
+        }
+        if($filters['price_to'] != null){
+            $sql .= " AND p.price <= ?";
+            array_push($params, intval($filters['price_to']));
+        }
+        if($filters['omit_id'] != null){
+            $sql .= " AND p.product_id <> ?";
+            array_push($params, intval($filters['omit_id']));
+        }
+
+        $sql .= ")";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+
+        if($filters['limit'] == null) $filters['limit'] = 8;
+
+        $data = ["pagesCount" => (int) ($stmt->fetchColumn() / $filters['limit'] + 1)];
+
+        return $data;
     }
 
 }

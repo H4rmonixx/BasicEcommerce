@@ -48,7 +48,6 @@ class ProductController {
         }
 
         $product = Product::getByID($id);
-
         echo json_encode($product);
         
         return true;
@@ -57,22 +56,29 @@ class ProductController {
     public function loadAllCategories(Request $request){
         
         $categories = Product::getAllCategories();
-
         echo json_encode($categories);
 
         return true;
     }
 
     public function loadAllSizes(Request $request){
-        
-        $sizes = Product::getAllSizes();
 
+        $sizes = Product::getAllSizes();
         echo json_encode($sizes);
 
         return true;
     }
 
-    public function loadPages(Request $request){
-        
+    public function countPages(Request $request){
+
+        $filters = $request->json();
+        if($filters == null){
+            echo "Null";
+            return true;
+        }
+        $count = Product::getCount($filters);
+        echo json_encode($count);
+
+        return true;
     }
 }

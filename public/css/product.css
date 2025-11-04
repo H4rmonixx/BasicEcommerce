@@ -4,7 +4,7 @@
     background-color: rgb(240, 240, 240);
 }
 .product-photos .col-12{
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 .product-photos .col-3:hover{
     cursor: pointer;
