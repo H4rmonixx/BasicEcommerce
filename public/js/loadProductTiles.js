@@ -20,10 +20,14 @@ function loadProductTiles(products_data){
 
         products_data.forEach((product) => {
             let $a_tag = $("<a>", {
-                class: "col-6 col-sm-6 col-md-4 col-lg-3 m-product-tile",
+                class: "col-12 col-sm-6 col-md-4 col-lg-3 m-product-tile d-flex flex-column justify-content-between text-black text-decoration-none",
                 href: "/product/"+product.product_id
             });
-            
+
+            let $img_cont = $("<div>", {
+                class: "m-product-tile-img-cont rounded d-flex justify-content-center mb-3 p-4"
+            });
+
             let $img_first = $("<img>", {
                 src: "/assets/products/"+product.photos[0],
                 alt: "Product photo"
@@ -32,19 +36,26 @@ function loadProductTiles(products_data){
                 src: "/assets/products/"+product.photos[1],
                 alt: "Product photo"
             });
+
+            let $desc = $("<div>");
             let $div_name = $("<div>", {
-                class: "fs-6",
+                class: "fs-6 text-center",
                 text: product.name
             });
             let $div_price = $("<div>", {
-                class: "m-b-800",
+                class: "m-b-800 text-center p-1",
                 text: product.price + " PLN"
             });
 
-            $a_tag.append($img_first);
-            $a_tag.append($img_second);
-            $a_tag.append($div_name);
-            $a_tag.append($div_price);
+
+            $img_cont.append($img_first);
+            $img_cont.append($img_second);
+
+            $desc.append($div_name);
+            $desc.append($div_price);
+
+            $a_tag.append($img_cont);
+            $a_tag.append($desc);
 
             $root.append($a_tag);
         });

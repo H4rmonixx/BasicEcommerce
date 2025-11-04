@@ -200,11 +200,14 @@ function loadSizes(){
 function loadPagesCount(){
     return $.ajax({
         type: "post",
-        url: "/pages/count",
+        url: "/products/pages",
         data: JSON.stringify(filters)
     }).then((success) => {
         try{
             let json = JSON.parse(success);
+            if(json == null){
+                return $.Deferred().reject("Error occurred while loading pages...").promise();
+            }
             pagesCount = json.pagesCount;
             setPagesButtons();
         } catch(e){
@@ -218,7 +221,7 @@ function setPagesButtons(){
     $root.empty();
     let c = 0;
     let i = page - 1;
-    while(c < 4 && i <= pagesCount){
+    while(c < 3 && i <= pagesCount){
         
         if(i < 1) {
             i += 1;

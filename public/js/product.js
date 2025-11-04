@@ -13,7 +13,6 @@ function decodeIDFromURL(){
         }
         reject("Wrong product ID");
     });
-    
 }
 
 function loadProduct(id){
@@ -50,8 +49,7 @@ function showProductData(product){
             let $img = $("<img>", {
                 src: "/assets/products/" + path,
                 alt: "Product photo",
-                name: "product-photo",
-                class: "p-3 p-lg-5"
+                name: "product-photo"
             });
             $photos.append($img);
         });
@@ -97,7 +95,7 @@ function loadRelatedProducts(product){
             price_from: null,
             price_to: null,
             omit_id: product.product_id,
-            limit: 8,
+            limit: 4,
             page: 1
         })
     })

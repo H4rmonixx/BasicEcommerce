@@ -43,7 +43,7 @@ class ProductController {
         
         $id = $request->param("id");
         if($id == null){
-            echo json_encode([]);
+            echo json_encode(null);
             return true;
         }
 
@@ -73,7 +73,7 @@ class ProductController {
 
         $filters = $request->json();
         if($filters == null){
-            echo "Null";
+            json_encode(null);
             return true;
         }
         $count = Product::getCount($filters);

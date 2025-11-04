@@ -1,4 +1,5 @@
 $(document).ready(()=>{
+
     $.ajax({
         type: "post",
         url: "/products/load",
@@ -28,7 +29,6 @@ $(document).ready(()=>{
             infobox_show(error, 5000)
     });
 
-    
     loadCartSize();
 
 });

@@ -2,6 +2,14 @@
 CREATE DATABASE ecommerce;
 USE ecommerce;
 
+-- Article
+CREATE TABLE Article (
+    article_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(64) NOT NULL,
+    public BOOLEAN DEFAULT TRUE NOT NULL,
+    content TEXT NOT NULL
+);
+
 -- Category
 CREATE TABLE Category (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
