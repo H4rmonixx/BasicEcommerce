@@ -1,0 +1,86 @@
+@section("title")
+Contact
+@endsection
+
+@section("styles")
+<link rel="stylesheet" href="/css/contact.css">
+@endsection
+
+@section("scripts")
+<script src="/js/contact.js"></script>
+<script src="/js/loadCartSize.js"></script>
+<script src="/js/infobox.js"></script>
+@endsection
+
+@section("content")
+<div class="text-center py-4 bg-light">
+    <div class="container-xxl pe-4 ps-4 pe-xxl-0 ps-xxl-0">
+    <h1 class="m-b-700">Contact HRMX</h1>
+    <p class="lead text-muted">We’re here to help with anything you need.</p>
+    </div>
+</div>
+
+<section class="py-5">
+    <div class="container-xxl pe-4 ps-4 pe-xxl-0 ps-xxl-0">
+        <div class="row g-5">
+            <div class="col-md-5">
+                <h2>Get in Touch</h2>
+                <p>
+                Have a question about our collections, your order, or collaboration opportunities?  
+                Reach out — we usually reply within <strong>24 hours (Mon–Fri)</strong>.
+                </p>
+                <ul class="list-unstyled">
+                <li><strong>Email:</strong> support@hrmx.com</li>
+                <li><strong>Phone:</strong> +1 (555) 123-4567</li>
+                <li><strong>Business Hours:</strong> Monday–Friday, 9:00 AM – 5:00 PM</li>
+                </ul>
+
+                <h3 class="mt-4">Our Address</h3>
+                <address>
+                    HRMX Studio<br />
+                    123 Mercer Street<br />
+                    New York, NY 10012<br />
+                    USA
+                </address>
+
+                <p>
+                For press or partnership inquiries, email  
+                <strong>partners@hrmx.com</strong>.
+                </p>
+            </div>
+            <div class="col-md-7">
+                <h2 class="mb-3">Send a Message</h2>
+                <form>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Your Name</label>
+                        <input type="text" id="name" name="name" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Message</label>
+                        <textarea id="message" name="message" rows="5" class="form-control" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-dark">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light">
+    <div class="container-xxl pe-4 ps-4 pe-xxl-0 ps-xxl-0 text-center">
+        <h2>Visit Our Studio</h2>
+        <p class="text-muted">We welcome visitors by appointment only.</p>
+        <div class="ratio ratio-16x9 mt-4 shadow-sm">
+            <iframe
+                src="https://www.google.com/maps?q=New+York,+NY+10012&output=embed"
+                allowfullscreen=""
+                loading="lazy">
+            </iframe>
+        </div>
+    </div>
+</section>
+@endsection

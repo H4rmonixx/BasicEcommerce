@@ -156,6 +156,7 @@ function initPage(){
 
                 if(success == "Success"){
                     infobox_show("Product added to cart.", 4000, [8, 100, 48]);
+                    $('input[name="size-select"]').prop("checked", false);
                     loadCartSize();
                 } else {
                     infobox_show("Error occured while adding product to cart!");

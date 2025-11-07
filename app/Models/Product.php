@@ -51,6 +51,40 @@ class Product {
         return $product;
     }
 
+    public static function getByVariantID(int $variantid) {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT * FROM Product p INNER JOIN Product_Variant pv ON p.product_id = pv.product_id WHERE pv.product_variant_id = ? AND visible = 1");
+        $stmt->execute([$variantid]);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$data) {
+            return null;
+        }
+
+        $product = new self();
+        $product->product_id = $data['product_id'];
+        $product->category_id = $data['category_id'];
+        $product->name = $data['name'];
+        $product->description = $data['description'];
+        $product->price = $data['price'];
+
+        $stmt2 = $pdo->prepare("SELECT filename FROM Photo WHERE product_id = ?");
+        $stmt2->execute([$product->product_id]);
+        while($row = $stmt2->fetch(PDO::FETCH_ASSOC)){
+            $product->photos[] = $row['filename'];
+        }
+        $stmt2->closeCursor();
+
+        $stmt2 = $pdo->prepare("SELECT product_variant_id, name, quantity, width, height FROM product_variant pv INNER JOIN variant v ON pv.variant_id = v.variant_id WHERE product_id = ? AND product_variant_id = ? ORDER BY name");
+        $stmt2->execute([$product->product_id, $variantid]);
+        if($row = $stmt2->fetch(PDO::FETCH_ASSOC)){
+            $product->variants[] = $row;
+        }
+        $stmt2->closeCursor();
+
+        return $product;
+    }
+
     public static function getTilesInfoArray($filters) {
         
         $pdo = Database::getConnection();

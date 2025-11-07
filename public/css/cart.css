@@ -12,7 +12,6 @@
 
 .prod-in-cart img{
     background-color: rgb(240, 240, 240);
-    border-radius: .6rem;
 }
 .prod-in-cart-quantity-btn:hover{
     cursor: pointer;

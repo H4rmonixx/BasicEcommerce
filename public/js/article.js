@@ -31,13 +31,14 @@ function loadArticle(id){
 function showArticle(art){
     return new Promise((resolve, reject) => {
         $(document).prop("title", art.title);
+        $(".article-content").html(art.content);
         resolve();
     });
 }
 
 $(document).ready(()=>{
     
-    decodeIDFromURL().then(loadArticle)
+    decodeIDFromURL().then(loadArticle).then(showArticle)
     .catch((error)=>{
         if(error.statusText)
             infobox_show(error.statusText, 5000);

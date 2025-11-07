@@ -1,7 +1,9 @@
 <?php
 
 require_once __DIR__ . '/../app/Core/Request.php';
+require_once __DIR__ . '/../app/Core/LayoutEngine.php';
 use App\Core\Request;
+use App\Core\LayoutEngine;
 
 $request = new Request();
 
@@ -16,5 +18,7 @@ foreach ($routers as $router) {
     }
 }
 
+// CODE 404 - REQUEST NOT FOUND
 http_response_code(404);
-echo "404 Not Found";
+$view = file_get_contents(__DIR__ . '/../app/Views/Errors/err404.html');
+echo LayoutEngine::resolveLayout($view);

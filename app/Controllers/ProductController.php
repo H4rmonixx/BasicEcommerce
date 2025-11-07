@@ -53,6 +53,20 @@ class ProductController {
         return true;
     }
 
+    public function loadProductByVariant(Request $request){
+        
+        $variantid = $request->param("variantid");
+        if($variantid == null){
+            echo json_encode(null);
+            return true;
+        }
+
+        $product = Product::getByVariantID($variantid);
+        echo json_encode($product);
+        
+        return true;
+    }
+
     public function loadAllCategories(Request $request){
         
         $categories = Product::getAllCategories();

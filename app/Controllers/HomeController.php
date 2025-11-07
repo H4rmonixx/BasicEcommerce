@@ -17,9 +17,22 @@ class HomeController {
         return true;
     }
 
-    public function test(Request $request) {
-        echo $request->param('tekst');
+    public function about(Request $request) {
+
+        $view = file_get_contents(__DIR__ . '/../Views/about.html');
+
+        echo LayoutEngine::resolveLayout($view);
 
         return true;
     }
+
+    public function contact(Request $request) {
+
+        $view = file_get_contents(__DIR__ . '/../Views/contact.html');
+
+        echo LayoutEngine::resolveLayout($view);
+
+        return true;
+    }
+    
 }
