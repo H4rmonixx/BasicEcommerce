@@ -68,20 +68,13 @@ CREATE TABLE User (
     phone_number VARCHAR(20) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
     password VARCHAR(255),
-    address VARCHAR(255),
-    building VARCHAR(6),
-    city VARCHAR(100),
-    post_code VARCHAR(20),
-    country VARCHAR(100),
-    permission_id INT,
+    address VARCHAR(255) NOT NULL,
+    building VARCHAR(6) NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    post_code VARCHAR(20) NOT NULL,
+    country VARCHAR(100) NOT NULL,
+    permission_id INT NOT NULL,
     FOREIGN KEY (permission_id) REFERENCES Permission(permission_id) ON UPDATE CASCADE
-);
-
--- Promo Code
-CREATE TABLE `Promo_Code` (
-    promo_code VARCHAR(6) PRIMARY KEY,
-    discount INT UNSIGNED NOT NULL,
-    CONSTRAINT discount_check CHECK (discount >= 0 AND discount <= 100)
 );
 
 -- Order
@@ -89,10 +82,10 @@ CREATE TABLE `Order` (
     order_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    is_paid BIT(1) DEFAULT 0,
-    promo_code VARCHAR(6),
-    FOREIGN KEY (user_id) REFERENCES User(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (promo_code) REFERENCES Promo_Code(promo_code) ON UPDATE CASCADE ON DELETE CASCADE
+    payu_order_id VARCHAR(64) DEFAULT NULL,
+    payment_method ENUM('CASH', 'PAYU') NOT NULL DEFAULT 'CASH',
+    status ENUM('PENDING', 'PAID', 'SHIPPED', "COMPLETED", 'CANCELED', 'FAILED') NOT NULL DEFAULT 'PENDING',
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Order-Detail (relacja między Order i Product-Variant)
@@ -144,28 +137,22 @@ INSERT INTO Product_Variant (product_id, variant_id, quantity, width, height) VA
 (3, 3, 100, 44, 100),
 (4, 2, 70, 40, 98);
 
-
 INSERT INTO Permission (name) VALUES
 ('Admin'),
 ('Customer'),
 ('Guest');
 
-
 INSERT INTO User (firstname, lastname, phone_number, email, password, address, building, city, post_code, country, permission_id) VALUES
-('Alice', 'Nowak', '+48123456789', 'alice@example.com', 'hashed_pw_1', 'Main St', '12', 'Warsaw', '00-001', 'Poland', 2),
-('Bob', 'Kowalski', '+48500900900', 'bob@example.com', 'hashed_pw_2', 'River', '7', 'Krakow', '30-002', 'Poland', 2),
-('Charlie', 'Smith', '+48503220900', 'charlie@example.com', NULL, "", "", "", "", "", 3),
-('Diana', 'Zielińska', '+48987654321', 'diana@example.com', 'hashed_pw_4', 'Forest', '5', 'Gdansk', '80-100', 'Poland', 1);
+('Alice', 'Nowak', '+48123456789', 'alice@example.com', 'hashed_pw_1', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 2),
+('Bob', 'Kowalski', '+48500900900', 'bob@example.com', 'hashed_pw_2', 'River', '7', 'Krakow', '30-002', 'Polska', 2),
+('Charlie', 'Smith', '+48503220900', 'charlie@example.com', NULL, "Osiedlowa", "60", "Skorzec", "08-114", "Polska", 3),
+('Diana', 'Zielińska', '+48987654321', 'diana@example.com', 'hashed_pw_4', 'Forest', '5', 'Gdansk', '80-100', 'Polska', 1);
 
-INSERT INTO Promo_Code (promo_code, discount) VALUES
-("ABC123", 15);
-
-INSERT INTO `Order` (user_id, date, is_paid) VALUES
-(1, '2025-10-01 14:23:00', 1),
-(2, '2025-10-05 09:12:00', 0),
-(1, '2025-10-10 19:45:00', 1),
-(4, '2025-10-15 11:30:00', 1);
-
+INSERT INTO `Order` (user_id, date) VALUES
+(1, '2025-10-01 14:23:00'),
+(2, '2025-10-05 09:12:00'),
+(1, '2025-10-10 19:45:00'),
+(4, '2025-10-15 11:30:00');
 
 INSERT INTO Order_Detail (order_id, product_variant_id, quantity) VALUES
 (1, 1, 2), 
@@ -173,7 +160,6 @@ INSERT INTO Order_Detail (order_id, product_variant_id, quantity) VALUES
 (2, 3, 1), 
 (3, 4, 2),
 (4, 5, 1);
-
 
 INSERT INTO Article (title, public, content) VALUES
 ("How to read sizes?", 1,

@@ -5,12 +5,14 @@ require_once __DIR__ . '/../Controllers/CartController.php';
 require_once __DIR__ . '/../Controllers/ProductController.php';
 require_once __DIR__ . '/../Controllers/ArticleController.php';
 require_once __DIR__ . '/../Controllers/UserController.php';
+require_once __DIR__ . '/../Controllers/OrderController.php';
 
 use App\Core\Router;
 use App\Controllers\CartController;
 use App\Controllers\ProductController;
 use App\Controllers\ArticleController;
 use App\Controllers\UserController;
+use App\Controllers\OrderController;
 
 $router = new Router();
 
@@ -31,5 +33,7 @@ $router->post('/cart/change/{index}', [CartController::class, 'changeCart']);
 $router->post('/cart/load', [CartController::class, 'loadCart']);
 
 $router->post('/user/address/load', [UserController::class, 'getUserAddress']);
+
+$router->post('/order/new', [OrderController::class, 'placeOrder']);
 
 return $router;

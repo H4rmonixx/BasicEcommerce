@@ -20,5 +20,5 @@ foreach ($routers as $router) {
 
 // CODE 404 - REQUEST NOT FOUND
 http_response_code(404);
-$view = file_get_contents(__DIR__ . '/../app/Views/Errors/err404.html');
+$view = file_get_contents(__DIR__ . '/../app/Views/err404.html');
 echo LayoutEngine::resolveLayout($view);

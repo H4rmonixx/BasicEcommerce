@@ -37,4 +37,12 @@ class User {
         return $user;
     }
 
+    public static function createGuest($data){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("INSERT INTO User (firstname, lastname, phone_number, email, address, building, city, post_code, country, permission_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 3)");
+        $stmt->execute([$data['personal']['firstname'], $data['personal']['lastname'], $data['personal']['phone'], $data['personal']['email'], $data['shipment']['address'], $data['shipment']['building'], $data['shipment']['city'], $data['shipment']['postcode'], $data['shipment']['country']]);
+        
+        return $pdo->lastInsertId();
+    }
+
 }

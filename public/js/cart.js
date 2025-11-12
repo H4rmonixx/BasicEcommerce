@@ -1,5 +1,6 @@
 let GlobalCartContent = null;
 let GlobalPersonalData = null;
+let GlobalShipmentData = null;
 
 function refreshCart(){
     return $.ajax({
@@ -94,7 +95,6 @@ function calcValues(){
     $("#estimated-ship-date").text("-");
     $("#cart-products").text("---");
     $("#cart-shipment").text("---");
-    $("#cart-discount").text("---");
     $("#cart-total").text("---");
     if(GlobalCartContent == null) {
         return;
@@ -108,7 +108,6 @@ function calcValues(){
 
     $("#cart-products").text(totalCartValue.toFixed(2) + " PLN");
     $("#cart-shipment").text("22 PLN");
-    $("#cart-discount").text("0 PLN");
     $("#cart-total").text((totalCartValue + 22).toFixed(2) + " PLN");
 
     const date = new Date();
@@ -188,10 +187,6 @@ function getUserAdress(){
     });
 }
 
-function checkPromoCode(){
-    
-}
-
 function initPage(){
     return new Promise((resolve, reject) => {
         
@@ -215,16 +210,40 @@ function initPage(){
                 infobox_show("The cart is empty.", 5000);
                 return;
             }
-            let shipment = {
+            let GlobalShipmentData = {
                 postcode: $("#input-postcode").val(),
                 city: $("#input-city").val(),
                 address: $("#input-address").val(),
                 building: $("#input-building").val(),
                 country: $("#input-country").val()
             }
-            let selector = document.querySelector('input[name="payment-method-radio"]:checked');
-            if(selector && shipment.postcode.length && shipment.city.length && shipment.address.length && shipment.building.length){
-                // zloz order, przejdz do platnosci jesli nie gotowkowo
+            let $selector = $('input[name="payment-method-radio"]:checked');
+            if($selector && GlobalShipmentData.postcode.length && GlobalShipmentData.city.length && GlobalShipmentData.address.length && GlobalShipmentData.building.length && GlobalShipmentData.country.length){
+                let payment = $selector.val();
+                $.ajax({
+                    url: "/order/new",
+                    type: 'post',
+                    data: JSON.stringify({
+                        personal: GlobalPersonalData,
+                        shipment: GlobalShipmentData,
+                        payment: payment
+                    })
+                }).then((success) => {
+                    try{
+                        let json = JSON.parse(success);
+                        if(json.payment == "CASH"){
+                            alert("kurwa dziala");
+                        }
+                    } catch (e) {
+                        return $.Deferred().reject("Error with placing order").promise();
+                    }
+                }).catch((error) => {
+                    if(error.statusText)
+                        infobox_show(error.statusText, 5000);
+                    else
+                        infobox_show(error, 5000)
+                });
+
             } else {
                 infobox_show("Fill shipment details.", 5000)
             }

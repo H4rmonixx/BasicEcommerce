@@ -12,6 +12,14 @@ use App\Models\Article;
 class ArticleController {
     public function showArticle(Request $request) {
 
+        $id = $request->param("id");
+        if($id == null){
+            return false;
+        }
+        if(!Article::ifExists($id)){
+            return false;
+        }
+
         $view = file_get_contents(__DIR__ . '/../Views/article.html');
         echo LayoutEngine::resolveLayout($view);
 
@@ -19,6 +27,7 @@ class ArticleController {
     }
 
     public function loadArticle(Request $request){
+
         $id = $request->param("id");
         if($id == null){
             echo json_encode(null);

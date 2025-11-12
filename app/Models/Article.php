@@ -31,4 +31,17 @@ class Article {
         return $article;
     }
 
+    public static function ifExists(int $id){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT article_id FROM Article WHERE article_id = ? AND public = 1");
+        $stmt->execute([$id]);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$data) {
+            return false;
+        }
+
+        return true;
+    }
+
 }
