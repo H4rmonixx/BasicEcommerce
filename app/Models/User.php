@@ -17,7 +17,7 @@ class User {
     public $country;
 
 
-    public static function getUserAdress(int $id) {
+    public static function getUserAddress(int $id) {
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare("SELECT address, building, city, post_code, country FROM User WHERE user_id = ?");
         $stmt->execute([$id]);
@@ -39,9 +39,44 @@ class User {
 
     public static function createGuest($data){
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare("INSERT INTO User (firstname, lastname, phone_number, email, address, building, city, post_code, country, permission_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 3)");
+        $stmt = $pdo->prepare(query: 'INSERT INTO User (firstname, lastname, phone_number, email, address, building, city, post_code, country) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
         $stmt->execute([$data['personal']['firstname'], $data['personal']['lastname'], $data['personal']['phone'], $data['personal']['email'], $data['shipment']['address'], $data['shipment']['building'], $data['shipment']['city'], $data['shipment']['postcode'], $data['shipment']['country']]);
         
+        return $pdo->lastInsertId();
+    }
+
+    public static function login($email, $password){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare('SELECT user_id, password FROM User WHERE email LIKE ? AND type NOT LIKE "GUEST"');
+        $stmt->execute([$email]);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if(!$data){
+            return null;
+        }
+
+        if(!password_verify($password, $data['password'])){
+            return null;
+        }
+
+        return $data['user_id'];
+    }
+
+    public static function register($data){
+        $pdo = Database::getConnection();
+
+        $stmt = $pdo->prepare("SELECT user_id FROM User WHERE email LIKE ?");
+        $stmt->execute([$data['email']]);
+        $u = $stmt->fetch(PDO::FETCH_ASSOC);
+        if($u){
+            echo json_encode([false, "Email is already in use"]);
+            return null;
+        }
+        $stmt->closeCursor();
+
+        $stmt = $pdo->prepare(query: 'INSERT INTO User (firstname, lastname, phone_number, email, password, address, building, city, post_code, country, type) VALUES (:firstname, :lastname, :phone_number, :email, :password, :address, :building, :city, :post_code, :country, "CUSTOMER")');
+        $stmt->execute($data);
+
         return $pdo->lastInsertId();
     }
 

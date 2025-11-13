@@ -4,8 +4,10 @@ namespace App\Controllers;
 
 require_once __DIR__ . '/../Core/Request.php';
 require_once __DIR__ . '/../Core/LayoutEngine.php';
+require_once __DIR__ . '/../Models/Product.php';
 use App\Core\Request;
 use App\Core\LayoutEngine;
+use App\Models\Product;
 
 
 class CartController {
@@ -41,7 +43,12 @@ class CartController {
 
         $product = $request->json();
         if($product == null){
-            echo "Error";
+            echo null;
+            return true;
+        }
+
+        if(!Product::ifQuantityInStock($product['product_variant_id'], 1)){
+            echo json_encode([false]);
             return true;
         }
 
@@ -50,6 +57,10 @@ class CartController {
         $add = true;
         for($i=0; $i<count($_SESSION['cart']); $i++){
             if($product['product_variant_id'] == $_SESSION['cart'][$i]['product_variant_id']){
+                if(!Product::ifQuantityInStock($_SESSION['cart'][$i]['product_variant_id'], $_SESSION['cart'][$i]['quantity'] + 1)){
+                    echo json_encode([false]);
+                    return true;
+                }
                 $_SESSION['cart'][$i]['quantity'] += 1;
                 $add = false;
                 break;
@@ -57,7 +68,7 @@ class CartController {
         }
         if($add) array_push($_SESSION["cart"], $product);
 
-        echo "Success";
+        echo json_encode([true]);
         return true;
     }
 
@@ -99,10 +110,19 @@ class CartController {
 
         if(!isset($_SESSION["cart"])) $_SESSION["cart"] = [];
         if(isset($_SESSION['cart'][$index])){
-            $_SESSION['cart'][$index]['quantity'] += $data['velocity'];
+
+            $newQuantity = $_SESSION['cart'][$index]['quantity'] + $data['velocity'];
+            if(!Product::ifQuantityInStock($_SESSION['cart'][$index]['product_variant_id'], $newQuantity)){
+                echo json_encode([false]);
+                return true;
+            }
+
+            $_SESSION['cart'][$index]['quantity'] = $newQuantity;
+            echo json_encode([true]);
+            return true;
         }
 
-        echo json_encode([true]);
+        echo json_encode([false]);
         return true;
     }
 

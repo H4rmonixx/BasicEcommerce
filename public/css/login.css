@@ -1,0 +1,24 @@
+.form-container > form{
+    background-color: rgb(240, 240, 240);
+}
+.form-container a{
+    text-decoration: none;
+    color: black;
+    font-weight: 300;
+}
+.form-container a:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+.form-container .form-check-input{
+    border: 1px solid black;
+}
+
+#login-callback, #register-callback{
+    text-align: right;
+    color: darkred;
+}
+
+main{
+    min-height: 60vh;
+}

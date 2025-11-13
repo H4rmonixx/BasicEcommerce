@@ -33,6 +33,8 @@ $router->post('/cart/change/{index}', [CartController::class, 'changeCart']);
 $router->post('/cart/load', [CartController::class, 'loadCart']);
 
 $router->post('/user/address/load', [UserController::class, 'getUserAddress']);
+$router->post('/user/login/try', [UserController::class, 'login']);
+$router->post('/user/register/try', [UserController::class, 'register']);
 
 $router->post('/order/new', [OrderController::class, 'placeOrder']);
 

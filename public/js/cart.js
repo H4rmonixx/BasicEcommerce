@@ -43,7 +43,15 @@ function refreshCart(){
                     return $.Deferred().reject("All products not loaded.").promise();
                 }
 
-                let $main = $("<div>", {class: "prod-in-cart row mb-3 gy-4 mb-5 gx-0"});
+                let $main = $("<div>", {class: "prod-in-cart position-relative row mb-4 gx-0"});
+
+                let $soldDiv = $("<div>", {
+                    class: "prod-in-cart-sold rounded d-none position-absolute start-0 top-0 w-100 h-100 justify-content-center align-items-center flex-column"
+                });
+                $soldDiv.append($("<p>", {class: "fs-4 fw-bold text-white", text: "SOLD OUT"}));
+                let $soldDivA = $("<button>", {type: "button", class: "btn btn-link text-white btn-sm", text: "Delete from cart"});
+                $soldDivA.on("click", ()=>{deleteFromCart(index)});
+                $soldDiv.append($soldDivA);
 
                 let $imgDiv = $("<div>", {class: "col-2 d-flex align-items-center"});
                 $imgDiv.append($("<img>", {class: "w-100 rounded p-2", src: "/assets/products/" + prod.photos[0], alt: "Product photo"}));
@@ -71,11 +79,17 @@ function refreshCart(){
                 $closeDiv.append($closeDivBtn);
                 $closeDivBtn.on("click", ()=>{deleteFromCart(index)});
 
+                $main.append($soldDiv);
                 $main.append($imgDiv);
                 $main.append($txtDiv);
                 $main.append($quantityDiv);
                 $main.append($priceDiv);
                 $main.append($closeDiv);
+
+                if(prod.variants[0].quantity < 1){
+                    $soldDiv.removeClass("d-none");
+                    $soldDiv.addClass("d-flex");
+                }
 
                 $root.append($main);
 
@@ -103,6 +117,7 @@ function calcValues(){
     let totalCartValue = 0;
     GlobalCartContent.forEach((variant, index) => {
         if(!variant.product) return;
+        if(variant.product.variants[0].quantity < 1) return;
         totalCartValue += parseFloat(variant.product.price) * variant.quantity;
     });
 
@@ -153,8 +168,10 @@ function changeQuantity(index, x){
     }).then((success) => {
         try{
             let json = JSON.parse(success);
-            refreshCart();
-            loadCartSize();
+            if(json[0]){
+                refreshCart();
+                loadCartSize();
+            }
         } catch (e) {
             return $.Deferred().reject("Error occurred while changing cart.").promise();
         }

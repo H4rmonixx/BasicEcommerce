@@ -153,15 +153,18 @@ function initPage(){
                     quantity: 1
                 })
             }).then((success) => {
-
-                if(success == "Success"){
-                    infobox_show("Product added to cart.", 4000, [8, 100, 48]);
+                try{
+                    let json = JSON.parse(success);
+                    if(json[0]){
+                        infobox_show("Product added to cart.", 4000, [8, 100, 48]);
+                        loadCartSize();
+                    } else {
+                        infobox_show("Product low on stock", 3000);
+                    }
                     $('input[name="size-select"]').prop("checked", false);
-                    loadCartSize();
-                } else {
-                    infobox_show("Error occured while adding product to cart!");
+                } catch(e) {
+                    return $.Deferred().reject("Error occurred when adding to cart...").promise();
                 }
-
             }).catch((error) => {
                 if(error.statusText)
                     infobox_show(error.statusText, 5000);

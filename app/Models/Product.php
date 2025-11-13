@@ -205,4 +205,25 @@ class Product {
         return $data;
     }
 
+    public static function updateVariantQuantity(int $variant_id, int $x) {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("UPDATE Product_Variant SET quantity = quantity + ? WHERE product_variant_id = ?");
+        $stmt->execute([$x, $variant_id]);
+
+        return true;
+    }
+
+    public static function ifQuantityInStock(int $variant_id, int $quantity){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT 1 FROM Product_Variant WHERE product_variant_id = ? AND quantity >= ?");
+        $stmt->execute([$variant_id, $quantity]);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if(!$data){
+            return false;
+        }
+
+        return true;
+    }
+
 }
