@@ -30,12 +30,35 @@ class OrderController {
             session_start();
             if(!isset($_SESSION['user'])) return false;
             if($userid != $_SESSION['user']['user_id']) return false;
-        }
+        } else return false;
 
         $view = file_get_contents(__DIR__ . '/../Views/summary.html');
 
         echo LayoutEngine::resolveLayout($view);
 
+        return true;
+    }
+
+    public function loadOrder(Request $request){
+
+        $id = $request->param("id");
+        if($id == null){
+            echo null;
+            return true;
+        }
+
+        if(!Order::ifExists($id)){
+            echo null;
+            return true;
+        }
+
+        $order = Order::getByID($id);
+        if($order == null){
+            echo null;
+            return true;
+        }
+
+        echo json_encode($order);
         return true;
     }
 

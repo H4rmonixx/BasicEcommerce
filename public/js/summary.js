@@ -1,48 +1,66 @@
-function ordersummary_page_init(){
-
-    server_request("GET", "php/get_cart.php", (result) => {
-       try{
-           let json = JSON.parse(result);
-           if(json.length === 0){
-               infobox_show_message("ERROR OCCURRED WHILE LOADING THE ORDER");
-               setTimeout(()=>{window.location.href="index.php"}, 1500);
-               return;
-           }
-
-           let root = document.getElementById("order-content-container");
-           json.forEach((product) => {
-               let maindiv = document.createElement("div");
-               maindiv.classList.add("d-flex", "mb-2", "flex-wrap");
-               let namediv = document.createElement("div");
-               namediv.classList.add("m-b-700", "pe-4");
-               namediv.textContent = product.name;
-               let sizediv = document.createElement("div");
-               sizediv.classList.add("pe-4");
-               sizediv.innerHTML = 'Size: <span style="text-transform: uppercase">'+product.size+'</span>';
-               let quantitydiv = document.createElement("div");
-               quantitydiv.classList.add("pe-4");
-               quantitydiv.textContent = product.quantity;
-               let pricediv = document.createElement("div");
-               pricediv.textContent = `${product.price * product.quantity} PLN`;
-
-               maindiv.appendChild(namediv);
-               maindiv.appendChild(sizediv);
-               maindiv.appendChild(quantitydiv);
-               maindiv.appendChild(pricediv);
-               root.appendChild(maindiv);
-           });
-
-           server_request("GET", "php/empty_cart.php", (result) => {
-                set_cart_size_indicators();
-           });
-
-       } catch (e) {
-            infobox_show_message("ERROR OCCURRED WHILE LOADING THE ORDER");
-            setTimeout(()=>{window.location.href="index.php"}, 1500);
-       }
-    });
-
-    document.getElementById("return-button").addEventListener("click", ()=>{
-        window.location.href = "index.php";
+function decodeIDFromURL(){
+    return new Promise((resolve, reject) => {
+        let path = $(location).prop("pathname");
+        let matches = path.match(/\/summary\/(?<id>[\d]+)/);
+        if(matches == null){
+            reject("Wrong order ID");
+            return;
+        }
+        if(matches.groups.id != undefined){
+            resolve(matches.groups.id);
+        }
+        reject("Wrong order ID");
     });
 }
+
+function loadSummary(id){
+    return $.ajax({
+        url: "/order/load/"+id,
+        type: "post"
+    }).then((success)=>{
+        try{
+            let json = JSON.parse(success);
+            $("#title").text("ORDER NO. " + json.order_id);
+            let $root = $("#order-content");
+            json.products.forEach((variant) => {
+                
+                $.ajax({
+                    url: "/product/load/variant/"+variant.product_variant_id,
+                    type: "post"
+                }).then((res)=>{
+                    try{
+                        let product = JSON.parse(res);
+                        let $main = $("<div>", {class: "row mb-2"});
+                        $main.append($("<div>", {class: "m-b-700 col-12", text: product.name}));
+                        $main.append($("<div>", {class: "col-4", html: `Size: <span style="text-transform: uppercase;">${product.variants[0].name}</span>`}));
+                        $main.append($("<div>", {class: "col-4", text: variant.quantity}));
+                        $main.append($("<div>", {class: "col-4", text: `${product.price * variant.quantity} PLN`}));
+                        $root.append($main);
+                    } catch(e) {
+                        return $.Deferred().reject("Error occured").promise();
+                    }
+                }).catch((error) => {
+                    if(error.statusText)
+                        infobox_show(error.statusText, 5000);
+                    else
+                        infobox_show(error, 5000)
+                });
+                
+            });
+        } catch (e) {
+            return $.Deferred().reject("Error occured").promise();
+        }
+    });
+}
+
+$(document).ready(()=>{
+    decodeIDFromURL().then(loadSummary).catch((error) => {
+        if(error.statusText)
+            infobox_show(error.statusText, 5000);
+        else
+            infobox_show(error, 5000)
+    });
+
+    loadCartSize();
+
+});

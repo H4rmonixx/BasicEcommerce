@@ -4,7 +4,7 @@ CREATE DATABASE ecommerce;
 USE ecommerce;
 
 -- Article
-CREATE TABLE Article (
+CREATE TABLE `Article` (
     article_id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(64) NOT NULL,
     public BIT(1) DEFAULT 1 NOT NULL,
@@ -12,50 +12,50 @@ CREATE TABLE Article (
 );
 
 -- Category
-CREATE TABLE Category (
+CREATE TABLE `Category` (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL
 );
 
 -- Product
-CREATE TABLE Product (
+CREATE TABLE `Product` (
     product_id INT AUTO_INCREMENT PRIMARY KEY,
     category_id INT NOT NULL,
     name VARCHAR(150) NOT NULL,
     description TEXT,
     price DECIMAL(10,2) NOT NULL,
     visible BIT(1) DEFAULT 1 NOT NULL,
-    FOREIGN KEY (category_id) REFERENCES Category(category_id) ON UPDATE CASCADE
+    FOREIGN KEY (category_id) REFERENCES `Category`(category_id) ON UPDATE CASCADE
 );
 
 -- Photo
-CREATE TABLE Photo (
+CREATE TABLE `Photo` (
     photo_id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT NOT NULL,
     filename VARCHAR(32) NOT NULL,
-    FOREIGN KEY (product_id) REFERENCES Product(product_id) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (product_id) REFERENCES `Product`(product_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Variant
-CREATE TABLE Variant (
+CREATE TABLE `Variant` (
     variant_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL
 );
 
 -- Product-Variant (relacja wiele-do-wielu między Product i Variant)
-CREATE TABLE Product_Variant (
+CREATE TABLE `Product_Variant` (
     product_variant_id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT NOT NULL,
     variant_id INT NOT NULL,
     quantity INT UNSIGNED NOT NULL DEFAULT 1,
     width INT UNSIGNED NOT NULL,
     height INT UNSIGNED NOT NULL,
-    FOREIGN KEY (product_id) REFERENCES Product(product_id) ON UPDATE CASCADE,
-    FOREIGN KEY (variant_id) REFERENCES Variant(variant_id) ON UPDATE CASCADE
+    FOREIGN KEY (product_id) REFERENCES `Product`(product_id) ON UPDATE CASCADE,
+    FOREIGN KEY (variant_id) REFERENCES `Variant`(variant_id) ON UPDATE CASCADE
 );
 
 -- User
-CREATE TABLE User (
+CREATE TABLE `User` (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     firstname VARCHAR(32) NOT NULL,
     lastname VARCHAR(32) NOT NULL,
@@ -78,34 +78,34 @@ CREATE TABLE `Order` (
     payu_order_id VARCHAR(64) DEFAULT NULL,
     payment_method ENUM('CASH', 'PAYU') NOT NULL DEFAULT 'CASH',
     status ENUM('PENDING', 'PAID', 'SHIPPED', "COMPLETED", 'CANCELED', 'FAILED') NOT NULL DEFAULT 'PENDING',
-    FOREIGN KEY (user_id) REFERENCES User(user_id) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES `User`(user_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Order-Detail (relacja między Order i Product-Variant)
-CREATE TABLE Order_Detail (
+CREATE TABLE `Order_Detail` (
     order_detail_id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,
     product_variant_id INT NOT NULL,
     quantity INT NOT NULL DEFAULT 1,
     FOREIGN KEY (order_id) REFERENCES `Order`(order_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (product_variant_id) REFERENCES Product_Variant(product_variant_id) ON UPDATE CASCADE
+    FOREIGN KEY (product_variant_id) REFERENCES `Product_Variant`(product_variant_id) ON UPDATE CASCADE
 );
 
 
 
-INSERT INTO Category (name) VALUES
+INSERT INTO `Category` (name) VALUES
 ('tops'),
 ('bottoms'),
 ('footwear'),
 ('accessories');
 
-INSERT INTO Product (category_id, name, description, price, visible) VALUES
+INSERT INTO `Product` (category_id, name, description, price, visible) VALUES
 (1, 'LOOP SPORTS ICON T-Shirt', 'Cotton T-shirt with round neck', 49.99, 1),
 (1, 'PLANET T-Shirt', 'Stylish blue denim jacket', 159.90, 1),
 (2, 'HALF-CUT WORN Denim', 'Dark blue slim fit jeans', 199.00, 1),
 (2, 'CARGO FLARED Pants', 'Casual cotton shorts', 129.00, 1);
 
-INSERT INTO Photo (product_id, filename) VALUES
+INSERT INTO `Photo` (product_id, filename) VALUES
 ("1", "tshirt-loopsports.png"),
 ("1", "tshirt-loopsports-2.png"),
 ("2", "tshirt-planetearth.png"),
@@ -115,14 +115,14 @@ INSERT INTO Photo (product_id, filename) VALUES
 ("4", "pants-cargoflared.png"),
 ("4", "pants-cargoflared-2.png");
 
-INSERT INTO Variant (name) VALUES
+INSERT INTO `Variant` (name) VALUES
 ('S'),
 ('M'),
 ('L'),
 ('XL'),
 ('One Size');
 
-INSERT INTO Product_Variant (product_id, variant_id, quantity, width, height) VALUES
+INSERT INTO `Product_Variant` (product_id, variant_id, quantity, width, height) VALUES
 (1, 1, 50, 40, 50),
 (1, 2, 80, 50, 60),
 (1, 3, 60, 60, 70),
@@ -131,7 +131,7 @@ INSERT INTO Product_Variant (product_id, variant_id, quantity, width, height) VA
 (4, 2, 70, 40, 98);
 
 -- Password test1234 for both
-INSERT INTO User (firstname, lastname, phone_number, email, password, address, building, city, post_code, country, type) VALUES
+INSERT INTO `User` (firstname, lastname, phone_number, email, password, address, building, city, post_code, country, type) VALUES
 ('Alice', 'Nowak', '+48123456789', 'alice@example.com', '$2y$10$PiWxhyQyGIC.H5rlPvbMDezj4CLlrwndFpwwuQt4U35rbeAE1dTty', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 'CUSTOMER'),
 ('Diana', 'Zielińska', '+48987654321', 'diana@example.com', '$2y$10$PiWxhyQyGIC.H5rlPvbMDezj4CLlrwndFpwwuQt4U35rbeAE1dTty', 'Forest', '5', 'Gdansk', '80-100', 'Polska', 'ADMIN');
 
@@ -140,13 +140,13 @@ INSERT INTO `Order` (user_id, date) VALUES
 (1, '2025-10-10 19:45:00'),
 (2, '2025-10-15 11:30:00');
 
-INSERT INTO Order_Detail (order_id, product_variant_id, quantity) VALUES
+INSERT INTO `Order_Detail` (order_id, product_variant_id, quantity) VALUES
 (1, 1, 2), 
 (1, 2, 1), 
 (2, 3, 1), 
 (2, 4, 2);
 
-INSERT INTO Article (title, public, content) VALUES
+INSERT INTO `Article` (title, public, content) VALUES
 ("How to read sizes?", 1,
 '<h1>How to Read Sizes in Our Store</h1><p>Every product in our store — whether it’s a T-shirt, a pair of pants, or footwear — is described using two simple measurements:<strong>Width</strong> and <strong>Height</strong>.  These values help you understand how the product fits and feels. Below you’ll find clear explanations for each type of item.</p><h2>Size System — Width and Height</h2><h3>1. T-Shirts</h3><p><strong>Width:</strong> measured flat across the chest area from one side seam to the other.This shows how wide the T-shirt is when laid flat. To estimate body circumference, multiply width × 2.  </p><p><strong>Height:</strong> measured vertically from the top of the shoulder (next to the collar down to the bottom edge of the shirt.</p><p><em>Example:</em> T-shirt (M): width 50 cm, height 72 cm.</p><h3>2. Pants</h3><p><strong>Width:</strong> measured flat across the waistband — from one side to the other.To estimate waist circumference, multiply width × 2.  Some models may also list width at the hips or thighs, as noted in the product description.</p><p><strong>Height:</strong> the full length of the pants.  For jeans and trousers, it’s usually the outer leg length (from the top of the waistband to the bottom of the leg).Sometimes we also list inner leg length (inseam) for clarity.</p><p><em>Example:</em> Pants (M): width 40 cm, height 102 cm.</p><h3>3. Footwear</h3><p><strong>Width:</strong> indicates how wide the shoe is across the ball of the foot — the broadest part. Narrower width means a snug fit, while larger width means a roomier fit.</p><p><strong>Height:</strong> the total height of the shoe from the sole to the top edge. For sneakers or low shoes, it’s from the ground to the ankle; for boots, it shows how tall the upper part is.</p><p><em>Example:</em> Sneakers (size 42): width 10.2 cm, height 9 cm. Boots (size 42): width 10.5 cm, height 28 cm.</p><h3>How to Measure Yourself</h3><ol><li>Lay a similar product flat and measure its width and height as described above.</li><li>Compare your results with our product size chart.</li><li>If you prefer a looser fit, add 2–6 cm of allowance to the width.</li></ol><h3>Quick Summary</h3><ul><li><strong>Width</strong> = flat measurement across the product (×2 ≈ body circumference).</li><li><strong>Height</strong> = total vertical length of the product.</li><li>Always check whether the listed height or width refers to outer or inner measurements (especially for pants and footwear).</li></ul>'),
 

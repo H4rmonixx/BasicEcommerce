@@ -10,7 +10,39 @@ use PDO;
 class Order {
     public $order_id;
     public $user_id;
+    public $date;
+    public $payu_order_id;
+    public $payment_method;
+    public $status;
+    public $products;
 
+    public static function getByID(int $order_id){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT * FROM `Order` WHERE order_id = ?");
+        $stmt->execute([$order_id]);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$data) {
+            return null;
+        }
+        $stmt->closeCursor();
+
+        $order = new self();
+        $order->order_id = $data['order_id'];
+        $order->user_id = $data['user_id'];
+        $order->date = $data['date'];
+        $order->payu_order_id = $data['payu_order_id'];
+        $order->payment_method = $data['payment_method'];
+        $order->status = $data['status'];
+        $order->products = [];
+        
+        $stmt = $pdo->prepare("SELECT product_variant_id, quantity FROM `Order_Detail` WHERE order_id = ?");
+        $stmt->execute([$order_id]);
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+            $order->products[] = $row;
+        }
+
+        return $order;
+    }
 
     public static function getUserID(int $order_id) {
         $pdo = Database::getConnection();

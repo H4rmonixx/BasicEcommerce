@@ -1,14 +1,7 @@
-#order-content-container{
+#order-content{
     background-color: rgb(230, 230, 230);
 }
 
-@media (width <= 500px){
-    #order-content-container > div > div:first-child{
-        width: 100%;
-    }
-}
-
-
 main{
-    min-height: 60vh;
+    min-height: 50vh;
 }

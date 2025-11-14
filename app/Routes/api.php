@@ -20,7 +20,6 @@ $router->post('/products/load', [ProductController::class, 'loadProducts']);
 $router->post('/product/load/{id}', [ProductController::class, 'loadProduct']);
 $router->post('/product/load/variant/{variantid}', [ProductController::class, 'loadProductByVariant']);
 $router->post('/products/pages', [ProductController::class, 'countPages']);
-
 $router->post('/categories/load', [ProductController::class, 'loadAllCategories']);
 $router->post('/sizes/load', [ProductController::class, 'loadAllSizes']);
 
@@ -37,5 +36,6 @@ $router->post('/user/login/try', [UserController::class, 'login']);
 $router->post('/user/register/try', [UserController::class, 'register']);
 
 $router->post('/order/new', [OrderController::class, 'placeOrder']);
+$router->post('/order/load/{id}', [OrderController::class, 'loadOrder']);
 
 return $router;
