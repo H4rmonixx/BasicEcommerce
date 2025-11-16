@@ -121,7 +121,8 @@ function refreshList(){
             let json = JSON.parse(success);
             return json;
         } catch(e){
-            return $.Deferred().reject("Error occurred while loading items...").promise();
+            console.log("Unable to load products");
+            return $.Deferred().reject("Error occurred").promise();
         }
     })
     .then(loadProductTiles);
@@ -137,7 +138,8 @@ function loadCategories(){
         try{
             json = JSON.parse(success);
         } catch(e){
-            return $.Deferred().reject("Error occurred while loading categories...").promise();
+            console.log("Unable to load categories");
+            return $.Deferred().reject("Error occurred").promise();
         }
         let $root = $("#filter-category-container");
         json.forEach((category) => {
@@ -172,7 +174,8 @@ function loadSizes(){
         try{
             json = JSON.parse(success);
         } catch(e){
-            return $.Deferred().reject("Error occurred while loading sizes...").promise();
+            console.log("Unable to load sizes");
+            return $.Deferred().reject("Error occurred").promise();
         }
         let $root = $(".filter-size-grid");
         json.forEach((size) => {
@@ -206,12 +209,14 @@ function loadPagesCount(){
         try{
             let json = JSON.parse(success);
             if(json == null){
-                return $.Deferred().reject("Error occurred while loading pages...").promise();
+                console.log("Unable to load pages count");
+                return $.Deferred().reject("Error occurred").promise();
             }
             pagesCount = json.pagesCount;
             setPagesButtons();
         } catch(e){
-            return $.Deferred().reject("Error occurred while loading pages...").promise();
+            console.log("Unable to load pages count");
+            return $.Deferred().reject("Error occurred").promise();
         }
     });
 }

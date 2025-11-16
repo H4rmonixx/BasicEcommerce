@@ -13,7 +13,9 @@ class UserController {
     
     public function showLogin(Request $request){
         
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
         unset($_SESSION['user']);
 
@@ -28,10 +30,24 @@ class UserController {
 
         return true;
     }
+
+    public function showAccount(Request $request){
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $view = file_get_contents(__DIR__ . '/../Views/account.html');
+
+        echo LayoutEngine::resolveLayout($view);
+
+        return true;
+    }
     
     public function getUserAddress(Request $request) {
 
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
         if(!isset($_SESSION['user'])) {
             echo null;
@@ -46,7 +62,9 @@ class UserController {
 
     public function login(Request $request){
 
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
         $data = $request->json();
         if($data == null){
@@ -69,7 +87,9 @@ class UserController {
 
     public function register(Request $request){
 
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
         $data = $request->json();
         if($data == null){
@@ -87,6 +107,15 @@ class UserController {
         $_SESSION['user'] = [];
         $_SESSION['user']['user_id'] = $userid;
 
+        echo json_encode([true]);
+        return true;
+    }
+
+    public function logout(Request $request){
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        unset($_SESSION['user']);
         echo json_encode([true]);
         return true;
     }

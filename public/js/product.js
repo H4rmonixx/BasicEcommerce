@@ -25,7 +25,8 @@ function loadProduct(id){
             product_data = json;
             return json;
         } catch(e) {
-            return $.Deferred().reject("Error occurred while loading product...").promise();
+            console.log("Unable to load product");
+            return $.Deferred().reject("Error occurred").promise();
         }
     });
 }
@@ -104,7 +105,8 @@ function loadRelatedProducts(product){
             let json = JSON.parse(success);
             return json;
         } catch(e){
-            return $.Deferred().reject("Error occurred while loading related items...").promise();
+            console.log("Unable to load related products");
+            return $.Deferred().reject("Error occurred").promise();
         }
     })
     .then(loadProductTiles)
@@ -163,7 +165,8 @@ function initPage(){
                     }
                     $('input[name="size-select"]').prop("checked", false);
                 } catch(e) {
-                    return $.Deferred().reject("Error occurred when adding to cart...").promise();
+                    console.log("Unable to add to cart");
+                    return $.Deferred().reject("Error occurred").promise();
                 }
             }).catch((error) => {
                 if(error.statusText)

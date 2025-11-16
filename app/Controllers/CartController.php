@@ -22,7 +22,9 @@ class CartController {
     
     public function getSize(Request $request) {
 
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
         if(!isset($_SESSION["cart"])) $_SESSION["cart"] = [];
 
@@ -39,7 +41,9 @@ class CartController {
 
     public function addToCart(Request $request) {
         
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
         $product = $request->json();
         if($product == null){
@@ -74,7 +78,9 @@ class CartController {
 
     public function deleteFromCart(Request $request){
 
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
         $index = $request->param("index");
         if($index == null){
@@ -94,7 +100,9 @@ class CartController {
 
     public function changeCart(Request $request){
 
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
         $index = $request->param("index");
         if($index == null){
@@ -128,7 +136,9 @@ class CartController {
 
     public function loadCart(Request $request) {
         
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
         if(!isset($_SESSION["cart"])) $_SESSION["cart"] = [];
         $products_in_cart = $_SESSION["cart"];

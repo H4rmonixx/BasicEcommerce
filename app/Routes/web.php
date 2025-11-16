@@ -7,6 +7,7 @@ require_once __DIR__ . '/../Controllers/ArticleController.php';
 require_once __DIR__ . '/../Controllers/CartController.php';
 require_once __DIR__ . '/../Controllers/OrderController.php';
 require_once __DIR__ . '/../Controllers/UserController.php';
+require_once __DIR__ . '/../Middleware/UserAuthMiddleware.php';
 
 use App\Core\Router;
 use App\Controllers\HomeController;
@@ -15,6 +16,7 @@ use App\Controllers\ArticleController;
 use App\Controllers\CartController;
 use App\Controllers\OrderController;
 use App\Controllers\UserController;
+use App\Middleware\UserAuthMiddleware;
 
 $router = new Router();
 
@@ -35,5 +37,6 @@ $router->get('/cart', [CartController::class, 'showCart']);
 $router->get('/summary/{orderid}', [OrderController::class, 'showSummary']);
 
 $router->get('/login', [UserController::class, 'showLogin']);
+$router->get('/account', [UserController::class, 'showAccount'], [UserAuthMiddleware::class]);
 
 return $router;

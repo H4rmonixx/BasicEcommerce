@@ -7,6 +7,6 @@ function loadCartSize(){
         $indicators.eq(0).text(success);
         $indicators.eq(1).text(success);
     }).fail(()=>{
-        infobox_show("Cannot load cart size...");
+        infobox_show("Cannot load cart size");
     });
 }

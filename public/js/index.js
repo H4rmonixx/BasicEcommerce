@@ -18,7 +18,8 @@ $(document).ready(()=>{
             let json = JSON.parse(success);
             return json;
         } catch(e){
-            return $.Deferred().reject("Error occurred while loading items...").promise();
+            console.log("Unable to load items");
+            return $.Deferred().reject("Error occurred").promise();
         }
     })
     .then(loadProductTiles)

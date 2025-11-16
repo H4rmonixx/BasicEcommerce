@@ -12,7 +12,8 @@ function refreshCart(){
             GlobalCartContent = json;
             return json;
         } catch (e) {
-            return $.Deferred().reject("Error occurred while loading cart...").promise();
+            console.log("Unable to load cart");
+            return $.Deferred().reject("Error occurred").promise();
         }
         
     }).then((cart) => {
@@ -142,7 +143,8 @@ function deleteFromCart(index){
             refreshCart();
             loadCartSize();
         } catch (e) {
-            return $.Deferred().reject("Error occurred while deleting from cart.").promise();
+            console.log("Unable to delete from cart");
+            return $.Deferred().reject("Error occurred").promise();
         }
     }).catch((error) => {
         if(error.statusText)
@@ -173,7 +175,8 @@ function changeQuantity(index, x){
                 loadCartSize();
             }
         } catch (e) {
-            return $.Deferred().reject("Error occurred while changing cart.").promise();
+            console.log("Unable to change product quantity in cart");
+            return $.Deferred().reject("Error occurred").promise();
         }
     }).catch((error) => {
         if(error.statusText)
@@ -199,7 +202,7 @@ function getUserAdress(){
             $("#user-stage").addClass("d-none");
             $("#shipment-stage").removeClass("d-none");
         } catch (e){
-            // There is no logged user
+            // Guest, no action
         }
     });
 }
@@ -249,10 +252,11 @@ function initPage(){
                     try{
                         let json = JSON.parse(success);
                         if(json.payment == "CASH"){
-                            alert("kurwa dziala");
+                            alert("order placed");
                         }
                     } catch (e) {
-                        return $.Deferred().reject("Error with placing order").promise();
+                        console.log("Unable to place order");
+                        return $.Deferred().reject("Error occured").promise();
                     }
                 }).catch((error) => {
                     if(error.statusText)

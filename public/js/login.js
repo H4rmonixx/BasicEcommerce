@@ -15,7 +15,7 @@ $(document).ready(()=>{
         e.preventDefault();
 
         $.ajax({
-            url: "/user/login/try",
+            url: "/user/login",
             type: "post",
             data: JSON.stringify({
                 email: $("#login-email").val(),
@@ -24,11 +24,12 @@ $(document).ready(()=>{
         }).then((success) => {
             try{
                 let json = JSON.parse(success);
-                if(json[0]) window.location.replace("/account");
+                if(json[0]) window.location.replace("/");
                 else{
                     $("#login-callback").text("Wrong email or password!");
                 }
             } catch (e) {
+                console.log("Unable to login");
                 return $.Deferred().reject("Error occurred.").promise();
             }
         }).catch((error) => {
@@ -75,7 +76,7 @@ $(document).ready(()=>{
         }
 
         $.ajax({
-            url: "/user/register/try",
+            url: "/user/register",
             type: "post",
             data: JSON.stringify(data)
         }).then((success) => {
@@ -86,7 +87,7 @@ $(document).ready(()=>{
                     $("#register-callback").text(json[1]);
                 }
             } catch (e) {
-                console.log(success, e);
+                console.log("Unable to register");
                 return $.Deferred().reject("Error occurred.").promise();
             }
         }).catch((error) => {

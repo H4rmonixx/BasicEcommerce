@@ -1,0 +1,97 @@
+@section("title")
+Your Account
+@endsection
+
+@section("styles")
+<link rel="stylesheet" href="/css/account.css">
+@endsection
+
+@section("scripts")
+<script src="/js/account.js"></script>
+<script src="/js/loadCartSize.js"></script>
+<script src="/js/infobox.js"></script>
+@endsection
+
+@section("content")
+<main class="container-xxl mb-5 pb-4 mt-4 pe-xxl-0 ps-xxl-0 pe-4 ps-4">
+    <h1 class="mb-4">Account Settings</h1>
+    <div class="row">
+        <div class="col-lg-4 mb-3">
+            <div class="list-group" id="list-tab" role="tablist">
+                <button class="list-group-item list-group-item-action active" data-bs-toggle="list" data-bs-target="#list-account" type="button" role="tab" >Account</button>
+                <button class="list-group-item list-group-item-action" data-bs-toggle="list" data-bs-target="#list-security" type="button" role="tab" >Security</button>
+                <button class="list-group-item list-group-item-action" data-bs-toggle="list" data-bs-target="#list-orders" type="button" role="tab">Orders</button>
+                <button class="list-group-item list-group-item-action" id="button-logout">Logout</button>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="tab-content">
+
+                <div class="tab-pane show active" id="list-account" role="tabpanel">
+                    <div class="card p-4">
+                        <div class="fs-5 fw-bold mb-2">Personal info</div>
+                        <div class="row gx-2 gy-2 mb-2">
+                            <div class="col-md-6"><input type="text" class="form-control form-control-sm" placeholder="FIRSTNAME" id="input-fname"></div>
+                            <div class="col-md-6"><input type="text" class="form-control form-control-sm" placeholder="LASTNAME" id="input-lname"></div>
+                        </div>
+                        <div class="row gx-2 gy-2 mb-4">
+                            <div class="col-md-7"><input type="email" class="form-control form-control-sm" placeholder="EMAIL" id="input-email"></div>
+                            <div class="col-md-5"><input type="tel" class="form-control form-control-sm" placeholder="PHONE" id="input-tel"></div>
+                        </div>
+                        <div class="fs-5 fw-bold mb-2">Shipment</div>
+                        <div class="row gx-2 gy-2 mb-2">
+                            <div class="col-md-6"><input type="text" class="form-control form-control-sm" placeholder="POST CODE" id="input-postcode"></div>
+                            <div class="col-md-6"><input type="text" class="form-control form-control-sm" placeholder="CITY" id="input-city"></div>
+                        </div>
+                        <div class="row gx-2 gy-2 mb-2">
+                            <div class="col-md-8"><input type="text" class="form-control form-control-sm" placeholder="ADDRESS" id="input-address"></div>
+                            <div class="col-md-4"><input type="text" class="form-control form-control-sm" placeholder="BUILDING" id="input-building"></div>
+                        </div>
+                        <div class="row gx-2 gy-2 mb-4">
+                            <div class="col-12"><input type="text" class="form-control form-control-sm" placeholder="COUNTRY" id="input-country"></div>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-dark" id="button-info-save">Save</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="list-security" role="tabpanel">
+                    <div class="card p-4">
+                        <div class="mb-2 row">
+                            <label for="input-password-old" class="col-sm-4 col-form-label">Current password</label>
+                            <div class="col-sm-8">
+                                <input type="password" class="form-control form-control-sm" id="input-password-old">
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="input-password-new" class="col-sm-4 col-form-label">New password</label>
+                            <div class="col-sm-8">
+                                <input type="password" class="form-control form-control-sm" id="input-password-new">
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-dark">Change password</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="list-orders" role="tabpanel">
+                    <div class="card p-4">
+                        <table class="table" id="order-table">
+                            <tr><th>Order ID</th><th>Date</th><th></th></tr>
+                            <tr><td>1</td><td>test</td><td><button class="btn btn-link button-details">Details</button></td></tr>
+                            <tr class="d-none"><td colspan="3">
+                                <div>
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate quis iusto quos. Cupiditate, quibusdam quae voluptatem qui, debitis officiis aliquam incidunt animi, totam sint reprehenderit quia perspiciatis. Labore, unde id!
+                                </div>
+                            </td></tr>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+@endsection

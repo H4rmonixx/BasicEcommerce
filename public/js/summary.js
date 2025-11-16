@@ -37,6 +37,7 @@ function loadSummary(id){
                         $main.append($("<div>", {class: "col-4", text: `${product.price * variant.quantity} PLN`}));
                         $root.append($main);
                     } catch(e) {
+                        console.log("Unable to load product");
                         return $.Deferred().reject("Error occured").promise();
                     }
                 }).catch((error) => {
@@ -48,6 +49,7 @@ function loadSummary(id){
                 
             });
         } catch (e) {
+            console.log("Unable to load order");
             return $.Deferred().reject("Error occured").promise();
         }
     });

@@ -27,7 +27,9 @@ class OrderController {
 
         $userid = Order::getUserID($id);
         if($userid != null){
-            session_start();
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
             if(!isset($_SESSION['user'])) return false;
             if($userid != $_SESSION['user']['user_id']) return false;
         } else return false;
@@ -72,7 +74,9 @@ class OrderController {
 
         //$config = __DIR__ . '../Core/config.php';
         
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
         if(!isset($_SESSION['cart']) && count($_SESSION['cart']) == 0){
             echo null;

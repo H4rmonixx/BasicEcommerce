@@ -23,7 +23,8 @@ function loadArticle(id){
             let json = JSON.parse(success);
             return json;
         } catch(e){
-            return $.Deferred().reject("Error occurred while loading article...").promise();
+            console.log("Unable to load article");
+            return $.Deferred().reject("Error occurred").promise();
         }
     });
 }
