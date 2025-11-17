@@ -6,3 +6,6 @@ button.active{
 #button-logout{
     color: red !important;
 }
+.button-details:hover{
+    cursor: pointer;
+}

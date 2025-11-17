@@ -28,14 +28,75 @@ function loadUserOrders(){
         try{
             let json = JSON.parse(success);
             
-            let $root = $("#order-table");
+            let $root = $("#order-table-tbody");
             json.forEach((order) => {
                 let $maintr = $("<tr>");
                 $maintr.append($("<td>", {text: order.order_id}));
                 $maintr.append($("<td>", {text: order.date}));
-                $maintr.append($("<td>", {html: '<button class="btn btn-link button-details">Details</button>'}));
+                $maintr.append($("<td>", {html: '<a class="link-primary button-details">Details</a>'}));
+                let $detailtr = $("<tr>", {class: "d-none"});
+                let $detailtd = $("<td>", {colspan: 3})
+                let $detaildiv = $("<div>", {class: "row mb-4"});
 
+                let $detaildivtop = $("<div>", {class: "col-12 mb-2"});
+                let $prodlist = $("<table>", {class: "table"});
+                $prodlist.append($("<thead>", {html: '<tr><th>Name</th><th class="d-none d-md-table-cell">Size</th><th class="d-none d-md-table-cell">Price</th><th>Quantity</th><th>Value</th></tr>'}))
+                let $prodlistbody = $("<tbody>");
+                $prodlist.append($prodlistbody);
+
+                let productsPrice = 0;
+                let $detaildivleft = $("<div>", {class: "col-md-6"});
+                $detaildivleft.append($("<div>", {html: `<span class="fw-bold">Status: </span> ${order.status}`}));
+                $detaildivleft.append($("<div>", {html: `<span class="fw-bold">Payment: </span> ${order.payment_method}`}))
+
+                let $detaildivright = $("<div>", {class: "col-md-6"});
+                let $productsPriceDiv = $("<div>", {class: "text-md-end"});
+                let $shipmentDiv = $("<div>", {class: "text-md-end", html: `<span class="fw-bold">Shipment: </span> ${order.shipping_price} PLN`});
+                let $totalPriceDiv = $("<div>", {class: "text-md-end"});
+                $detaildivright.append($productsPriceDiv);
+                $detaildivright.append($shipmentDiv);
+                $detaildivright.append($totalPriceDiv);
+
+                $detaildivtop.append($prodlist);
+                $detaildiv.append($detaildivtop);
+                $detaildiv.append($detaildivleft);
+                $detaildiv.append($detaildivright);
+                $detailtd.append($detaildiv);
+                $detailtr.append($detailtd);
                 $root.append($maintr);
+                $root.append($detailtr);
+
+                order.products.forEach((variant) => {
+
+                    $.ajax({
+                        url: "/product/load/variant/"+variant.product_variant_id,
+                        type: "post"
+                    }).then((success) => {
+                        try{
+                            let json = JSON.parse(success);
+                            let $tmp = $("<tr>");
+                            $tmp.append($("<td>", {text: json.name, class: "fw-bold"}));
+                            $tmp.append($("<td>", {text: json.variants[0].name, class: "d-none d-md-table-cell"}));
+                            $tmp.append($("<td>", {text: json.price + " PLN", class: "d-none d-md-table-cell"}));
+                            $tmp.append($("<td>", {text: variant.quantity + "x"}));
+                            $tmp.append($("<td>", {text: (variant.quantity * json.price) + " PLN"}));
+                            $prodlistbody.append($tmp);
+                            productsPrice += (variant.quantity * json.price);
+                            $productsPriceDiv.html(`<span class="fw-bold">Products price: </span> ${productsPrice} PLN`);
+                            $totalPriceDiv.html(`<span class="fw-bold">Total price: </span> ${productsPrice+parseFloat(order.shipping_price)} PLN`);
+                        } catch(e) {
+                            console.log("Unable to load product");
+                            return $.Deferred().reject("Error occurred").promise();
+                        }
+                    }).catch((error)=>{
+                        if(error.statusText)
+                            infobox_show(error.statusText, 5000);
+                        else
+                            infobox_show(error, 5000)
+                    });
+
+                });
+
             });
 
         } catch (e) {
@@ -47,7 +108,13 @@ function loadUserOrders(){
 
 $(document).ready(()=>{
     
-    loadUserData().then(loadUserOrders).catch((error)=>{
+    loadUserData().then(loadUserOrders).then(()=>{
+
+        $(".button-details").on("click", function() {
+            $(this).closest("tr").next().toggleClass("d-none");
+        });
+
+    }).catch((error)=>{
         if(error.statusText)
             infobox_show(error.statusText, 5000);
         else
@@ -171,10 +238,6 @@ $(document).ready(()=>{
                 infobox_show(error, 5000)
         });
 
-    });
-
-    $(".button-details").on("click", function() {
-        $(this).closest("tr").next().toggleClass("d-none");
     });
 
 })

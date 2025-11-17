@@ -14,6 +14,7 @@ class User {
     public $email;
     public $phone_number;
     public $address;
+    public $building;
     public $city;
     public $post_code;
     public $country;

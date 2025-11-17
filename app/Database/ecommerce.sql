@@ -75,6 +75,12 @@ CREATE TABLE `Order` (
     order_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    address VARCHAR(64) NOT NULL,
+    building VARCHAR(6) NOT NULL,
+    city VARCHAR(32) NOT NULL,
+    post_code VARCHAR(20) NOT NULL,
+    country VARCHAR(64) NOT NULL,
+    shipping_price DECIMAL(10,2) NOT NULL,
     payu_order_id VARCHAR(64) DEFAULT NULL,
     payment_method ENUM('CASH', 'PAYU') NOT NULL DEFAULT 'CASH',
     status ENUM('PENDING', 'PAID', 'SHIPPED', "COMPLETED", 'CANCELED', 'FAILED') NOT NULL DEFAULT 'PENDING',
@@ -135,10 +141,10 @@ INSERT INTO `User` (firstname, lastname, phone_number, email, password, address,
 ('Alice', 'Nowak', '+48123456789', 'alice@example.com', '$2y$10$PiWxhyQyGIC.H5rlPvbMDezj4CLlrwndFpwwuQt4U35rbeAE1dTty', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 'CUSTOMER'),
 ('Diana', 'Zielińska', '+48987654321', 'diana@example.com', '$2y$10$PiWxhyQyGIC.H5rlPvbMDezj4CLlrwndFpwwuQt4U35rbeAE1dTty', 'Forest', '5', 'Gdansk', '80-100', 'Polska', 'ADMIN');
 
-INSERT INTO `Order` (user_id, date) VALUES
-(1, '2025-10-01 14:23:00'),
-(1, '2025-10-10 19:45:00'),
-(2, '2025-10-15 11:30:00');
+INSERT INTO `Order` (user_id, date, address, building, city, post_code, country, shipping_price) VALUES
+(1, '2025-10-01 14:23:00', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 22.0),
+(1, '2025-10-10 19:45:00', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 22.0),
+(2, '2025-10-15 11:30:00', 'Forest', '5', 'Gdansk', '80-100', 'Polska', 22.0);
 
 INSERT INTO `Order_Detail` (order_id, product_variant_id, quantity) VALUES
 (1, 1, 2), 

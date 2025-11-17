@@ -11,6 +11,12 @@ class Order {
     public $order_id;
     public $user_id;
     public $date;
+    public $address;
+    public $building;
+    public $city;
+    public $post_code;
+    public $country;
+    public $shipping_price;
     public $payu_order_id;
     public $payment_method;
     public $status;
@@ -30,6 +36,12 @@ class Order {
         $order->order_id = $data['order_id'];
         $order->user_id = $data['user_id'];
         $order->date = $data['date'];
+        $order->address = $data['address'];
+        $order->building = $data['building'];
+        $order->city = $data['city'];
+        $order->post_code = $data['post_code'];
+        $order->country = $data['country'];
+        $order->shipping_price = $data['shipping_price'];
         $order->payu_order_id = $data['payu_order_id'];
         $order->payment_method = $data['payment_method'];
         $order->status = $data['status'];
@@ -59,7 +71,7 @@ class Order {
 
     public static function getUserOrders($user_id){
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare("SELECT order_id FROM `Order` WHERE user_id = ?");
+        $stmt = $pdo->prepare("SELECT order_id FROM `Order` WHERE user_id = ? ORDER BY date DESC");
         $stmt->execute([$user_id]);
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
