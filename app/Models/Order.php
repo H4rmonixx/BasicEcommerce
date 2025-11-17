@@ -16,7 +16,7 @@ class Order {
     public $status;
     public $products;
 
-    public static function getByID(int $order_id){
+    public static function getByID($order_id){
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare("SELECT * FROM `Order` WHERE order_id = ?");
         $stmt->execute([$order_id]);
@@ -44,7 +44,7 @@ class Order {
         return $order;
     }
 
-    public static function getUserID(int $order_id) {
+    public static function getUserID($order_id) {
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare("SELECT user_id FROM `Order` WHERE order_id = ?");
         $stmt->execute([$order_id]);
@@ -55,6 +55,25 @@ class Order {
         }
 
         return $data['user_id'];
+    }
+
+    public static function getUserOrders($user_id){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT order_id FROM `Order` WHERE user_id = ?");
+        $stmt->execute([$user_id]);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if(!$result || empty($result)){
+            return null;
+        }
+
+        $orders = [];
+        foreach($result as $orderID){
+            $t = self::getByID($orderID['order_id']);
+            if($t != null) array_push($orders, $t);
+        }
+
+        return $orders;
     }
 
     public static function ifExists(int $order_id) {

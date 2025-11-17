@@ -37,6 +37,7 @@ $router->post('/user/register', [UserController::class, 'register']);
 $router->post('/user/logout', [UserController::class, 'logout']);
 $router->post('/user/update/data', [UserController::class, 'updateUserData']);
 $router->post('/user/update/password', [UserController::class, 'updateUserPassword']);
+$router->post('/user/orders/load', [UserController::class, 'loadUserOrders']);
 
 $router->post('/order/new', [OrderController::class, 'placeOrder']);
 $router->post('/order/load/{id}', [OrderController::class, 'loadOrder']);

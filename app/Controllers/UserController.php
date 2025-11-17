@@ -5,9 +5,11 @@ namespace App\Controllers;
 require_once __DIR__ . '/../Core/Request.php';
 require_once __DIR__ . '/../Core/LayoutEngine.php';
 require_once __DIR__ . '/../Models/User.php';
+require_once __DIR__ . '/../Models/Order.php';
 use App\Core\Request;
 use App\Core\LayoutEngine;
 use App\Models\User;
+use App\Models\Order;
 
 class UserController {
     
@@ -60,6 +62,23 @@ class UserController {
         return true;
     }
 
+    public function loadUserOrders(Request $request){
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if(!isset($_SESSION['user'])) {
+            echo null;
+            return true;
+        }
+
+        $orders = Order::getUserOrders($_SESSION['user']['user_id']);
+        echo json_encode($orders);
+
+        return true;
+    }
+
     public function updateUserData(Request $request) {
 
         if (session_status() === PHP_SESSION_NONE) {
@@ -78,12 +97,8 @@ class UserController {
         }
 
         $result = User::updateUserData($_SESSION['user']['user_id'], $data);
-        if($result == null){
-            echo null;
-            return true;
-        }
-        
-        echo json_encode([$result]);
+        echo json_encode($result);
+
         return true;
     }
 
@@ -105,12 +120,8 @@ class UserController {
         }
 
         $result = User::updateUserPassword($_SESSION['user']['user_id'], $data);
-        if($result == null){
-            echo null;
-            return true;
-        }
+        echo json_encode($result);
 
-        echo json_encode([$result]);
         return true;
     }
 

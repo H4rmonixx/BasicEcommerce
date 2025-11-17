@@ -68,7 +68,7 @@ class User {
 
         if($affected == 0) return null;
         
-        return true;
+        return [true];
     }
 
     public static function updateUserPassword($id, $data){
@@ -83,7 +83,7 @@ class User {
         }
 
         if(!password_verify($data['password_old'], $user['password'])){
-            return false;
+            return [false];
         }
 
         $stmt = $pdo->prepare("UPDATE User SET password = ? WHERE user_id = ?");
@@ -92,7 +92,7 @@ class User {
 
         if($affected == 0) return null;
         
-        return true;
+        return [true];
     }
 
     public static function createGuest($data){

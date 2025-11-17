@@ -20,10 +20,34 @@ function loadUserData(){
     });
 }
 
+function loadUserOrders(){
+    return $.ajax({
+        url: "/user/orders/load",
+        type: "post"
+    }).then((success) => {
+        try{
+            let json = JSON.parse(success);
+            
+            let $root = $("#order-table");
+            json.forEach((order) => {
+                let $maintr = $("<tr>");
+                $maintr.append($("<td>", {text: order.order_id}));
+                $maintr.append($("<td>", {text: order.date}));
+                $maintr.append($("<td>", {html: '<button class="btn btn-link button-details">Details</button>'}));
+
+                $root.append($maintr);
+            });
+
+        } catch (e) {
+            console.log("Unable to load orders");
+            return $.Deferred().reject("Error occurred").promise();
+        }
+    });
+}
 
 $(document).ready(()=>{
     
-    loadUserData().catch((error)=>{
+    loadUserData().then(loadUserOrders).catch((error)=>{
         if(error.statusText)
             infobox_show(error.statusText, 5000);
         else
@@ -97,6 +121,46 @@ $(document).ready(()=>{
                 }
             } catch (e) {
                 console.log("Unable to edit data");
+                return $.Deferred().reject("Error occurred").promise();
+            }
+
+        }).catch((error)=>{
+            if(error.statusText)
+                infobox_show(error.statusText, 5000);
+            else
+                infobox_show(error, 5000)
+        });
+
+    });
+
+    $("#list-security-form").on("submit", function(e){
+        e.preventDefault();
+
+        let data = {
+            password_old: $("#input-password-old").val(),
+            password_new: $("#input-password-new1").val(),
+            password_repeated: $("#input-password-new2").val()
+        };
+
+        if(data.password_new != data.password_repeated){
+            infobox_show("New passwords are not the same", 4000);
+            return;
+        }
+
+        $.ajax({
+            url: "/user/update/password",
+            type: "post",
+            data: JSON.stringify(data)
+        }).then((success) => {
+            try{
+                let json = JSON.parse(success);
+                if(json[0]){
+                    infobox_show("Password updated", 4000, [8, 100, 48]);
+                } else {
+                    return $.Deferred().reject("Wrong current password").promise();
+                }
+            } catch (e) {
+                console.log("Unable to edit password");
                 return $.Deferred().reject("Error occurred").promise();
             }
 
