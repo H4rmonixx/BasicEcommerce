@@ -11,15 +11,18 @@ class User {
     public $user_id;
     public $firstname;
     public $lastname;
+    public $email;
+    public $phone_number;
     public $address;
     public $city;
     public $post_code;
     public $country;
+    public $type;
 
 
-    public static function getUserAddress(int $id) {
+    public static function getByID(int $id) {
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare("SELECT address, building, city, post_code, country FROM User WHERE user_id = ?");
+        $stmt = $pdo->prepare("SELECT * FROM User WHERE user_id = ?");
         $stmt->execute([$id]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -28,13 +31,68 @@ class User {
         }
 
         $user = new self();
+        $user->user_id = $data['user_id'];
+        $user->firstname = $data['firstname'];
+        $user->lastname = $data['lastname'];
+        $user->email = $data['email'];
+        $user->phone_number = $data['phone_number'];
         $user->address = $data['address'];
         $user->building = $data['building'];
         $user->city = $data['city'];
         $user->post_code = $data['post_code'];
         $user->country = $data['country'];
+        $user->type = $data['type'];
 
         return $user;
+    }
+
+    public static function updateUserData($id, $data){
+        $updateClause = "";
+        $valuesList = [];
+        $index = 1;
+        foreach($data as $key => $value){
+            $updateClause .= $key." = ?";
+            if($index < count($data)) $updateClause .= ", ";
+            else $updateClause .= " ";
+            $index++;
+            array_push($valuesList, $value);
+        }
+        array_push($valuesList, $id);
+
+        $sql = "UPDATE User SET $updateClause WHERE user_id = ?";
+
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($valuesList);
+        $affected = $stmt->rowCount();
+
+        if($affected == 0) return null;
+        
+        return true;
+    }
+
+    public static function updateUserPassword($id, $data){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT password FROM User WHERE user_id = ?");
+        $stmt->execute([$id]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        if (!$user) {
+            return null;
+        }
+
+        if(!password_verify($data['password_old'], $user['password'])){
+            return false;
+        }
+
+        $stmt = $pdo->prepare("UPDATE User SET password = ? WHERE user_id = ?");
+        $stmt->execute([$data['password_new'], $id]);
+        $affected = $stmt->rowCount();
+
+        if($affected == 0) return null;
+        
+        return true;
     }
 
     public static function createGuest($data){

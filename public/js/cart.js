@@ -189,7 +189,7 @@ function changeQuantity(index, x){
 
 function getUserAdress(){
     return $.ajax({
-        url: "/user/address/load",
+        url: "/user/load",
         method: "post"
     }).then((success) => {
         try{

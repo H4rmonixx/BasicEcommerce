@@ -31,10 +31,12 @@ $router->post('/cart/delete/{index}', [CartController::class, 'deleteFromCart'])
 $router->post('/cart/change/{index}', [CartController::class, 'changeCart']);
 $router->post('/cart/load', [CartController::class, 'loadCart']);
 
-$router->post('/user/address/load', [UserController::class, 'getUserAddress']);
+$router->post('/user/load', [UserController::class, 'loadUser']);
 $router->post('/user/login', [UserController::class, 'login']);
 $router->post('/user/register', [UserController::class, 'register']);
 $router->post('/user/logout', [UserController::class, 'logout']);
+$router->post('/user/update/data', [UserController::class, 'updateUserData']);
+$router->post('/user/update/password', [UserController::class, 'updateUserPassword']);
 
 $router->post('/order/new', [OrderController::class, 'placeOrder']);
 $router->post('/order/load/{id}', [OrderController::class, 'loadOrder']);

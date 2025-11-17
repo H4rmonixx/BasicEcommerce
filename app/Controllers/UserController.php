@@ -43,7 +43,7 @@ class UserController {
         return true;
     }
     
-    public function getUserAddress(Request $request) {
+    public function loadUser(Request $request) {
 
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -54,9 +54,63 @@ class UserController {
             return true;
         }
 
-        $user = User::getUserAddress($_SESSION['user']['user_id']);
+        $user = User::getByID($_SESSION['user']['user_id']);
         echo json_encode($user);
 
+        return true;
+    }
+
+    public function updateUserData(Request $request) {
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if(!isset($_SESSION['user'])) {
+            echo null;
+            return true;
+        }
+
+        $data = $request->json();
+        if($data == null){
+            echo null;
+            return true;
+        }
+
+        $result = User::updateUserData($_SESSION['user']['user_id'], $data);
+        if($result == null){
+            echo null;
+            return true;
+        }
+        
+        echo json_encode([$result]);
+        return true;
+    }
+
+    public function updateUserPassword(Request $request){
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if(!isset($_SESSION['user'])) {
+            echo null;
+            return true;
+        }
+
+        $data = $request->json();
+        if($data == null){
+            echo null;
+            return true;
+        }
+
+        $result = User::updateUserPassword($_SESSION['user']['user_id'], $data);
+        if($result == null){
+            echo null;
+            return true;
+        }
+
+        echo json_encode([$result]);
         return true;
     }
 
