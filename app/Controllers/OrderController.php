@@ -8,12 +8,14 @@ require_once __DIR__ . '/../Core/PayU.php';
 require_once __DIR__ . '/../Models/Order.php';
 require_once __DIR__ . '/../Models/User.php';
 require_once __DIR__ . '/../Models/Product.php';
+require_once __DIR__ . '/../Models/Configuration.php';
 use App\Core\Request;
 use App\Core\LayoutEngine;
 use App\Core\PayU;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\Product;
+use App\Models\Configuration;
 
 class OrderController {
     public function showSummary(Request $request) {
@@ -24,15 +26,6 @@ class OrderController {
         }
 
         if(!Order::ifExists($id)) return false;
-
-        $userid = Order::getUserID($id);
-        if($userid != null){
-            if (session_status() === PHP_SESSION_NONE) {
-                session_start();
-            }
-            if(!isset($_SESSION['user'])) return false;
-            if($userid != $_SESSION['user']['user_id']) return false;
-        } else return false;
 
         $view = file_get_contents(__DIR__ . '/../Views/summary.html');
 
@@ -88,7 +81,13 @@ class OrderController {
             $user_id = User::createGuest($data);
         }
 
-        $order_id = Order::createOrder($user_id, $data['payment']);
+        $shipping_price = Configuration::getByID("shipping_price");
+        if($shipping_price == null) {
+            $shipping_price = new Configuration();
+            $shipping_price->value = 0.0;
+        }
+
+        $order_id = Order::createOrder($user_id, $data, $shipping_price->value);
         foreach ($_SESSION['cart'] as $product) {
             if(!Product::ifQuantityInStock($product['product_variant_id'], $product['quantity'])){
                 continue;
@@ -97,14 +96,16 @@ class OrderController {
             Product::updateVariantQuantity($product['product_variant_id'], (-1) * $product['quantity']);
         }
 
+        unset($_SESSION['cart']);
+
         if($data['payment'] == 'CASH'){
             Order::updateStatus($order_id, "PAID");
-            echo json_encode(["payment" => 'CASH']);
+            echo json_encode(["payment" => 'CASH', 'orderid' => $order_id]);
             return true;
         }
 
-        unset($_SESSION['cart']);
-
+        // Payu payment
+        echo json_encode(["payment" => 'PAYU', 'orderid' => $order_id]);
         return true;
     }
     

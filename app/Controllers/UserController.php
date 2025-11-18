@@ -137,14 +137,15 @@ class UserController {
             return true;
         }
 
-        $userid = User::login($data['email'], $data['password']);
-        if($userid == null){
+        $user = User::login($data['email'], $data['password']);
+        if($user == null){
             echo json_encode(value: [false]);
             return true;
         }
 
         $_SESSION['user'] = [];
-        $_SESSION['user']['user_id'] = $userid;
+        $_SESSION['user']['user_id'] = $user['user_id'];
+        $_SESSION['user']['type'] = $user['type'];
 
         echo json_encode([true]);
         return true;

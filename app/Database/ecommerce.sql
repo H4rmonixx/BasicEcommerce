@@ -4,6 +4,12 @@ CREATE DATABASE ecommerce;
 USE ecommerce;
 
 -- Article
+CREATE TABLE `Configuration` (
+    configuration_id VARCHAR(64) PRIMARY KEY,
+    value VARCHAR(64) NOT NULL
+);
+
+-- Article
 CREATE TABLE `Article` (
     article_id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(64) NOT NULL,
@@ -151,6 +157,9 @@ INSERT INTO `Order_Detail` (order_id, product_variant_id, quantity) VALUES
 (1, 2, 1), 
 (2, 3, 1), 
 (2, 4, 2);
+
+INSERT INTO `Configuration` (configuration_id, value) VALUES
+('shipping_price', 22.0);
 
 INSERT INTO `Article` (title, public, content) VALUES
 ("How to read sizes?", 1,

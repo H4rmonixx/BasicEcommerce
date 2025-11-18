@@ -101,10 +101,10 @@ class Order {
         return true;
     }
 
-    public static function createOrder($user_id, $payment){
+    public static function createOrder($user_id, $data, $shipping_price){
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare("INSERT INTO `Order` (user_id, payment_method) VALUES (?, ?)");
-        $stmt->execute([$user_id, $payment]);
+        $stmt = $pdo->prepare("INSERT INTO `Order` (user_id, address, building, city, post_code, country, shipping_price) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$user_id, $data['shipment']['address'], $data['shipment']['building'], $data['shipment']['city'], $data['shipment']['postcode'], $data['shipment']['country'], $shipping_price]);
 
         return $pdo->lastInsertId();
     }

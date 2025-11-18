@@ -6,6 +6,10 @@ require_once __DIR__ . '/../Controllers/ProductController.php';
 require_once __DIR__ . '/../Controllers/ArticleController.php';
 require_once __DIR__ . '/../Controllers/UserController.php';
 require_once __DIR__ . '/../Controllers/OrderController.php';
+require_once __DIR__ . '/../Controllers/ConfigurationController.php';
+
+require_once __DIR__ . '/../Middleware/APIUserAuthMiddleware.php';
+require_once __DIR__ . '/../Middleware/APIAdminAuthMiddleware.php';
 
 use App\Core\Router;
 use App\Controllers\CartController;
@@ -13,6 +17,10 @@ use App\Controllers\ProductController;
 use App\Controllers\ArticleController;
 use App\Controllers\UserController;
 use App\Controllers\OrderController;
+use App\Controllers\ConfigurationController;
+
+use App\Middleware\APIUserAuthMiddleware;
+use App\Middleware\APIAdminAuthMiddleware;
 
 $router = new Router();
 
@@ -35,11 +43,13 @@ $router->post('/user/load', [UserController::class, 'loadUser']);
 $router->post('/user/login', [UserController::class, 'login']);
 $router->post('/user/register', [UserController::class, 'register']);
 $router->post('/user/logout', [UserController::class, 'logout']);
-$router->post('/user/update/data', [UserController::class, 'updateUserData']);
-$router->post('/user/update/password', [UserController::class, 'updateUserPassword']);
-$router->post('/user/orders/load', [UserController::class, 'loadUserOrders']);
+$router->post('/user/update/data', [UserController::class, 'updateUserData'], [APIUserAuthMiddleware::class]);
+$router->post('/user/update/password', [UserController::class, 'updateUserPassword'], [APIUserAuthMiddleware::class]);
+$router->post('/user/orders/load', [UserController::class, 'loadUserOrders'], [APIUserAuthMiddleware::class]);
 
 $router->post('/order/new', [OrderController::class, 'placeOrder']);
 $router->post('/order/load/{id}', [OrderController::class, 'loadOrder']);
+
+$router->post('/configuration/load/{id}', [ConfigurationController::class, 'loadProperty']);
 
 return $router;

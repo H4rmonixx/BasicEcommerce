@@ -1,6 +1,7 @@
 let GlobalCartContent = null;
 let GlobalPersonalData = null;
 let GlobalShipmentData = null;
+let GlobalShippingPrice = null;
 
 function refreshCart(){
     return $.ajax({
@@ -121,15 +122,13 @@ function calcValues(){
         if(variant.product.variants[0].quantity < 1) return;
         totalCartValue += parseFloat(variant.product.price) * variant.quantity;
     });
-
     $("#cart-products").text(totalCartValue.toFixed(2) + " PLN");
-    $("#cart-shipment").text("22 PLN");
-    $("#cart-total").text((totalCartValue + 22).toFixed(2) + " PLN");
+    $("#cart-shipment").text(GlobalShippingPrice + " PLN");
+    $("#cart-total").text((parseFloat(totalCartValue) + parseFloat(GlobalShippingPrice)).toFixed(2) + " PLN");
 
     const date = new Date();
     date.setTime(date.getTime() + (7 * 24 * 60 * 60 * 1000));
     $("#estimated-ship-date").text(date.toLocaleDateString());
-
 }
 
 function deleteFromCart(index){
@@ -252,7 +251,7 @@ function initPage(){
                     try{
                         let json = JSON.parse(success);
                         if(json.payment == "CASH"){
-                            alert("order placed");
+                            window.location.replace("/summary/"+json.orderid);
                         }
                     } catch (e) {
                         console.log("Unable to place order");
@@ -273,9 +272,24 @@ function initPage(){
     });
 }
 
+function loadInfo(){
+    return $.ajax({
+        url: "/configuration/load/shipping_price",
+        type: "post"
+    }).then((success) => {
+        try{
+            let json = JSON.parse(success);
+            GlobalShippingPrice = parseFloat(json.value);
+        } catch (e){
+            console.log("Unable to load shipping price");
+            return $.Deferred().reject("Error occured").promise();
+        }
+    });
+}
+
 $(document).ready(() => {
 
-    refreshCart().then(getUserAdress).then(initPage).catch((error) => {
+    loadInfo().then(refreshCart).then(getUserAdress).then(initPage).catch((error) => {
         if(error.statusText)
             infobox_show(error.statusText, 5000);
         else
