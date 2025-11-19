@@ -146,6 +146,8 @@ class UserController {
         $_SESSION['user'] = [];
         $_SESSION['user']['user_id'] = $user['user_id'];
         $_SESSION['user']['type'] = $user['type'];
+        $_SESSION['user']['firstname'] = $user['firstname'];
+        $_SESSION['user']['lastname'] = $user['lastname'];
 
         echo json_encode([true]);
         return true;

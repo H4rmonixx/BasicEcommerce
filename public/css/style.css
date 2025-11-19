@@ -3,7 +3,7 @@
 /*------------------*/
 /* icons size */
 header object[name="shopping-bag-icon"]{
-    height: 35px;
+    height: 40px;
 }
 header object[name="left-arrow-icon"]{
     height: 30px;
@@ -13,6 +13,13 @@ header object[name="left-arrow-icon"]{
         height: 100px;
     }
 }
+
+header .dropdown-item:active{
+        text-decoration: underline;
+        background-color: white !important;
+        color: black !important;
+        text-decoration: underline;
+    }
 
 /* underline animation */
 @media (width >= 992px){
@@ -34,46 +41,6 @@ header object[name="left-arrow-icon"]{
     }
 }
 
-/* navbar for lg+  */
-.m-dropdown-menu-blur{
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: calc(100% - 375px);
-    height: 100vh;
-    background-color: rgba(20, 20, 20, 0.08);
-    display: none;
-}
-@media (width >= 992px){
-    header .dropdown-menu{
-        right: 0 !important;
-        top: 0 !important;
-        left: unset !important;
-        width: 375px;
-        position: fixed !important;
-        height: 100vh;
-        border: 0;
-        background-color: white;
-        border-radius: 0;
-        box-shadow: -1px 0 6px lightgray;
-    }
-    header .dropdown-item{
-        padding: 5px 3rem;
-    }
-    header .dropdown-item:hover{
-        background-color: rgb(230, 230, 230);
-    }
-    header .dropdown-item:active{
-        background-color: black;
-    }
-    .m-dropdown-menu-blur{
-        display: block;
-    }
-    header .nav-link{
-        margin: 0 .5rem;
-    }
-}
-
 /* navbar for small screens  */
 @media (max-width: 992px){
     header .navbar-toggler,
@@ -83,13 +50,8 @@ header object[name="left-arrow-icon"]{
         outline: none;
         box-shadow: none;
     }
-    header .nav-link{
-        padding: 5px 2rem;
-    }
     header .nav-link:active{
-        color: white !important;
-        transition: none;
-        background-color: black;
+        text-decoration: underline;
     }
 }
 
@@ -105,6 +67,7 @@ header object[name="left-arrow-icon"]{
 footer{
     background-color: black;
 }
+
 
 /*------------------*/
 /* OWN CLASSES FOR GLOBAL USE */
@@ -124,6 +87,7 @@ footer{
 .m-text-underline{
     text-decoration: underline;
 }
+
 /* not click highlight */
 .m-no-click-highlight:active{
     background-color: unset !important;

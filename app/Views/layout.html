@@ -32,38 +32,31 @@
                 </button>
             </div>
             <div class="offcanvas offcanvas-end" tabindex="-1">
-                <div class="offcanvas-header p-5 p-lg-0">
+                <div class="offcanvas-header p-4 p-lg-0">
                     <h5 class="offcanvas-title"><object data="/assets/graphics/logo1.svg" type="image/svg+xml"></object></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
-                <div class="offcanvas-body justify-content-end">
-                    <ul class="navbar-nav align-items-lg-center">
-                        <li class="nav-item"><a href="/products/category=1" class="nav-link active m-underline-onhover">TOPS</a></li>
-                        <li class="nav-item"><a href="/products/category=2" class="nav-link active m-underline-onhover">PANTS</a></li>
-                        <li class="nav-item"><a href="/products/category=3" class="nav-link active m-underline-onhover">FOOTWEAR</a></li>
-                        <li class="nav-item"><a href="/products/category=4" class="nav-link active m-underline-onhover">ACCESSORIES</a></li>
-                        <li class="nav-item me-lg-5"><a href="/products" class="nav-link active m-underline-onhover">VIEW ALL</a></li>
+                <div class="offcanvas-body justify-content-end p-4 p-lg-0">
+                    <ul class="navbar-nav align-items-lg-center column-gap-2">
+                        <li class="nav-item"><a href="/products/category=1" class="nav-link text-black m-underline-onhover">TOPS</a></li>
+                        <li class="nav-item"><a href="/products/category=2" class="nav-link text-black m-underline-onhover">PANTS</a></li>
+                        <li class="nav-item"><a href="/products/category=3" class="nav-link text-black m-underline-onhover">FOOTWEAR</a></li>
+                        <li class="nav-item"><a href="/products/category=4" class="nav-link text-black m-underline-onhover">ACCESSORIES</a></li>
+                        <li class="nav-item"><a href="/products" class="nav-link text-black m-underline-onhover">VIEW ALL</a></li>
+                        <li class="nav-item dropdown me-lg-4">
+                            <a class="nav-link text-black dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">MORE</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/about">ABOUT US</a></li>
+                                <li><a class="dropdown-item" href="/contact">CONTACT</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/account">ACCOUNT</a></li>
+                            </ul>
+                        </li>
                         <li class="nav-item d-none d-lg-block">
                             <a href="/cart" class="nav-link active header-cart-icon">
                                 <div class="header-cart-size-preview"></div>
                                 <object data="/assets/icons/shopping-bag.png" type="image/png" name="shopping-bag-icon"></object>
                             </a>
-                        </li>
-                        <li class="nav-item d-lg-none mt-4"><a href="/about" class="nav-link active">ABOUT US</a></li>
-                        <li class="nav-item d-lg-none"><a href="/contact" class="nav-link active">CONTACT</a></li>
-                        <li class="nav-item d-lg-none mb-4"><a href="/account" class="nav-link active">ACCOUNT</a></li>
-                        <li class="nav-item dropdown d-none d-lg-block">
-                            <a href="#" class="nav-link" data-bs-toggle="dropdown"><span class="navbar-toggler-icon fs-3"></span></a>
-                            <ul class="dropdown-menu">
-                                <div class="m-dropdown-menu-blur"></div>
-                                <li class="mb-4 mt-3 d-none d-lg-flex align-items-center justify-content-between p-5">
-                                    <a class=""><object data="/assets/graphics/logo1.svg" type="image/svg+xml"></object></a>
-                                    <button type="button" class="btn-close" data-bs-dismiss="dropdown"></button>
-                                </li>
-                                <li><a href="/about" class="dropdown-item">ABOUT US</a></li>
-                                <li><a href="/contact" class="dropdown-item">CONTACT</a></li>
-                                <li><a href="/account" class="dropdown-item">ACCOUNT</a></li>
-                            </ul>
                         </li>
                     </ul>
                 </div>

@@ -106,7 +106,7 @@ class User {
 
     public static function login($email, $password){
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare('SELECT user_id, password, type FROM User WHERE email LIKE ? AND type NOT LIKE "GUEST"');
+        $stmt = $pdo->prepare('SELECT user_id, password, type, firstname, lastname FROM User WHERE email LIKE ? AND type NOT LIKE "GUEST"');
         $stmt->execute([$email]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -118,7 +118,7 @@ class User {
             return null;
         }
 
-        return ["user_id" => $data['user_id'], "type" => $data['type']];
+        return ["user_id" => $data['user_id'], "type" => $data['type'], "firstname" => $data['firstname'], "lastname" => $data['lastname']];
     }
 
     public static function register($data){

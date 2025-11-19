@@ -18,7 +18,7 @@ class AdminTopbarMiddleware
 
         if(isset($_SESSION['user'])){
             if($_SESSION['user']['type'] == 'ADMIN'){
-                // extension admin top bar
+                LayoutEngine::enableExtension("admin_top_bar", "adminTopBar.html", ["username" => $_SESSION['user']['firstname']." ".$_SESSION['user']['lastname']]);
             }
         }
         

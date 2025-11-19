@@ -13,6 +13,10 @@ class LayoutEngine {
 
         foreach(self::$extensions as $ex){
             $t = file_get_contents(__DIR__ . '/../Views/LayoutExtensions/'.$ex['file']);
+            foreach($ex['vars'] as $var => $val){
+                $t = str_replace("@var(\"".$var."\")", $val, $t);
+            }
+            $t = preg_replace('/@var\(\"([^"]+)\"\)/', "", $t);
             $website = str_replace("@extension(\"".$ex['name']."\")", $t, $website);
         }
 
@@ -27,8 +31,8 @@ class LayoutEngine {
         return $website;
     }
 
-    public static function enableExtension($name, $file){
-        array_push(self::$extensions, ["name" => $name, "file" => $file]);
+    public static function enableExtension($name, $file, $vars = []){
+        array_push(self::$extensions, ["name" => $name, "file" => $file, "vars" => $vars]);
     }
 
     public static function updateView(&$view, $section, $str){
