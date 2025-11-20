@@ -45,16 +45,6 @@ class Router
                 );
                 
                 return $pipeline($request);
-                
-                /*
-                if (is_array($handler)) {
-                    [$class, $method] = $handler;
-                    $controller = new $class;
-                    return $controller->$method($request);
-                }
-
-                return call_user_func($handler, $request);
-                */
             }
         }
 

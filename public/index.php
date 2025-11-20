@@ -1,9 +1,11 @@
 <?php
 
 require_once __DIR__ . '/../app/Core/Request.php';
-require_once __DIR__ . '/../app/Core/LayoutEngine.php';
+require_once __DIR__ . '/../app/Controllers/ErrorController.php';
+require_once __DIR__ . '/../app/Middleware/AdminTopbarMiddleware.php';
 use App\Core\Request;
-use App\Core\LayoutEngine;
+use App\Controllers\ErrorController;
+use App\Middleware\AdminTopbarMiddleware;
 
 $request = new Request();
 
@@ -18,7 +20,26 @@ foreach ($routers as $router) {
     }
 }
 
-// CODE 404 - REQUEST NOT FOUND
-http_response_code(404);
-$view = file_get_contents(__DIR__ . '/../app/Views/err404.html');
-echo LayoutEngine::resolveLayout($view);
+// ERRORS HANDLER
+function callHandler($handler, $request){
+    if (is_callable($handler)) {
+        return $handler($request);
+    }
+
+    if (is_array($handler)) {
+        [$class, $method] = $handler;
+        $controller = new $class();
+        return $controller->$method($request);
+    }
+}
+
+$pipeline = array_reduce(
+    array_reverse([AdminTopbarMiddleware::class]),
+    fn($next, $middleware) => function($request) use ($middleware, $next) {
+        $m = new $middleware();
+        return $m->handle($request, $next);
+    },
+    fn($request) => callHandler([ErrorController::class, 'show'], $request)
+);
+
+$pipeline($request);

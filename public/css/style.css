@@ -2,12 +2,6 @@
 /* STYLE FOR HEADER */
 /*------------------*/
 /* icons size */
-header object[name="shopping-bag-icon"]{
-    height: 40px;
-}
-header object[name="left-arrow-icon"]{
-    height: 30px;
-}
 @media (min-width: 768px){
     header object[name="brand-icon"]{
         height: 100px;
@@ -165,6 +159,12 @@ footer{
     align-items: center;
     font-size: 11px;
 }
+@media (width <= 992px){
+    .header-cart-size-preview{
+        right: -10px;
+        bottom: -10px;
+    }
+}
 
 /* newsletter */
 .newsletter-header{
@@ -179,4 +179,8 @@ footer{
 .m-horizontal-line{
     height: 3px;
     background-color: black;
+}
+
+#adminTopBar{
+    background-color: lightgrey;
 }
