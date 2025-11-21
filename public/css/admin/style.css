@@ -1,0 +1,27 @@
+header object[name="brand-icon"]{
+    height: 45px;
+}
+ul.nav .nav-link:hover{
+    background-color: rgb(50, 50, 50);
+}
+main{
+    min-height: 70vh;
+}
+.m-infobox{
+    position: fixed;
+    width: 100%;
+    bottom: -100%;
+    left: 0;
+    transition: bottom .4s;
+    display: none;
+    text-transform: uppercase;
+    z-index: 2;
+}
+.m-infobox > div{
+    min-width: 50%;
+    background-color: rgb(119, 18, 18);
+    color: white;
+    text-transform: uppercase;
+    border: 1px solid white;
+    text-align: center;
+}

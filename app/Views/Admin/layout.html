@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        @showsection("title")
+    </title>
+    <link rel="shortcut icon" href="/assets/graphics/logo1.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/frameworks/bootstrap-5.3.8-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/frameworks/bootstrap-5.3.8-dist/css/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/admin/style.css">
+    @showsection("styles")
+    <script src="/frameworks/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/frameworks/jquery-3.7.1.min.js"></script>
+    @showsection("scripts")
+</head>
+<body>
+    <header class="navbar navbar-expand-lg border-bottom">
+        <div class="container-xxl px-3 pe-xxl-0 ps-xxl-0 py-3">
+            <a class="navbar-brand d-flex column-gap-3 align-items-center" href="/admin">
+                <object style="pointer-events: none;" data="/assets/graphics/logo1.svg" type="image/svg+xml" name="brand-icon"></object>
+                <div class="text-danger">Admin panel</div>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target=".offcanvas">
+                <span class="navbar-toggler-icon fs-3"></span>
+            </button>
+            <div class="offcanvas offcanvas-end" tabindex="-1">
+                <div class="offcanvas-header p-4 p-lg-0">
+                    <h5 class="offcanvas-title"><object data="/assets/graphics/logo1.svg" type="image/svg+xml"></object></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body justify-content-end p-4 p-lg-0">
+                    <ul class="navbar-nav align-items-lg-center column-gap-2">
+                        <li class="nav-item"><a class="nav-link text-black" href="/"><i class="bi bi-house"></i> Return</a></li>
+                        <li class="nav-item"><button class="nav-link text-danger" id="button-logout" ><i class="bi bi-box-arrow-left"></i> Logout</button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="bg-black">
+        <div class="container-xxl pe-xxl-0 ps-xxl-0 px-3">
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link text-white rounded-0" href="/admin">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white rounded-0" href="/admin/products">Products</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <main class="container-xxl mb-5 pe-xxl-0 ps-xxl-0 px-3 mt-4">
+        <div>
+            @showsection("content")
+        </div>
+    </main>
+    <footer class="border-top">
+        <div class="container-xxl ps-4 pe-4 pe-xxl-0 ps-xxl-0 py-3">
+            <div class="d-flex justify-content-center">
+                <div>Website version 1.0</div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        $("#button-logout").on("click", ()=>{
+
+            $.ajax({
+                url: "/user/logout",
+                type: "post"
+            }).then((success) => {
+
+                try{
+                    let json = JSON.parse(success);
+                    if(json[0]){
+                        window.location.replace("/");
+                    } else {
+                        console.log("Unable to logout");
+                        return $.Deferred().reject("Error occurred").promise();
+                    }
+                } catch (e) {
+                    console.log("Unable to logout");
+                    return $.Deferred().reject("Error occurred").promise();
+                }
+
+            }).catch((error)=>{
+                if(error.statusText)
+                    infobox_show(error.statusText, 5000);
+                else
+                    infobox_show(error, 5000)
+            });
+
+        });
+    </script>
+</body>
+</html>

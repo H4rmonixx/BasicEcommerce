@@ -7,9 +7,15 @@ class LayoutEngine {
     public static $extensions = [];
 
     public static function resolveLayout($view){
-        $pattern = '/@section\("([^"]+)"\)\s*(.*?)\s*@endsection/s';
+        return self::resolve($view, file_get_contents(__DIR__ . '/../Views/layout.html'));
+    }
 
-        $website = file_get_contents(__DIR__ . '/../Views/layout.html');
+    public static function resolveAdminLayout($view){
+        return self::resolve($view, file_get_contents(__DIR__ . '/../Views/Admin/layout.html'));
+    }
+
+    public static function resolve($view, $website){
+        $pattern = '/@section\("([^"]+)"\)\s*(.*?)\s*@endsection/s';
 
         foreach(self::$extensions as $ex){
             $t = file_get_contents(__DIR__ . '/../Views/LayoutExtensions/'.$ex['file']);

@@ -12,6 +12,7 @@ $request = new Request();
 $routers = [];
 
 $routers[] = require __DIR__ . '/../app/Routes/web.php';
+$routers[] = require __DIR__ . '/../app/Routes/admin.php';
 $routers[] = require __DIR__ . '/../app/Routes/api.php';
 
 foreach ($routers as $router) {

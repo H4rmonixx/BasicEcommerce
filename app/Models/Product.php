@@ -89,7 +89,7 @@ class Product {
         
         $pdo = Database::getConnection();
 
-        $sql = "SELECT DISTINCT p.product_id as product_id, p.name as name, p.price as price FROM Product p INNER JOIN Product_Variant pv ON p.product_id = pv.product_id WHERE visible = 1";
+        $sql = "SELECT DISTINCT p.product_id as product_id, p.category_id as category_id, p.name as name, p.price as price FROM Product p INNER JOIN Product_Variant pv ON p.product_id = pv.product_id WHERE visible = 1";
         $params = [];
 
         if(count($filters['categories']) > 0){
@@ -129,6 +129,7 @@ class Product {
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
             $product = new self();
             $product->product_id = $row['product_id'];
+            $product->category_id = $row['category_id'];
             $product->name = $row['name'];
             $product->price = $row['price'];
             $product->photos = [];
@@ -137,6 +138,13 @@ class Product {
             $stmt2->execute([$row['product_id']]);
             while($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)){
                 $product->photos[] = $row2['filename'];
+            }
+            $stmt2->closeCursor();
+
+            $stmt2 = $pdo->prepare("SELECT product_variant_id, name, quantity, width, height FROM product_variant pv INNER JOIN variant v ON pv.variant_id = v.variant_id WHERE product_id = ? ORDER BY name");
+            $stmt2->execute([$row['product_id']]);
+            while($row = $stmt2->fetch(PDO::FETCH_ASSOC)){
+                $product->variants[] = $row;
             }
             $stmt2->closeCursor();
 
