@@ -1,9 +1,11 @@
 header object[name="brand-icon"]{
     height: 45px;
 }
-ul.nav .nav-link:hover{
-    background-color: rgb(50, 50, 50);
+#menu-nav .nav-link:hover{
+    background-color: rgb(0,0,0);
+    color: white !important;
 }
+
 main{
     min-height: 70vh;
 }

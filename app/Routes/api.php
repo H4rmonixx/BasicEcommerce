@@ -7,9 +7,10 @@ require_once __DIR__ . '/../Controllers/ArticleController.php';
 require_once __DIR__ . '/../Controllers/UserController.php';
 require_once __DIR__ . '/../Controllers/OrderController.php';
 require_once __DIR__ . '/../Controllers/ConfigurationController.php';
+require_once __DIR__ . '/../Controllers/CategoryController.php';
+require_once __DIR__ . '/../Controllers/VariantController.php';
 
 require_once __DIR__ . '/../Middleware/APIUserAuthMiddleware.php';
-require_once __DIR__ . '/../Middleware/APIAdminAuthMiddleware.php';
 
 use App\Core\Router;
 use App\Controllers\CartController;
@@ -18,18 +19,20 @@ use App\Controllers\ArticleController;
 use App\Controllers\UserController;
 use App\Controllers\OrderController;
 use App\Controllers\ConfigurationController;
+use App\Controllers\CategoryController;
+use App\Controllers\VariantController;
 
 use App\Middleware\APIUserAuthMiddleware;
-use App\Middleware\APIAdminAuthMiddleware;
 
 $router = new Router();
 
-$router->post('/products/load', [ProductController::class, 'loadProducts']);
+$router->post('/products/load', [ProductController::class, 'loadProductsFiltered']);
 $router->post('/product/load/{id}', [ProductController::class, 'loadProduct']);
 $router->post('/product/load/variant/{variantid}', [ProductController::class, 'loadProductByVariant']);
 $router->post('/products/pages', [ProductController::class, 'countPages']);
-$router->post('/categories/load', [ProductController::class, 'loadAllCategories']);
-$router->post('/sizes/load', [ProductController::class, 'loadAllSizes']);
+
+$router->post('/categories/load', [CategoryController::class, 'loadAllCategories']);
+$router->post('/variants/load', [VariantController::class, 'loadAllVariants']);
 
 $router->post('/article/load/{id}', [ArticleController::class, 'loadArticle']);
 

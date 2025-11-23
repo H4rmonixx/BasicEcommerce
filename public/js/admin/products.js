@@ -1,16 +1,7 @@
 function loadProducts(){
     return $.ajax({
         type: "post",
-        url: "/products/load",
-        data: JSON.stringify({
-            categories: [],
-            sizes: [],
-            price_from: null,
-            price_to: null,
-            omit_id: null,
-            limit: null,
-            page: null
-        })
+        url: "/products/list"
     }).then((success) => {
         try{
             let json = JSON.parse(success);
@@ -31,14 +22,34 @@ function loadProducts(){
                 $root.append($tr);
             })
         } catch(e) {
+            alert(e);
             console.log("Unable to load products");
             return $.Deferred().reject("Error occurred.").promise();
         }
     });
 }
 
+function loadCategories(){
+    return $.ajax({
+        type: "post",
+        url: "/categories/load"
+    }).then((success) => {
+        try{
+            let json = JSON.parse(success);
+            let $root = $("#input-product-category");
+            json.forEach((cat) => {
+                $root.append($("<option>", {value: cat.category_id, text: cat.name}));
+
+            });
+        } catch(e) {
+            console.log("Unable to load categories");
+            return $.Deferred().reject("Error occurred.").promise();
+        }
+    });
+}
+
 $(document).ready(()=>{
-    loadProducts().catch((error) => {
+    loadProducts().then(loadCategories).catch((error) => {
         if(error.statusText)
             infobox_show(error.statusText, 5000);
         else
@@ -48,6 +59,38 @@ $(document).ready(()=>{
     $("#button-new-product").on("click", ()=>{
         let modal = new bootstrap.Modal(document.getElementById('modal-new-product'));
         modal.show();
+    });
+
+    $("#modal-new-product-form").on("submit", function(e){
+        e.preventDefault();
+        $.ajax({
+            url: "/product/new",
+            type: "post",
+            data: JSON.stringify({
+                name: $("#input-product-name").val(),
+                category_id: $("#input-product-category").val(),
+                price: $("#input-product-price").val(),
+                visible: $("#input-product-visible").prop("checked")
+            })
+        }).then((success) => {
+            try{
+                let json = JSON.parse(success);
+                if(json[0]){
+                    window.location.replace("/admin/product/"+json[1]);
+                } else {
+                    console.log("Unable to add product");
+                    return $.Deferred().reject("Error occurred.").promise();
+                }
+            } catch(e){
+                console.log("Unable to add product");
+                return $.Deferred().reject("Error occurred.").promise();
+            }
+        }).catch((error) => {
+            if(error.statusText)
+                infobox_show(error.statusText, 5000);
+            else
+                infobox_show(error, 5000)
+        });
     });
 
 });

@@ -33,6 +33,8 @@ class Product {
         $product->name = $data['name'];
         $product->description = $data['description'];
         $product->price = $data['price'];
+        $product->variants = [];
+        $product->photos = [];
 
         $stmt2 = $pdo->prepare("SELECT filename FROM Photo WHERE product_id = ?");
         $stmt2->execute([$id]);
@@ -67,6 +69,8 @@ class Product {
         $product->name = $data['name'];
         $product->description = $data['description'];
         $product->price = $data['price'];
+        $product->variants = [];
+        $product->photos = [];
 
         $stmt2 = $pdo->prepare("SELECT filename FROM Photo WHERE product_id = ?");
         $stmt2->execute([$product->product_id]);
@@ -85,11 +89,11 @@ class Product {
         return $product;
     }
 
-    public static function getTilesInfoArray($filters) {
+    public static function getFilteredProducts($filters) {
         
         $pdo = Database::getConnection();
 
-        $sql = "SELECT DISTINCT p.product_id as product_id, p.category_id as category_id, p.name as name, p.price as price FROM Product p INNER JOIN Product_Variant pv ON p.product_id = pv.product_id WHERE visible = 1";
+        $sql = "SELECT DISTINCT p.product_id as product_id, p.category_id as category_id, p.name as name, p.price as price FROM Product p LEFT JOIN Product_Variant pv ON p.product_id = pv.product_id WHERE visible = 1";
         $params = [];
 
         if(count($filters['categories']) > 0){
@@ -133,6 +137,7 @@ class Product {
             $product->name = $row['name'];
             $product->price = $row['price'];
             $product->photos = [];
+            $product->variants = [];
 
             $stmt2 = $pdo->prepare("SELECT filename FROM Photo WHERE product_id = ?");
             $stmt2->execute([$row['product_id']]);
@@ -154,20 +159,29 @@ class Product {
         return $data;
     }
 
-    public static function getAllCategories(){
+    public static function getProductsList(){
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare("SELECT category_id, name FROM Category");
+        $stmt = $pdo->prepare("SELECT product_id, category_id, name, price FROM Product");
         $stmt->execute();
-        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $data = [];
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+            $product = new self();
+            $product->product_id = $row['product_id'];
+            $product->category_id = $row['category_id'];
+            $product->name = $row['name'];
+            $product->price = $row['price'];
+            $product->photos = [];
+            $product->variants = [];
 
-        return $data;
-    }
+            $stmt2 = $pdo->prepare("SELECT product_variant_id, name, quantity, width, height FROM product_variant pv INNER JOIN variant v ON pv.variant_id = v.variant_id WHERE product_id = ? ORDER BY name");
+            $stmt2->execute([$row['product_id']]);
+            while($row = $stmt2->fetch(PDO::FETCH_ASSOC)){
+                $product->variants[] = $row;
+            }
+            $stmt2->closeCursor();
 
-    public static function getAllSizes(){
-        $pdo = Database::getConnection();
-        $stmt = $pdo->prepare("SELECT variant_id, name FROM Variant");
-        $stmt->execute();
-        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $data[] = $product;
+        }
 
         return $data;
     }
@@ -232,6 +246,14 @@ class Product {
         }
 
         return true;
+    }
+
+    public static function createProduct($data){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("INSERT INTO Product (category_id, name, price, visible) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$data['category_id'], $data['name'], $data['price'], $data['visible']]);
+        
+        return $pdo->lastInsertId();
     }
 
 }

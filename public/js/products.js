@@ -167,7 +167,7 @@ function loadCategories(){
 function loadSizes(){
     return $.ajax({
         type: "post",
-        url: "/sizes/load"
+        url: "/variants/load"
     }).then((success) => {
 
         let json;

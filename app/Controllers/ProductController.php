@@ -26,14 +26,22 @@ class ProductController {
         return true;
     }
 
-    public function loadProducts(Request $request){
+    public function loadProductsFiltered(Request $request){
         
         $filters = $request->json();
         if($filters == null){
             echo json_encode([]);
             return true;
         }
-        $products = Product::getTilesInfoArray($filters);
+        $products = Product::getFilteredProducts($filters);
+        echo json_encode($products);
+        
+        return true;
+    }
+
+    public function loadProductsList(Request $request){
+        
+        $products = Product::getProductsList();
         echo json_encode($products);
         
         return true;
@@ -43,7 +51,7 @@ class ProductController {
         
         $id = $request->param("id");
         if($id == null){
-            echo json_encode(null);
+            echo null;
             return true;
         }
 
@@ -57,7 +65,7 @@ class ProductController {
         
         $variantid = $request->param("variantid");
         if($variantid == null){
-            echo json_encode(null);
+            echo null;
             return true;
         }
 
@@ -67,32 +75,28 @@ class ProductController {
         return true;
     }
 
-    public function loadAllCategories(Request $request){
-        
-        $categories = Product::getAllCategories();
-        echo json_encode($categories);
-
-        return true;
-    }
-
-    public function loadAllSizes(Request $request){
-
-        $sizes = Product::getAllSizes();
-        echo json_encode($sizes);
-
-        return true;
-    }
-
     public function countPages(Request $request){
 
         $filters = $request->json();
         if($filters == null){
-            json_encode(null);
+            echo null;
             return true;
         }
         $count = Product::getCount($filters);
         echo json_encode($count);
 
+        return true;
+    }
+
+    public function addProduct(Request $request){
+        $data = $request->json();
+        if($data == null){
+            echo null;
+            return true;
+        }
+
+        $product_id = Product::createProduct($data);
+        echo json_encode([true, $product_id]);
         return true;
     }
 }
