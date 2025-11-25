@@ -32,6 +32,7 @@ $router->post('/product/load/variant/{variantid}', [ProductController::class, 'l
 $router->post('/products/pages', [ProductController::class, 'countPages']);
 
 $router->post('/categories/load', [CategoryController::class, 'loadAllCategories']);
+$router->post('/category/load/{id}', [CategoryController::class, 'loadCategory']);
 $router->post('/variants/load', [VariantController::class, 'loadAllVariants']);
 
 $router->post('/article/load/{id}', [ArticleController::class, 'loadArticle']);

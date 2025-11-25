@@ -1,6 +1,13 @@
 5. newsletter
-9. admin top bar
 10. admin panel
 
 phpmailer
 payu connect
+dla kazdej strony z url z parametrem sprawdzic, czy dany artykul lub produkt istnieje zanim wyswietlimy strone
+delete prods
+delete cats
+
+Widoki:
+1. ProductsList
+Funkcja getFilteredProducts i getProductsList w modelu Product.php używaja tego samego bazowego zapytania początkowego zmienionego tylko o klauzule WHERE.
+Stąd szybkim i logicznym sposobem stworzyliśmy widok zawierający listę produktów

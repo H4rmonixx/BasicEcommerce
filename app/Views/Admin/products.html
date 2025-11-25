@@ -25,6 +25,7 @@ H.R.M.X Admin / Products
                     <select id="input-product-category" class="form-control" required>
                         
                     </select>
+                    <div class="form-text"><a href="/admin/categories"><i class="bi bi-plus-lg"></i> Manage categories</a></div>
                 </div>
                 <div class="mb-2">
                     <label for="input-product-price" class="fw-bold mb-1">Price:</label>
@@ -43,7 +44,7 @@ H.R.M.X Admin / Products
     </div>
 </div>
 <div class="fs-4 mb-2 fw-bold">Products list:</div>
-<table class="table table-striped">
+<table class="table table-bordered">
     <thead>
         <tr><th class="d-none d-lg-table-cell">ID</th><th>Name</th><th class="d-none d-lg-table-cell">Variants</th><th class="d-none d-sm-table-cell">Price</th><th></th></tr>
     </thead>
@@ -53,6 +54,6 @@ H.R.M.X Admin / Products
 </table>
 <div class="d-flex column-gap-2 justify-content-between">
     <div id="products-count"></div>
-    <button class="btn btn-dark btn-sm" id="button-new-product"><i class="bi bi-plus-lg"></i> New</button>
+    <button class="btn btn-success btn-sm" id="button-new-product"><i class="bi bi-plus-lg"></i> New</button>
 </div>
 @endsection

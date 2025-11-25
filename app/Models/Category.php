@@ -38,4 +38,20 @@ class Category {
         return $data;
     }
 
+    public static function createCategory($data){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("INSERT INTO Category (name) VALUES (?)");
+        $stmt->execute([$data['name']]);
+        
+        return $pdo->lastInsertId();
+    }
+
+    public static function editCategory($id, $data){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("UPDATE Category SET name = ? WHERE category_id = ?");
+        $stmt->execute([$data['name'], $id]);
+        
+        return $stmt->rowCount();
+    }
+
 }

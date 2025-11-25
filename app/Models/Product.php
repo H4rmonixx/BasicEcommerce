@@ -93,29 +93,29 @@ class Product {
         
         $pdo = Database::getConnection();
 
-        $sql = "SELECT DISTINCT p.product_id as product_id, p.category_id as category_id, p.name as name, p.price as price FROM Product p LEFT JOIN Product_Variant pv ON p.product_id = pv.product_id WHERE visible = 1";
+        $sql = "SELECT * FROM ProductsList WHERE visible = 1";
         $params = [];
 
         if(count($filters['categories']) > 0){
             $placeholders = implode(',', array_fill(0, count($filters['categories']), '?'));
-            $sql .= " AND p.category_id IN ($placeholders)";
+            $sql .= " AND category_id IN ($placeholders)";
             $params = array_merge($params, $filters['categories']);
         }
         if(count($filters['sizes']) > 0){
             $placeholders = implode(',', array_fill(0, count($filters['sizes']), '?'));
-            $sql .= " AND pv.variant_id IN ($placeholders)";
+            $sql .= " AND variant_id IN ($placeholders)";
             $params = array_merge($params, $filters['sizes']);
         }
         if($filters['price_from'] != null){
-            $sql .= " AND p.price >= ?";
+            $sql .= " AND price >= ?";
             array_push($params, intval($filters['price_from']));
         }
         if($filters['price_to'] != null){
-            $sql .= " AND p.price <= ?";
+            $sql .= " AND price <= ?";
             array_push($params, intval($filters['price_to']));
         }
         if($filters['omit_id'] != null){
-            $sql .= " AND p.product_id <> ?";
+            $sql .= " AND product_id <> ?";
             array_push($params, intval($filters['omit_id']));
         }
         if($filters['limit'] != null){
@@ -129,31 +129,39 @@ class Product {
         $stmt->execute($params);
 
         $data = [];
+        $prod_ids = [];
 
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-            $product = new self();
-            $product->product_id = $row['product_id'];
-            $product->category_id = $row['category_id'];
-            $product->name = $row['name'];
-            $product->price = $row['price'];
-            $product->photos = [];
-            $product->variants = [];
+            if(!in_array($row['product_id'], $prod_ids)){
+                $prod_ids[] = $row['product_id'];
+
+                $product = new self();
+                $product->product_id = $row['product_id'];
+                $product->category_id = $row['category_id'];
+                $product->name = $row['name'];
+                $product->price = $row['price'];
+                $product->photos = [];
+                $product->variants = [];
+
+                $data[] = $product;
+            }
+
+            $index = count($prod_ids) - 1;
+            if($row['product_variant_id'] != null){
+                $data[$index]->variants[] =  [
+                    "product_variant_id" => $row['product_variant_id'],
+                    "name" => $row['variant_name'],
+                    "quantity" => $row['quantity']
+                ];
+            }
 
             $stmt2 = $pdo->prepare("SELECT filename FROM Photo WHERE product_id = ?");
             $stmt2->execute([$row['product_id']]);
             while($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)){
-                $product->photos[] = $row2['filename'];
+                $data[$index]->photos[] =  $row2['filename'];
             }
             $stmt2->closeCursor();
 
-            $stmt2 = $pdo->prepare("SELECT product_variant_id, name, quantity, width, height FROM product_variant pv INNER JOIN variant v ON pv.variant_id = v.variant_id WHERE product_id = ? ORDER BY name");
-            $stmt2->execute([$row['product_id']]);
-            while($row = $stmt2->fetch(PDO::FETCH_ASSOC)){
-                $product->variants[] = $row;
-            }
-            $stmt2->closeCursor();
-
-            $data[] = $product;
         }
 
         return $data;
@@ -161,26 +169,36 @@ class Product {
 
     public static function getProductsList(){
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare("SELECT product_id, category_id, name, price FROM Product");
+        $stmt = $pdo->prepare("SELECT * FROM ProductsList");
         $stmt->execute();
+
         $data = [];
+        $prod_ids = [];
+
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-            $product = new self();
-            $product->product_id = $row['product_id'];
-            $product->category_id = $row['category_id'];
-            $product->name = $row['name'];
-            $product->price = $row['price'];
-            $product->photos = [];
-            $product->variants = [];
+            if(!in_array($row['product_id'], $prod_ids)){
+                $prod_ids[] = $row['product_id'];
 
-            $stmt2 = $pdo->prepare("SELECT product_variant_id, name, quantity, width, height FROM product_variant pv INNER JOIN variant v ON pv.variant_id = v.variant_id WHERE product_id = ? ORDER BY name");
-            $stmt2->execute([$row['product_id']]);
-            while($row = $stmt2->fetch(PDO::FETCH_ASSOC)){
-                $product->variants[] = $row;
+                $product = new self();
+                $product->product_id = $row['product_id'];
+                $product->category_id = $row['category_id'];
+                $product->name = $row['name'];
+                $product->price = $row['price'];
+                $product->photos = [];
+                $product->variants = [];
+
+                $data[] = $product;
             }
-            $stmt2->closeCursor();
 
-            $data[] = $product;
+            $index = count($prod_ids) - 1;
+            if($row['product_variant_id'] != null){
+                $data[$index]->variants[] =  [
+                    "product_variant_id" => $row['product_variant_id'],
+                    "name" => $row['variant_name'],
+                    "quantity" => $row['quantity']
+                ];
+            }
+
         }
 
         return $data;
@@ -254,6 +272,19 @@ class Product {
         $stmt->execute([$data['category_id'], $data['name'], $data['price'], $data['visible']]);
         
         return $pdo->lastInsertId();
+    }
+
+    public static function ifExists($id) {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT product_id FROM `Product` WHERE product_id = ?");
+        $stmt->execute([$id]);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$data) {
+            return false;
+        }
+
+        return true;
     }
 
 }

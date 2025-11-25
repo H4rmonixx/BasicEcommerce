@@ -20,7 +20,7 @@ CREATE TABLE `Article` (
 -- Category
 CREATE TABLE `Category` (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
+    name VARCHAR(32) NOT NULL
 );
 
 -- Product
@@ -176,3 +176,9 @@ INSERT INTO `Article` (title, public, content) VALUES
 
 ("Terms & Conditions", 1,
 '<h1>Terms and Conditions</h1><p>Please read these Terms and Conditions carefully before using our website or making a purchase.  By accessing or using our services, you agree to these terms.</p><h2>1. General</h2><p>These Terms apply to all purchases made through our website. We reserve the right to modify these Terms at any time, with changes taking effect upon publication.</p><h2>2. Orders</h2><p>All orders are subject to availability and confirmation of payment.  We reserve the right to cancel any order in case of stock issues or suspected fraud.</p><h2>3. Prices and Payments</h2><p>All prices are shown in your local currency and include applicable taxes (unless stated otherwise).  Payment must be completed at checkout through the approved payment methods.</p><h2>4. Shipping and Delivery</h2><p>Delivery times are estimates only. We are not responsible for delays caused by couriers, customs, or unforeseen events.</p><h2>5. Returns</h2><p>Returns are accepted according to our <a href="/returns">Returns Policy</a>.  Items must be returned in their original condition within the specified time period.</p><h2>6. Privacy and Data Protection</h2><p>Your personal information is processed securely and used only for order fulfillment and customer support.  For more details, please see our <a href="/privacy">Privacy Policy</a>.</p><h2>7. Contact</h2><p>For any questions regarding these Terms, please contact us at <strong>support@yourstore.com</strong>.</p>');
+
+
+CREATE VIEW ProductsList AS
+SELECT p.product_id as product_id, p.category_id as category_id, p.name as name, p.price as price, p.visible as visible,
+pv.product_variant_id as product_variant_id, pv.variant_id as variant_id, v.name as variant_name, pv.quantity as quantity
+FROM (Product p LEFT JOIN Product_Variant pv ON p.product_id = pv.product_id) LEFT JOIN Variant v ON pv.variant_id = v.variant_id

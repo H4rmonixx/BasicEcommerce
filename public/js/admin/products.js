@@ -18,11 +18,15 @@ function loadProducts(){
                 $tr.append($("<td>", {text: product.name}));
                 $tr.append($("<td>", {class: "d-none d-lg-table-cell", text: variantslist}));
                 $tr.append($("<td>", {class: "d-none d-sm-table-cell", text: product.price + " PLN"}));
-                $tr.append($("<td>", {html: `<a class="link-dark" href="/admin/product/${product.product_id}">Manage</a>`}));
+                let $steer = $("<td>", {class: "d-flex column-gap-2"});
+                $steer.append($("<a>", {class: "btn btn-warning btn-sm", href: `/admin/product/${product.product_id}`, html: '<i class="bi bi-pencil-square"></i>'}));
+                let $deletebtn = $("<button>", {class: "btn btn-danger btn-sm", html: '<i class="bi bi-trash"></i>'});
+                $steer.append($deletebtn);
+                $tr.append($steer);
+                
                 $root.append($tr);
             })
         } catch(e) {
-            alert(e);
             console.log("Unable to load products");
             return $.Deferred().reject("Error occurred.").promise();
         }

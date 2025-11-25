@@ -120,8 +120,6 @@ function loadRelatedProducts(product){
 
 function initPage(){
 
-    loadCartSize();
-
     $(document).prop("title", product_data.name);
 
     let $photos = $('[name="product-photo"]');
@@ -142,7 +140,7 @@ function initPage(){
             }
         }); 
     }
-    $photos[0].click();
+    if($photos.length > 0) $photos[0].click();
 
     $("#to-cart-button").on("click", () => {
         let $inputs = $('input[name="size-select"]:checked');
@@ -187,4 +185,7 @@ $(document).ready(() => {
         else
             infobox_show(error, 5000)
     });
+
+    loadCartSize();
+
 });

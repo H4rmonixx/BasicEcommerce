@@ -27,3 +27,15 @@ main{
     border: 1px solid white;
     text-align: center;
 }
+
+#main-content{
+    overflow-x: auto;
+    max-height: 1500px;
+}
+
+.photo-btn:hover{
+    cursor: pointer;
+}
+.photo-tile:hover > .photo-tile-steer{
+    display: flex !important;
+}
