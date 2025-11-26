@@ -46,9 +46,9 @@ function showProductData(product){
         let $size = $(".product-size");
         let $sizechart = $("#product-sizechart-table");
 
-        product.photos.forEach((path) => {
+        product.photos.forEach((ph) => {
             let $img = $("<img>", {
-                src: "/assets/products/" + path,
+                src: "/assets/products/" + ph.filename,
                 alt: "Product photo",
                 name: "product-photo"
             });

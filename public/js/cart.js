@@ -56,7 +56,7 @@ function refreshCart(){
                 $soldDiv.append($soldDivA);
 
                 let $imgDiv = $("<div>", {class: "col-2 d-flex align-items-center"});
-                $imgDiv.append($("<img>", {class: "w-100 rounded p-2", src: "/assets/products/" + prod.photos[0], alt: "Product photo"}));
+                $imgDiv.append($("<img>", {class: "w-100 rounded p-2", src: "/assets/products/" + prod.photos[0].filename, alt: "Product photo"}));
 
                 let $txtDiv = $("<div>", {class: "col-10 col-sm-4 ps-3 ps-sm-3 d-flex align-items-center justify-content-sm-center"});
                 let $txtDivInner = $("<div>");

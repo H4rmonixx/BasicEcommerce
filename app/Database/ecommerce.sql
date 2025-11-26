@@ -38,7 +38,7 @@ CREATE TABLE `Product` (
 CREATE TABLE `Photo` (
     photo_id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT NOT NULL,
-    filename VARCHAR(32) NOT NULL,
+    filename VARCHAR(64) NOT NULL,
     FOREIGN KEY (product_id) REFERENCES `Product`(product_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 

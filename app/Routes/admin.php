@@ -34,6 +34,12 @@ $router->get('/admin/categories', [AdminController::class, 'categories'], [
 $router->post("/product/new", [ProductController::class, 'addProduct'], [
     APIAdminAuthMiddleware::class
 ]);
+$router->post("/product/photo/new", [ProductController::class, 'addPhoto'], [
+    APIAdminAuthMiddleware::class
+]);
+$router->post("/product/photo/delete/{id}", [ProductController::class, 'deletePhoto'], [
+    APIAdminAuthMiddleware::class
+]);
 $router->post("/category/new", [CategoryController::class, 'addCategory'], [
     APIAdminAuthMiddleware::class
 ]);

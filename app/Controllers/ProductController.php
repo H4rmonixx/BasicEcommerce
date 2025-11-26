@@ -5,9 +5,13 @@ namespace App\Controllers;
 require_once __DIR__ . '/../Core/Request.php';
 require_once __DIR__ . '/../Core/LayoutEngine.php';
 require_once __DIR__ . '/../Models/Product.php';
+require_once __DIR__ . '/../Models/Photo.php';
 use App\Core\Request;
 use App\Core\LayoutEngine;
 use App\Models\Product;
+use App\Models\Photo;
+
+use finfo;
 
 class ProductController {
     public function showProducts(Request $request) {
@@ -99,4 +103,78 @@ class ProductController {
         echo json_encode([true, $product_id]);
         return true;
     }
+
+    public function addPhoto(Request $request){
+
+        $file = $request->file("product-file");
+        if($file == null || $file['error'] !== UPLOAD_ERR_OK){
+            echo null;
+            return true;
+        }
+        $product_id = $request->post("product-id");
+        if($product_id == null){
+            echo null;
+            return true;
+        }
+        
+        $uploadDir = Photo::$fileDir;
+
+        $allowedMime = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->file($file['tmp_name']);
+        if (!in_array($mimeType, $allowedMime)) {
+            echo json_encode([false, "File is not an image"]);
+            return true;
+        }
+
+        $extensionsMap = ['image/jpeg' => 'jpg', 'image/png'  => 'png', 'image/gif'  => 'gif', 'image/webp' => 'webp'];
+        $extension = $extensionsMap[$mimeType];
+        
+        do{
+            $uniqueName = bin2hex(random_bytes(8)) . '_' . uniqid();
+        } while(file_exists($uploadDir . $uniqueName . "." . $extension));
+
+        if(move_uploaded_file($file['tmp_name'], $uploadDir . $uniqueName . "." . $extension)){
+            if(Photo::createPhoto($product_id, $uniqueName . "." . $extension) <= 0){
+                unlink($uploadDir . $uniqueName . "." . $extension);
+                echo null;
+                return true;
+            }
+            echo json_encode([true, $uniqueName . "." . $extension]);
+        } else {
+            echo null;
+        }
+
+        return true;
+    }
+
+    public function deletePhoto(Request $request){
+        $photoid = $request->param("id");
+        if($photoid == null){
+            echo null;
+            return true;
+        }
+
+        $photo = Photo::getByID($photoid);
+        if($photo == null){
+            echo null;
+            return true;
+        }
+
+        if(!file_exists(Photo::$fileDir . $photo->filename)){
+            echo null;
+            return true;
+        }
+
+        if(Photo::deletePhoto($photo->photo_id) <= 0){
+            echo null;
+            return true;
+        }
+
+        unlink(Photo::$fileDir . $photo->filename);
+
+        echo json_encode([true]);
+        return true;
+    }
+
 }

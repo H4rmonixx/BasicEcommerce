@@ -29,11 +29,11 @@ function loadProductTiles(products_data){
             });
 
             let $img_first = $("<img>", {
-                src: "/assets/products/"+product.photos[0],
+                src: "/assets/products/"+product.photos[0].filename,
                 alt: "Product photo"
             });
             let $img_second = $("<img>", {
-                src: "/assets/products/"+product.photos[1],
+                src: "/assets/products/"+product.photos[1].filename,
                 alt: "Product photo"
             });
 

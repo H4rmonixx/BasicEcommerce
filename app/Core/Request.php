@@ -7,6 +7,7 @@ class Request
     private array $get;
     private array $post;
     private array $server;
+    private array $files;
     private array $routeParams = [];
 
     public function __construct()
@@ -14,6 +15,7 @@ class Request
         $this->get = $_GET;
         $this->post = $_POST;
         $this->server = $_SERVER;
+        $this->files = $_FILES;
         
         if($this->uri() !== '/' && str_ends_with($this->uri(), '/')){
             $cleanUri = rtrim($this->uri(), '/');
@@ -45,6 +47,11 @@ class Request
     public function post(string $key, $default = null)
     {
         return $this->post[$key] ?? $default;
+    }
+
+    public function file(string $key, $default = null)
+    {
+        return $this->files[$key] ?? $default;
     }
 
     public function json(): ?array

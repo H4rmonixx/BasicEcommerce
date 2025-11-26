@@ -36,10 +36,10 @@ class Product {
         $product->variants = [];
         $product->photos = [];
 
-        $stmt2 = $pdo->prepare("SELECT filename FROM Photo WHERE product_id = ?");
+        $stmt2 = $pdo->prepare("SELECT photo_id, filename FROM Photo WHERE product_id = ?");
         $stmt2->execute([$id]);
         while($row = $stmt2->fetch(PDO::FETCH_ASSOC)){
-            $product->photos[] = $row['filename'];
+            $product->photos[] = $row;
         }
         $stmt2->closeCursor();
 
@@ -72,10 +72,10 @@ class Product {
         $product->variants = [];
         $product->photos = [];
 
-        $stmt2 = $pdo->prepare("SELECT filename FROM Photo WHERE product_id = ?");
+        $stmt2 = $pdo->prepare("SELECT photo_id, filename FROM Photo WHERE product_id = ?");
         $stmt2->execute([$product->product_id]);
         while($row = $stmt2->fetch(PDO::FETCH_ASSOC)){
-            $product->photos[] = $row['filename'];
+            $product->photos[] = $row;
         }
         $stmt2->closeCursor();
 
@@ -155,10 +155,10 @@ class Product {
                 ];
             }
 
-            $stmt2 = $pdo->prepare("SELECT filename FROM Photo WHERE product_id = ?");
+            $stmt2 = $pdo->prepare("SELECT photo_id, filename FROM Photo WHERE product_id = ?");
             $stmt2->execute([$row['product_id']]);
             while($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)){
-                $data[$index]->photos[] =  $row2['filename'];
+                $data[$index]->photos[] =  $row2;
             }
             $stmt2->closeCursor();
 
