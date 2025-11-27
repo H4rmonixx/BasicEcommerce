@@ -112,7 +112,7 @@ class ProductController {
         }
 
         $photos = Product::getPhotos($id);
-        foreach($ph : $photos){
+        foreach($photos as $ph){
             
         }
 
@@ -128,6 +128,11 @@ class ProductController {
         }
         $product_id = $request->post("product-id");
         if($product_id == null){
+            echo null;
+            return true;
+        }
+        $order_number = $request->post("order-number");
+        if($order_number == null){
             echo null;
             return true;
         }
@@ -150,7 +155,7 @@ class ProductController {
         } while(file_exists($uploadDir . $uniqueName . "." . $extension));
 
         if(move_uploaded_file($file['tmp_name'], $uploadDir . $uniqueName . "." . $extension)){
-            $photoid = Photo::createPhoto($product_id, $uniqueName . "." . $extension);
+            $photoid = Photo::createPhoto($product_id, $uniqueName . "." . $extension, $order_number);
             if($photoid <= 0){
                 unlink($uploadDir . $uniqueName . "." . $extension);
                 echo null;
@@ -188,6 +193,70 @@ class ProductController {
         }
 
         unlink(Photo::$fileDir . $photo->filename);
+
+        echo json_encode([true]);
+        return true;
+    }
+
+    public function reorderPhoto(Request $request){
+        $prodid = $request->param("productid");
+        if($prodid == null){
+            echo null;
+            return true;
+        }
+        $data = $request->json();
+        if($data == null){
+            echo null;
+            return true;
+        }
+
+        $index = 1;
+        foreach($data as $ph){
+            Photo::reorderPhoto($ph['photo_id'], $index);
+            $index++;
+        }
+
+        echo json_encode([true]);
+        return true;
+    }
+
+    public function editDesc(Request $request){
+        $prodid = $request->param("productid");
+        if($prodid == null){
+            echo null;
+            return true;
+        }
+        $data = $request->post('content');
+        if($data == null){
+            echo null;
+            return true;
+        }
+
+        if(!Product::editDesc($prodid, $data)){
+            echo null;
+            return true;
+        }
+
+        echo json_encode([true]);
+        return true;
+    }
+
+    public function editInfo(Request $request){
+        $prodid = $request->param("productid");
+        if($prodid == null){
+            echo null;
+            return true;
+        }
+        $data = $request->json();
+        if($data == null){
+            echo null;
+            return true;
+        }
+
+        if(!Product::editInfo($prodid, $data)){
+            echo null;
+            return true;
+        }
 
         echo json_encode([true]);
         return true;

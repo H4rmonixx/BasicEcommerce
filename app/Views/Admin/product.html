@@ -5,6 +5,7 @@ H.R.M.X Admin / Product
 @section("scripts")
 <script src="/js/admin/product.js"></script>
 <script src="/js/infobox.js"></script>
+<script src="https://cdn.tiny.cloud/1/oizg6bmdnjk7fg4wthj19y7p0ez74xodwh4mc6d7vpi1qoxt/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
 @endsection
 
 @section("content")
@@ -19,16 +20,22 @@ H.R.M.X Admin / Product
             </div>
         </div>
     </div>
-    <div class="col-12">
+    <div class="col-xxl-5">
         <div class="text-decoration-underline mt-3 mb-2">Information</div>
-    </div>
-    <div class="col-md-6">
-        
-        <form class="border bg-light py-2 px-3">
+        <form class="border bg-light py-2 px-3" id="form-info">
             <div class="mb-1 row">
                 <label for="input-name" class="col-sm-4 col-form-label">Name</label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control form-control-sm" minlength="3" maxlength="32" id="input-name" required>
+                </div>
+            </div>
+            <div class="mb-2 row">
+                <label for="input-category" class="col-sm-4 col-form-label">Category:</label>
+                <div class="col-sm-8">
+                    <select id="input-category" class="form-control" required>
+                        <!-- -->
+                    </select>
+                    <div class="form-text"><a href="/admin/categories">Manage categories</a></div>
                 </div>
             </div>
             <div class="mb-2 row">
@@ -46,11 +53,32 @@ H.R.M.X Admin / Product
             </div>
         </form>
     </div>
-    <div class="col-md-6">
-        <div class="mb-1 text-decoration-underline"></div>
-        <form class="border bg-light py-2 px-3">
-            desc
+    <div class="col-xxl-7">
+        <div class="mt-3 mb-2 text-decoration-underline">Description</div>
+        <form class="border bg-light py-2 px-3" id="form-desc">
+            <textarea id="desc-editor" name="content"></textarea>
+            <div class="d-flex justify-content-end py-2">
+                <button type="submit" class="btn btn-dark btn-sm">Save</button>
+            </div>
         </form>
+    </div>
+    <div class="col-12">
+        <div class="mt-3 mb-2 text-decoration-underline">Variants</div>
+        <div class="py-2 px-3 bg-light border">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Variant</th><th>Quantity</th><th></th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-variants">
+
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-end py-2">
+                <button type="button" class="btn btn-dark btn-sm">Add</button>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

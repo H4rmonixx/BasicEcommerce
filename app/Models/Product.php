@@ -15,11 +15,12 @@ class Product {
     public $price;
     public $photos;
     public $variants;
+    public $visible;
 
 
     public static function getByID($id) {
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare("SELECT * FROM Product WHERE product_id = ? AND visible = 1");
+        $stmt = $pdo->prepare("SELECT * FROM Product WHERE product_id = ?");
         $stmt->execute([$id]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -33,10 +34,11 @@ class Product {
         $product->name = $data['name'];
         $product->description = $data['description'];
         $product->price = $data['price'];
+        $product->visible = $data['visible'];
         $product->variants = [];
         $product->photos = [];
 
-        $stmt2 = $pdo->prepare("SELECT photo_id, filename FROM Photo WHERE product_id = ?");
+        $stmt2 = $pdo->prepare("SELECT photo_id, filename FROM Photo WHERE product_id = ? ORDER BY order_number ASC");
         $stmt2->execute([$id]);
         while($row = $stmt2->fetch(PDO::FETCH_ASSOC)){
             $product->photos[] = $row;
@@ -72,7 +74,7 @@ class Product {
         $product->variants = [];
         $product->photos = [];
 
-        $stmt2 = $pdo->prepare("SELECT photo_id, filename FROM Photo WHERE product_id = ?");
+        $stmt2 = $pdo->prepare("SELECT photo_id, filename FROM Photo WHERE product_id = ? ORDER BY order_number ASC");
         $stmt2->execute([$product->product_id]);
         while($row = $stmt2->fetch(PDO::FETCH_ASSOC)){
             $product->photos[] = $row;
@@ -164,7 +166,7 @@ class Product {
                 ];
             }
 
-            $stmt2 = $pdo->prepare("SELECT photo_id, filename FROM Photo WHERE product_id = ?");
+            $stmt2 = $pdo->prepare("SELECT photo_id, filename FROM Photo WHERE product_id = ? ORDER BY order_number ASC");
             $stmt2->execute([$row['product_id']]);
             while($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)){
                 $data[$index]->photos[] =  $row2;
@@ -300,6 +302,22 @@ class Product {
         if (!$data) {
             return false;
         }
+
+        return true;
+    }
+
+    public static function editDesc($product_id, $new_desc){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("UPDATE Product SET description = ? WHERE product_id = ?");
+        $stmt->execute([$new_desc, $product_id]);
+
+        return true;
+    }
+
+    public static function editInfo($product_id, $data){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("UPDATE Product SET name = ?, price = ?, category_id = ?, visible = ?  WHERE product_id = ?");
+        $stmt->execute([$data['name'], $data['price'], $data['category_id'], $data['visible'], $product_id]);
 
         return true;
     }

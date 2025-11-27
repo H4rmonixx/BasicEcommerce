@@ -39,6 +39,7 @@ CREATE TABLE `Photo` (
     photo_id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT NOT NULL,
     filename VARCHAR(64) NOT NULL,
+    order_number INT NOT NULL,
     FOREIGN KEY (product_id) REFERENCES `Product`(product_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -118,15 +119,15 @@ INSERT INTO `Product` (category_id, name, description, price, visible) VALUES
 (2, 'HALF-CUT WORN Denim', 'Dark blue slim fit jeans', 199.00, 1),
 (2, 'CARGO FLARED Pants', 'Casual cotton shorts', 129.00, 1);
 
-INSERT INTO `Photo` (product_id, filename) VALUES
-("1", "tshirt-loopsports.png"),
-("1", "tshirt-loopsports-2.png"),
-("2", "tshirt-planetearth.png"),
-("2", "tshirt-planetearth-2.png"),
-("3", "pants-halfcutworn.png"),
-("3", "pants-halfcutworn-2.png"),
-("4", "pants-cargoflared.png"),
-("4", "pants-cargoflared-2.png");
+INSERT INTO `Photo` (product_id, filename, order_number) VALUES
+("1", "tshirt-loopsports.png", 1),
+("1", "tshirt-loopsports-2.png", 2),
+("2", "tshirt-planetearth.png", 1),
+("2", "tshirt-planetearth-2.png", 2),
+("3", "pants-halfcutworn.png", 1),
+("3", "pants-halfcutworn-2.png", 2),
+("4", "pants-cargoflared.png", 1),
+("4", "pants-cargoflared-2.png", 2);
 
 INSERT INTO `Variant` (name) VALUES
 ('S'),

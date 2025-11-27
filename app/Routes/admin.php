@@ -36,10 +36,19 @@ $router->post("/product/new", [ProductController::class, 'addProduct'], [
 $router->post("/product/delete/{id}", [ProductController::class, 'deleteProduct'], [
     APIAdminAuthMiddleware::class
 ]);
+$router->post("/product/edit/desc/{productid}", [ProductController::class, 'editDesc'], [
+    APIAdminAuthMiddleware::class
+]);
+$router->post("/product/edit/info/{productid}", [ProductController::class, 'editInfo'], [
+    APIAdminAuthMiddleware::class
+]);
 $router->post("/product/photo/new", [ProductController::class, 'addPhoto'], [
     APIAdminAuthMiddleware::class
 ]);
 $router->post("/product/photo/delete/{id}", [ProductController::class, 'deletePhoto'], [
+    APIAdminAuthMiddleware::class
+]);
+$router->post("/product/photos/reorder/{productid}", [ProductController::class, 'reorderPhoto'], [
     APIAdminAuthMiddleware::class
 ]);
 $router->post("/products/list", [ProductController::class, 'loadProductsList'], [
