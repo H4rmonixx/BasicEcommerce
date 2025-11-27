@@ -8,6 +8,21 @@ H.R.M.X Admin / Categories
 @endsection
 
 @section("content")
+<div class="modal" id="modal-category-delete" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content" method="post" id="modal-category-delete-form">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5"><i class="bi bi-trash"></i> Delete category <span id="modal-category-delete-name"></span>?</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <input type="number" id="modal-category-delete-input-id" class="visually-hidden">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </div>
+        </form>
+    </div>
+</div>
 <div class="modal" id="modal-category-new" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form class="modal-content" method="post" id="modal-category-new-form">
@@ -18,7 +33,7 @@ H.R.M.X Admin / Categories
             <div class="modal-body">
                 <div class="mb-2">
                     <label for="input-category-new-name" class="fw-bold mb-1">Name:</label>
-                    <input type="text" class="form-control" id="input-category-new-name" required minlength="6" maxlength="32">
+                    <input type="text" class="form-control" id="input-category-new-name" required minlength="3" maxlength="32">
                 </div>
             </div>
             <div class="modal-footer">
@@ -38,7 +53,7 @@ H.R.M.X Admin / Categories
             <div class="modal-body">
                 <div class="mb-2">
                     <label for="input-category-edit-name" class="fw-bold mb-1">Name:</label>
-                    <input type="text" class="form-control" id="input-category-edit-name" required minlength="6" maxlength="32">
+                    <input type="text" class="form-control" id="input-category-edit-name" required minlength="3" maxlength="32">
                     <input type="number" class="visually-hidden" id="input-category-edit-id" required>
                 </div>
             </div>

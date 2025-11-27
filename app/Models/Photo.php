@@ -37,7 +37,7 @@ class Photo {
         $stmt = $pdo->prepare("INSERT INTO Photo (product_id, filename) VALUES (?, ?)");
         $stmt->execute([$product_id, $filename]);
         
-        return $stmt->rowCount();
+        return $pdo->lastInsertId();
     }
 
     public static function deletePhoto($id){

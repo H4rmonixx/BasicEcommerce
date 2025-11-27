@@ -104,6 +104,21 @@ class ProductController {
         return true;
     }
 
+    public function deleteProduct(Request $request){
+        $id = $request->param("id");
+        if($id == null){
+            echo null;
+            return true;
+        }
+
+        $photos = Product::getPhotos($id);
+        foreach($ph : $photos){
+            
+        }
+
+        return true;
+    }
+
     public function addPhoto(Request $request){
 
         $file = $request->file("product-file");
@@ -135,12 +150,13 @@ class ProductController {
         } while(file_exists($uploadDir . $uniqueName . "." . $extension));
 
         if(move_uploaded_file($file['tmp_name'], $uploadDir . $uniqueName . "." . $extension)){
-            if(Photo::createPhoto($product_id, $uniqueName . "." . $extension) <= 0){
+            $photoid = Photo::createPhoto($product_id, $uniqueName . "." . $extension);
+            if($photoid <= 0){
                 unlink($uploadDir . $uniqueName . "." . $extension);
                 echo null;
                 return true;
             }
-            echo json_encode([true, $uniqueName . "." . $extension]);
+            echo json_encode([true, $photoid, $uniqueName . "." . $extension]);
         } else {
             echo null;
         }

@@ -61,4 +61,21 @@ class CategoryController {
         return true;
     }
 
+    public function deleteCategory(Request $request){
+        $id = $request->param("id");
+        if($id == null){
+            echo null;
+            return true;
+        }
+
+        if(Category::getProductsCountInCategory($id) > 0){
+            echo json_encode([false, "Category not empty"]);
+            return true;
+        }
+
+        $result = Category::deleteCategory($id);
+        echo json_encode([$result]);
+        return true;
+    }
+
 }

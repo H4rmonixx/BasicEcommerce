@@ -8,6 +8,21 @@ H.R.M.X Admin / Products
 @endsection
 
 @section("content")
+<div class="modal" id="modal-product-delete" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content" method="post" id="modal-product-delete-form">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5"><i class="bi bi-trash"></i> Delete product <span id="modal-product-delete-name"></span>?</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <input type="number" id="modal-product-delete-input-id" class="visually-hidden">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </div>
+        </form>
+    </div>
+</div>
 <div class="modal" id="modal-new-product" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form class="modal-content" method="post" id="modal-new-product-form">
@@ -25,7 +40,7 @@ H.R.M.X Admin / Products
                     <select id="input-product-category" class="form-control" required>
                         
                     </select>
-                    <div class="form-text"><a href="/admin/categories"><i class="bi bi-plus-lg"></i> Manage categories</a></div>
+                    <div class="form-text"><a href="/admin/categories">Manage categories</a></div>
                 </div>
                 <div class="mb-2">
                     <label for="input-product-price" class="fw-bold mb-1">Price:</label>

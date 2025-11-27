@@ -21,6 +21,7 @@ function loadProducts(){
                 let $steer = $("<td>", {class: "d-flex column-gap-2"});
                 $steer.append($("<a>", {class: "btn btn-warning btn-sm", href: `/admin/product/${product.product_id}`, html: '<i class="bi bi-pencil-square"></i>'}));
                 let $deletebtn = $("<button>", {class: "btn btn-danger btn-sm", html: '<i class="bi bi-trash"></i>'});
+                $deletebtn.on("click", ()=>{deleteProduct(product.product_id, product.name)});
                 $steer.append($deletebtn);
                 $tr.append($steer);
                 
@@ -50,6 +51,12 @@ function loadCategories(){
             return $.Deferred().reject("Error occurred.").promise();
         }
     });
+}
+
+function deleteProduct(product_id, name){
+    $("#modal-product-delete-name").text(name);
+    $("#modal-product-delete-input-id").val(product_id);
+    bootstrap.Modal.getOrCreateInstance('#modal-product-delete').show();
 }
 
 $(document).ready(()=>{
@@ -86,6 +93,35 @@ $(document).ready(()=>{
                     return $.Deferred().reject("Error occurred.").promise();
                 }
             } catch(e){
+                console.log("Unable to add product");
+                return $.Deferred().reject("Error occurred.").promise();
+            }
+        }).catch((error) => {
+            if(error.statusText)
+                infobox_show(error.statusText, 5000);
+            else
+                infobox_show(error, 5000)
+        });
+    });
+
+    $("#modal-product-delete-form").on("submit", function(e){
+        e.preventDefault();
+        let prodid = $("#modal-product-delete-input-id").val();
+        $.ajax({
+            url: "/product/delete/"+prodid,
+            type: "post"
+        }).then((success) => {
+            try{
+                let json = JSON.parse(success);
+                if(json[0]){
+                    window.location.reload();
+                } else {
+                    bootstrap.Modal.getOrCreateInstance('#modal-product-delete').hide();
+                    console.log("Unable to delete product");
+                    return $.Deferred().reject(json[1]).promise();
+                }
+            } catch(e){
+                bootstrap.Modal.getOrCreateInstance('#modal-product-delete').hide();
                 console.log("Unable to add product");
                 return $.Deferred().reject("Error occurred.").promise();
             }

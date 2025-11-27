@@ -17,6 +17,7 @@ class Order {
     public $post_code;
     public $country;
     public $shipping_price;
+    public $products_price;
     public $payu_order_id;
     public $payment_method;
     public $status;
@@ -42,6 +43,7 @@ class Order {
         $order->post_code = $data['post_code'];
         $order->country = $data['country'];
         $order->shipping_price = $data['shipping_price'];
+        $order->products_price = $data['products_price'];
         $order->payu_order_id = $data['payu_order_id'];
         $order->payment_method = $data['payment_method'];
         $order->status = $data['status'];

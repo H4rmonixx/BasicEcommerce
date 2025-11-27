@@ -12,7 +12,7 @@ class Category {
     public $category_id;
     public $name;
 
-    public static function getByID(int $id) {
+    public static function getByID($id) {
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare("SELECT * FROM Category WHERE category_id = ?");
         $stmt->execute([$id]);
@@ -38,6 +38,14 @@ class Category {
         return $data;
     }
 
+    public static function getProductsCountInCategory($id){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT Count(*) FROM Product WHERE category_id = ?");
+        $stmt->execute([$id]);
+        
+        return $stmt->fetchColumn();
+    }
+
     public static function createCategory($data){
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare("INSERT INTO Category (name) VALUES (?)");
@@ -50,6 +58,14 @@ class Category {
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare("UPDATE Category SET name = ? WHERE category_id = ?");
         $stmt->execute([$data['name'], $id]);
+        
+        return $stmt->rowCount();
+    }
+
+    public static function deleteCategory($id){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("DELETE FROM Category WHERE category_id = ?");
+        $stmt->execute([$id]);
         
         return $stmt->rowCount();
     }

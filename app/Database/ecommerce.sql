@@ -56,7 +56,7 @@ CREATE TABLE `Product_Variant` (
     quantity INT UNSIGNED NOT NULL DEFAULT 1,
     width INT UNSIGNED NOT NULL,
     height INT UNSIGNED NOT NULL,
-    FOREIGN KEY (product_id) REFERENCES `Product`(product_id) ON UPDATE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES `Product`(product_id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (variant_id) REFERENCES `Variant`(variant_id) ON UPDATE CASCADE
 );
 
@@ -87,6 +87,7 @@ CREATE TABLE `Order` (
     post_code VARCHAR(20) NOT NULL,
     country VARCHAR(64) NOT NULL,
     shipping_price DECIMAL(10,2) NOT NULL,
+    products_price DECIMAL (10,2) NOT NULL,
     payu_order_id VARCHAR(64) DEFAULT NULL,
     payment_method ENUM('CASH', 'PAYU') NOT NULL DEFAULT 'CASH',
     status ENUM('PENDING', 'PAID', 'SHIPPED', "COMPLETED", 'CANCELED', 'FAILED') NOT NULL DEFAULT 'PENDING',
@@ -100,7 +101,7 @@ CREATE TABLE `Order_Detail` (
     product_variant_id INT NOT NULL,
     quantity INT NOT NULL DEFAULT 1,
     FOREIGN KEY (order_id) REFERENCES `Order`(order_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (product_variant_id) REFERENCES `Product_Variant`(product_variant_id) ON UPDATE CASCADE
+    FOREIGN KEY (product_variant_id) REFERENCES `Product_Variant`(product_variant_id) ON UPDATE CASCADE ON DELETE NO ACTION
 );
 
 
@@ -139,7 +140,7 @@ INSERT INTO `Product_Variant` (product_id, variant_id, quantity, width, height) 
 (1, 2, 80, 50, 60),
 (1, 3, 60, 60, 70),
 (2, 2, 40, 50, 60),
-(3, 3, 0, 44, 100),
+(3, 3, 0, 44, 100), 
 (4, 2, 70, 40, 98);
 
 -- Password test1234 for both
@@ -147,10 +148,9 @@ INSERT INTO `User` (firstname, lastname, phone_number, email, password, address,
 ('Alice', 'Nowak', '+48123456789', 'alice@example.com', '$2y$10$PiWxhyQyGIC.H5rlPvbMDezj4CLlrwndFpwwuQt4U35rbeAE1dTty', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 'CUSTOMER'),
 ('Diana', 'Zielińska', '+48987654321', 'diana@example.com', '$2y$10$PiWxhyQyGIC.H5rlPvbMDezj4CLlrwndFpwwuQt4U35rbeAE1dTty', 'Forest', '5', 'Gdansk', '80-100', 'Polska', 'ADMIN');
 
-INSERT INTO `Order` (user_id, date, address, building, city, post_code, country, shipping_price) VALUES
-(1, '2025-10-01 14:23:00', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 22.0),
-(1, '2025-10-10 19:45:00', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 22.0),
-(2, '2025-10-15 11:30:00', 'Forest', '5', 'Gdansk', '80-100', 'Polska', 22.0);
+INSERT INTO `Order` (user_id, date, address, building, city, post_code, country, shipping_price, products_price) VALUES
+(1, '2025-10-01 14:23:00', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 22.0, 149.97),
+(2, '2025-10-10 19:45:00', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 22.0, 369.79);
 
 INSERT INTO `Order_Detail` (order_id, product_variant_id, quantity) VALUES
 (1, 1, 2), 

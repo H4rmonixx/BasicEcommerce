@@ -272,6 +272,7 @@ $(document).ready(()=>{
         page = 1;
         pagesCount = null;
         getFilters().then(loadPagesCount).then(refreshList);
+        bootstrap.Dropdown.getOrCreateInstance(".dropdown").hide();
     });
 
     $("#page-link-left").on("click", function(){

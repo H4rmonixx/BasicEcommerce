@@ -44,7 +44,6 @@ function loadUserOrders(){
                 let $prodlistbody = $("<tbody>");
                 $prodlist.append($prodlistbody);
 
-                let productsPrice = 0;
                 let $detaildivleft = $("<div>", {class: "col-md-6"});
                 $detaildivleft.append($("<div>", {html: `<span class="fw-bold">Status: </span> ${order.status}`}));
                 $detaildivleft.append($("<div>", {html: `<span class="fw-bold">Payment: </span> ${order.payment_method}`}))
@@ -56,6 +55,10 @@ function loadUserOrders(){
                 $detaildivright.append($productsPriceDiv);
                 $detaildivright.append($shipmentDiv);
                 $detaildivright.append($totalPriceDiv);
+
+                order.products_price = parseFloat(order.products_price);
+                $productsPriceDiv.html(`<span class="fw-bold">Products price: </span> ${order.products_price} PLN`);
+                $totalPriceDiv.html(`<span class="fw-bold">Total price: </span> ${order.products_price+parseFloat(order.shipping_price)} PLN`);
 
                 $detaildivtop.append($prodlist);
                 $detaildiv.append($detaildivtop);
@@ -80,13 +83,11 @@ function loadUserOrders(){
                             $tmp.append($("<td>", {text: json.price + " PLN", class: "d-none d-md-table-cell"}));
                             $tmp.append($("<td>", {text: variant.quantity + "x"}));
                             $tmp.append($("<td>", {text: (variant.quantity * json.price) + " PLN"}));
-                            $prodlistbody.append($tmp);
-                            productsPrice += (variant.quantity * json.price);
-                            $productsPriceDiv.html(`<span class="fw-bold">Products price: </span> ${productsPrice} PLN`);
-                            $totalPriceDiv.html(`<span class="fw-bold">Total price: </span> ${productsPrice+parseFloat(order.shipping_price)} PLN`);
+                            $prodlistbody.append($tmp);                            
                         } catch(e) {
-                            console.log("Unable to load product");
-                            return $.Deferred().reject("Error occurred").promise();
+                            let $tmp = $("<tr>");
+                            $tmp.append($("<td>", {text: "Product deleted", class: "fw-bold text-start", colspan: 5}));
+                            $prodlistbody.append($tmp);
                         }
                     }).catch((error)=>{
                         if(error.statusText)

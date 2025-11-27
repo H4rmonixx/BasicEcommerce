@@ -159,7 +159,7 @@ $(document).ready(()=>{
             try{
                 let json = JSON.parse(success);
                 if(json[0]){
-                    product_data.photos.push(json[1]);
+                    product_data.photos.push({photo_id: json[1], filename: json[2]});
                     showPhotos();
                     infobox_show("Photo uploaded", 3000, [50, 100, 50]);
                 } else {

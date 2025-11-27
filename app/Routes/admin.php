@@ -30,8 +30,10 @@ $router->get('/admin/categories', [AdminController::class, 'categories'], [
 ]);
 
 
-
 $router->post("/product/new", [ProductController::class, 'addProduct'], [
+    APIAdminAuthMiddleware::class
+]);
+$router->post("/product/delete/{id}", [ProductController::class, 'deleteProduct'], [
     APIAdminAuthMiddleware::class
 ]);
 $router->post("/product/photo/new", [ProductController::class, 'addPhoto'], [
@@ -40,15 +42,22 @@ $router->post("/product/photo/new", [ProductController::class, 'addPhoto'], [
 $router->post("/product/photo/delete/{id}", [ProductController::class, 'deletePhoto'], [
     APIAdminAuthMiddleware::class
 ]);
+$router->post("/products/list", [ProductController::class, 'loadProductsList'], [
+    APIAdminAuthMiddleware::class
+]);
+
+
 $router->post("/category/new", [CategoryController::class, 'addCategory'], [
     APIAdminAuthMiddleware::class
 ]);
 $router->post("/category/edit/{id}", [CategoryController::class, 'editCategory'], [
     APIAdminAuthMiddleware::class
 ]);
-$router->post("/products/list", [ProductController::class, 'loadProductsList'], [
+$router->post("/category/delete/{id}", [CategoryController::class, 'deleteCategory'], [
     APIAdminAuthMiddleware::class
 ]);
+
+
 
 
 return $router;

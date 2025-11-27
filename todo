@@ -4,14 +4,14 @@
 phpmailer
 payu connect
 dla kazdej strony z url z parametrem sprawdzic, czy dany artykul lub produkt istnieje zanim wyswietlimy strone
-delete prods
-delete cats
+delete prods (ProductController)
 product photos left / right
 product name, desc, public, price
 product variant add and its quantity
 variant add / delete
 newsletter
 
+take order repair (products price)
 
 Widoki:
 1. ProductsList

@@ -15,7 +15,7 @@ function loadCategories(){
                 let $btn = $("<button>", {type: "button", class: "btn btn-warning btn-sm", html: '<i class="bi bi-pencil-square"></i>'});
                 $btn.on("click", ()=>{openEditModal(cat.category_id)});
                 let $btn2 = $("<button>", {type: "button", class: "btn btn-danger btn-sm", html: '<i class="bi bi-trash"></i>'});
-                $btn2.on("click", ()=>{deleteCat(cat.category_id)});
+                $btn2.on("click", ()=>{deleteCat(cat.category_id, cat.name)});
 
                 $btntd.append($btn);
                 $btntd.append($btn2);
@@ -39,8 +39,7 @@ function openEditModal(category_id){
             let json = JSON.parse(success);
             $("#input-category-edit-name").val(json.name);
             $("#input-category-edit-id").val(json.category_id);
-            let modal = new bootstrap.Modal(document.getElementById('modal-category-edit'));
-            modal.show();
+            bootstrap.Modal.getOrCreateInstance('#modal-category-edit').show();
         } catch (e) {
             console.log("Unable to load category");
             return $.Deferred().reject("Error occurred.").promise();
@@ -53,8 +52,10 @@ function openEditModal(category_id){
     });
 }
 
-function deleteCat(category_id){
-
+function deleteCat(category_id, name){
+    $("#modal-category-delete-name").text(name);
+    $("#modal-category-delete-input-id").val(category_id);
+    bootstrap.Modal.getOrCreateInstance('#modal-category-delete').show();
 }
 
 $(document).ready(()=>{
@@ -66,8 +67,8 @@ $(document).ready(()=>{
     });
 
     $("#button-new-category").on("click", ()=>{
-        let modal = new bootstrap.Modal(document.getElementById('modal-category-new'));
-        modal.show();
+        $("#input-category-new-name").val("");
+        bootstrap.Modal.getOrCreateInstance('#modal-category-new').show();
     });
 
     $("#modal-category-new-form").on("submit", function(e){
@@ -84,10 +85,12 @@ $(document).ready(()=>{
                 if(json[0]){
                     window.location.reload();
                 } else {
+                    bootstrap.Modal.getOrCreateInstance('#modal-category-new').hide();
                     console.log("Unable to add category");
                     return $.Deferred().reject("Error occurred.").promise();
                 }
             } catch(e){
+                bootstrap.Modal.getOrCreateInstance('#modal-category-new').hide();
                 console.log("Unable to add category");
                 return $.Deferred().reject("Error occurred.").promise();
             }
@@ -114,11 +117,42 @@ $(document).ready(()=>{
                 if(json[0]){
                     window.location.reload();
                 } else {
+                    bootstrap.Modal.getOrCreateInstance('#modal-category-edit').hide();
                     console.log("Unable to edit category");
                     return $.Deferred().reject("Error occurred.").promise();
                 }
             } catch(e){
+                bootstrap.Modal.getOrCreateInstance('#modal-category-edit').hide();
                 console.log("Unable to edit category");
+                return $.Deferred().reject("Error occurred.").promise();
+            }
+        }).catch((error) => {
+            if(error.statusText)
+                infobox_show(error.statusText, 5000);
+            else
+                infobox_show(error, 5000)
+        });
+    });
+
+    $("#modal-category-delete-form").on("submit", function(e){
+        e.preventDefault();
+        let catid = $("#modal-category-delete-input-id").val();
+        $.ajax({
+            url: "/category/delete/"+catid,
+            type: "post"
+        }).then((success) => {
+            try{
+                let json = JSON.parse(success);
+                if(json[0]){
+                    window.location.reload();
+                } else {
+                    bootstrap.Modal.getOrCreateInstance('#modal-category-delete').hide();
+                    console.log("Unable to delete category");
+                    return $.Deferred().reject(json[1]).promise();
+                }
+            } catch(e){
+                bootstrap.Modal.getOrCreateInstance('#modal-category-delete').hide();
+                console.log("Unable to delete category");
                 return $.Deferred().reject("Error occurred.").promise();
             }
         }).catch((error) => {

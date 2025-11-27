@@ -17,7 +17,7 @@ class Product {
     public $variants;
 
 
-    public static function getByID(int $id) {
+    public static function getByID($id) {
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare("SELECT * FROM Product WHERE product_id = ? AND visible = 1");
         $stmt->execute([$id]);
@@ -53,7 +53,7 @@ class Product {
         return $product;
     }
 
-    public static function getByVariantID(int $variantid) {
+    public static function getByVariantID($variantid) {
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare("SELECT * FROM Product p INNER JOIN Product_Variant pv ON p.product_id = pv.product_id WHERE pv.product_variant_id = ? AND visible = 1");
         $stmt->execute([$variantid]);
@@ -87,6 +87,15 @@ class Product {
         $stmt2->closeCursor();
 
         return $product;
+    }
+
+    public static function getPhotos($id){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT * FROM Photo WHERE product_id = ?");
+        $stmt->execute([$id]);
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $data;
     }
 
     public static function getFilteredProducts($filters) {
@@ -272,6 +281,14 @@ class Product {
         $stmt->execute([$data['category_id'], $data['name'], $data['price'], $data['visible']]);
         
         return $pdo->lastInsertId();
+    }
+
+    public static function deleteProduct($id){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("DELETE FROM Product WHERE product_id = ?");
+        $stmt->execute([$id]);
+        
+        return $stmt->rowCount();
     }
 
     public static function ifExists($id) {
