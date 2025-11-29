@@ -99,10 +99,10 @@ CREATE TABLE `Order` (
 CREATE TABLE `Order_Detail` (
     order_detail_id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,
-    product_variant_id INT NOT NULL,
+    product_variant_id INT NULL,
     quantity INT NOT NULL DEFAULT 1,
     FOREIGN KEY (order_id) REFERENCES `Order`(order_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (product_variant_id) REFERENCES `Product_Variant`(product_variant_id) ON UPDATE CASCADE ON DELETE NO ACTION
+    FOREIGN KEY (product_variant_id) REFERENCES `Product_Variant`(product_variant_id) ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 

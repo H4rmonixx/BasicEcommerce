@@ -5,7 +5,7 @@ phpmailer
 payu connect
 dla kazdej strony z url z parametrem sprawdzic, czy dany artykul lub produkt istnieje zanim wyswietlimy strone
 delete prods (ProductController)
-product variant add and its quantity
+product variant quantity edit
 variant add / delete
 newsletter
 

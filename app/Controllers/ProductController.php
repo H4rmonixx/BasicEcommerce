@@ -6,10 +6,12 @@ require_once __DIR__ . '/../Core/Request.php';
 require_once __DIR__ . '/../Core/LayoutEngine.php';
 require_once __DIR__ . '/../Models/Product.php';
 require_once __DIR__ . '/../Models/Photo.php';
+require_once __DIR__ . '/../Models/Variant.php';
 use App\Core\Request;
 use App\Core\LayoutEngine;
 use App\Models\Product;
 use App\Models\Photo;
+use App\Models\Variant;
 
 use finfo;
 
@@ -254,6 +256,22 @@ class ProductController {
         }
 
         if(!Product::editInfo($prodid, $data)){
+            echo null;
+            return true;
+        }
+
+        echo json_encode([true]);
+        return true;
+    }
+
+    public function deleteProductVariant(Request $request){
+        $product_variant_id = $request->param("id");
+        if($product_variant_id == null){
+            echo null;
+            return true;
+        }
+
+        if(Variant::deleteProductVariant($product_variant_id) <= 0){
             echo null;
             return true;
         }

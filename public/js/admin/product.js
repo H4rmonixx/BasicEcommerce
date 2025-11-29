@@ -49,24 +49,12 @@ function loadProduct(id){
             });
 
             $(document).prop("title", "H.R.M.X Admin / " + json.name);
-            showPhotos();
             $(`option[value="${json.category_id}"]`).prop("selected", "selected");
             $("#input-name").val(json.name);
             $("#input-price").val(parseFloat(json.price));
             if(json.visible == 1) $("#input-visible").prop("checked", "checked");
-
-            let $variants_root = $("#tbody-variants");
-            json.variants.forEach((variant, index) => {
-                let $tr = $("<tr>");
-                $tr.append($("<td>", {text: variant.name}));
-                $tr.append($("<td>", {text: variant.quantity}));
-                let $steertd = $("<td>");
-                let $deletebtn = $("<i>", {class: "bi bi-trash fs-6 bg-danger rounded text-white photo-btn"})
-                $steertd.append($deletebtn);
-                $tr.append($steertd);
-
-                $variants_root.append($tr);
-            });
+            showPhotos();
+            showVariants();
 
         } catch(e) {
             console.log("Unable to load product");
@@ -91,6 +79,23 @@ function loadCategories(prodid){
             console.log("Unable to load categories");
             return $.Deferred().reject("Error occurred.").promise();
         }
+    });
+}
+
+function showVariants(){
+    let $variants_root = $("#tbody-variants");
+    $variants_root.empty();
+    product_data.variants.forEach((variant, index) => {
+        let $tr = $("<tr>");
+        $tr.append($("<td>", {text: variant.name}));
+        $tr.append($("<td>", {text: variant.quantity}));
+        let $steertd = $("<td>");
+        let $deletebtn = $("<i>", {class: "bi bi-trash fs-6 bg-danger rounded text-white photo-btn"})
+        $deletebtn.on("click", ()=>{deleteVariant(index, variant.product_variant_id, variant.name)});
+        $steertd.append($deletebtn);
+        $tr.append($steertd);
+
+        $variants_root.append($tr);
     });
 }
 
@@ -169,7 +174,6 @@ function delPhoto(index, photo_id){
         else
             infobox_show(error, 5000)
     });
-    
 }
 
 function changeTilePos(index, x){
@@ -203,7 +207,14 @@ function changeTilePos(index, x){
         else
             infobox_show(error, 5000)
     });
-    
+}
+
+function deleteVariant(index, variant_id, name){
+    if(index < 0 || index >= product_data.variants.length) return;
+    $("#modal-variant-delete-input-id").val(variant_id);
+    $("#modal-variant-delete-input-index").val(index);
+    $("#modal-variant-delete-name").text(name);
+    bootstrap.Modal.getOrCreateInstance('#modal-variant-delete').show();
 }
 
 $(document).ready(()=>{
@@ -311,6 +322,41 @@ $(document).ready(()=>{
                 return $.Deferred().reject("Error occurred.").promise();
             }
         }).catch((error) => {
+            if(error.statusText)
+                infobox_show(error.statusText, 5000);
+            else
+                infobox_show(error, 5000)
+        });
+
+    });
+
+    $("#modal-variant-delete-form").on("submit", function(e){
+        e.preventDefault();
+        let variant_id = $("#modal-variant-delete-input-id").val();
+        let index = $("#modal-variant-delete-input-index").val();
+
+        $.ajax({
+            url: "/product/variant/delete/"+variant_id,
+            type: "post"
+        }).then((success) => {
+            alert(success)
+            try{
+                let json = JSON.parse(success);
+                if(json[0]){
+                    bootstrap.Modal.getOrCreateInstance('#modal-variant-delete').hide();
+                    product_data.variants.splice(index, 1);
+                    showVariants();
+                    infobox_show("Variant deleted", 3000, [50, 100, 50]);
+                } else {
+                    console.log("Unable to delete variant");
+                    return $.Deferred().reject(json[1]).promise();
+                }
+            } catch (e){
+                console.log("Unable to delete variant");
+                return $.Deferred().reject("Error occurred.").promise();
+            }
+        }).catch((error) => {
+            bootstrap.Modal.getOrCreateInstance('#modal-variant-delete').hide();
             if(error.statusText)
                 infobox_show(error.statusText, 5000);
             else

@@ -22,6 +22,7 @@ function loadSummary(id){
             let json = JSON.parse(success);
             $("#title").text("ORDER NO. " + json.order_id);
             let $root = $("#order-content");
+            $("#order-price").append($("<div>", {text: "Total " + json.products_price + " PLN"}));
             json.products.forEach((variant) => {
                 
                 $.ajax({
@@ -37,8 +38,9 @@ function loadSummary(id){
                         $main.append($("<div>", {class: "col-4", text: `${product.price * variant.quantity} PLN`}));
                         $root.append($main);
                     } catch(e) {
-                        console.log("Unable to load product");
-                        return $.Deferred().reject("Error occured").promise();
+                        let $main = $("<div>", {class: "row mb-2"});
+                        $main.append($("<div>", {class: "m-b-700 col-12", text: "[-] Product deleted"}));
+                        $root.append($main);
                     }
                 }).catch((error) => {
                     if(error.statusText)

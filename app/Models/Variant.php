@@ -38,4 +38,12 @@ class Variant {
         return $data;
     }
 
+    public static function deleteProductVariant($id){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("DELETE FROM `Product_Variant` WHERE product_variant_id = ?");
+        $stmt->execute([$id]);
+        
+        return $stmt->rowCount();
+    }
+
 }

@@ -51,6 +51,9 @@ $router->post("/product/photo/delete/{id}", [ProductController::class, 'deletePh
 $router->post("/product/photos/reorder/{productid}", [ProductController::class, 'reorderPhoto'], [
     APIAdminAuthMiddleware::class
 ]);
+$router->post("/product/variant/delete/{id}", [ProductController::class, 'deleteProductVariant'], [
+    APIAdminAuthMiddleware::class
+]);
 $router->post("/products/list", [ProductController::class, 'loadProductsList'], [
     APIAdminAuthMiddleware::class
 ]);
