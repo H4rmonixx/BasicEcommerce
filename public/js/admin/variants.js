@@ -1,24 +1,24 @@
-categories_data = null;
+variants_data = null;
 
-function loadCategories(){
+function loadVariants(){
     return $.ajax({
         type: "post",
-        url: "/categories/load"
+        url: "/variants/load"
     }).then((success) => {
         try{
             let json = JSON.parse(success);
-            categories_data = json;
-            $("#categories-count").html(`<b>Categories count: </b>${json.length}`);
-            let $root = $("#categories-tbody");
-            json.forEach((cat, index) => {
+            variants_data = json;
+            $("#variants-count").html(`<b>Variants count: </b>${json.length}`);
+            let $root = $("#variants-tbody");
+            json.forEach((variant, index) => {
                 let $tr = $("<tr>");
-                $tr.append($("<td>", {class: "d-none d-lg-table-cell", text: cat.category_id}));
-                $tr.append($("<td>", {text: cat.name}));
+                $tr.append($("<td>", {class: "d-none d-lg-table-cell", text: variant.variant_id}));
+                $tr.append($("<td>", {text: variant.name}));
                 let $btntd = $("<td>", {class: "d-flex column-gap-2 row-gap-2 flex-wrap"});
                 let $btn = $("<button>", {type: "button", class: "btn btn-warning btn-sm", html: '<i class="bi bi-pencil-square"></i>'});
                 $btn.on("click", ()=>{openEditModal(index)});
                 let $btn2 = $("<button>", {type: "button", class: "btn btn-danger btn-sm", html: '<i class="bi bi-trash"></i>'});
-                $btn2.on("click", ()=>{deleteCat(index)});
+                $btn2.on("click", ()=>{deleteVariant(index)});
 
                 $btntd.append($btn);
                 $btntd.append($btn2);
@@ -27,44 +27,44 @@ function loadCategories(){
                 $root.append($tr);
             })
         } catch(e) {
-            console.log("Unable to load categories");
+            console.log("Unable to load variants");
             return $.Deferred().reject("Error occurred.").promise();
         }
     });
 }
 
 function openEditModal(index){
-    $("#input-category-edit-name").val(categories_data[index].name);
-    $("#input-category-edit-id").val(categories_data[index].category_id);
-    bootstrap.Modal.getOrCreateInstance('#modal-category-edit').show();
+    $("#input-edit-name").val(variants_data[index].name);
+    $("#input-edit-id").val(variants_data[index].variant_id);
+    bootstrap.Modal.getOrCreateInstance('#modal-edit').show();
 }
 
-function deleteCat(index){
-    $("#modal-category-delete-name").text(categories_data[index].name);
-    $("#modal-category-delete-input-id").val(categories_data[index].category_id);
-    bootstrap.Modal.getOrCreateInstance('#modal-category-delete').show();
+function deleteVariant(index){
+    $("#modal-delete-name").text(variants_data[index].name);
+    $("#modal-delete-id").val(variants_data[index].variant_id);
+    bootstrap.Modal.getOrCreateInstance('#modal-delete').show();
 }
 
 $(document).ready(()=>{
-    loadCategories().catch((error) => {
+    loadVariants().catch((error) => {
         if(error.statusText)
             infobox_show(error.statusText, 5000);
         else
             infobox_show(error, 5000)
     });
 
-    $("#button-new-category").on("click", ()=>{
-        $("#input-category-new-name").val("");
-        bootstrap.Modal.getOrCreateInstance('#modal-category-new').show();
+    $("#button-new-variant").on("click", ()=>{
+        $("#input-new-name").val("");
+        bootstrap.Modal.getOrCreateInstance('#modal-new').show();
     });
 
-    $("#modal-category-new-form").on("submit", function(e){
+    $("#modal-new-form").on("submit", function(e){
         e.preventDefault();
         $.ajax({
-            url: "/category/new",
+            url: "/variant/new",
             type: "post",
             data: JSON.stringify({
-                name: $("#input-category-new-name").val()
+                name: $("#input-new-name").val()
             })
         }).then((success) => {
             try{
@@ -72,16 +72,15 @@ $(document).ready(()=>{
                 if(json[0]){
                     window.location.reload();
                 } else {
-                    bootstrap.Modal.getOrCreateInstance('#modal-category-new').hide();
-                    console.log("Unable to add category");
+                    console.log("Unable to add variant");
                     return $.Deferred().reject("Error occurred.").promise();
                 }
             } catch(e){
-                bootstrap.Modal.getOrCreateInstance('#modal-category-new').hide();
-                console.log("Unable to add category");
+                console.log("Unable to add variant");
                 return $.Deferred().reject("Error occurred.").promise();
             }
         }).catch((error) => {
+            bootstrap.Modal.getOrCreateInstance('#modal-new').hide();
             if(error.statusText)
                 infobox_show(error.statusText, 5000);
             else
@@ -89,14 +88,14 @@ $(document).ready(()=>{
         });
     });
 
-    $("#modal-category-edit-form").on("submit", function(e){
+    $("#modal-edit-form").on("submit", function(e){
         e.preventDefault();
-        let catid = $("#input-category-edit-id").val();
+        let varid = $("#input-edit-id").val();
         $.ajax({
-            url: "/category/edit/"+catid,
+            url: "/variant/edit/"+varid,
             type: "post",
             data: JSON.stringify({
-                name: $("#input-category-edit-name").val()
+                name: $("#input-edit-name").val()
             })
         }).then((success) => {
             try{
@@ -104,16 +103,15 @@ $(document).ready(()=>{
                 if(json[0]){
                     window.location.reload();
                 } else {
-                    bootstrap.Modal.getOrCreateInstance('#modal-category-edit').hide();
-                    console.log("Unable to edit category");
+                    console.log("Unable to edit variant");
                     return $.Deferred().reject("Error occurred.").promise();
                 }
             } catch(e){
-                bootstrap.Modal.getOrCreateInstance('#modal-category-edit').hide();
-                console.log("Unable to edit category");
+                console.log("Unable to edit variant");
                 return $.Deferred().reject("Error occurred.").promise();
             }
         }).catch((error) => {
+            bootstrap.Modal.getOrCreateInstance('#modal-edit').hide();
             if(error.statusText)
                 infobox_show(error.statusText, 5000);
             else
@@ -121,11 +119,11 @@ $(document).ready(()=>{
         });
     });
 
-    $("#modal-category-delete-form").on("submit", function(e){
+    $("#modal-delete-form").on("submit", function(e){
         e.preventDefault();
-        let catid = $("#modal-category-delete-input-id").val();
+        let varid = $("#modal-delete-id").val();
         $.ajax({
-            url: "/category/delete/"+catid,
+            url: "/variant/delete/"+varid,
             type: "post"
         }).then((success) => {
             try{
@@ -133,16 +131,15 @@ $(document).ready(()=>{
                 if(json[0]){
                     window.location.reload();
                 } else {
-                    bootstrap.Modal.getOrCreateInstance('#modal-category-delete').hide();
-                    console.log("Unable to delete category");
+                    console.log("Unable to delete variant");
                     return $.Deferred().reject(json[1]).promise();
                 }
             } catch(e){
-                bootstrap.Modal.getOrCreateInstance('#modal-category-delete').hide();
-                console.log("Unable to delete category");
+                console.log("Unable to delete variant");
                 return $.Deferred().reject("Error occurred.").promise();
             }
         }).catch((error) => {
+            bootstrap.Modal.getOrCreateInstance('#modal-delete').hide();
             if(error.statusText)
                 infobox_show(error.statusText, 5000);
             else

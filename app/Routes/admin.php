@@ -4,12 +4,16 @@ require_once __DIR__ . '/../Core/Router.php';
 require_once __DIR__ . '/../Controllers/AdminController.php';
 require_once __DIR__ . '/../Controllers/ProductController.php';
 require_once __DIR__ . '/../Controllers/CategoryController.php';
+require_once __DIR__ . '/../Controllers/VariantController.php';
+require_once __DIR__ . '/../Controllers/ArticleController.php';
 require_once __DIR__ . '/../Middleware/AdminAuthMiddleware.php';
 require_once __DIR__ . '/../Middleware/APIAdminAuthMiddleware.php';
 
 use App\Core\Router;
 use App\Controllers\AdminController;
 use App\Controllers\CategoryController;
+use App\Controllers\VariantController;
+use App\Controllers\ArticleController;
 use App\Controllers\ProductController;
 use App\Middleware\AdminAuthMiddleware;
 use App\Middleware\APIAdminAuthMiddleware;
@@ -26,6 +30,15 @@ $router->get('/admin/product/{id}', [AdminController::class, 'product'], [
     AdminAuthMiddleware::class
 ]);
 $router->get('/admin/categories', [AdminController::class, 'categories'], [
+    AdminAuthMiddleware::class
+]);
+$router->get('/admin/variants', [AdminController::class, 'variants'], [
+    AdminAuthMiddleware::class
+]);
+$router->get('/admin/articles', [AdminController::class, 'articles'], [
+    AdminAuthMiddleware::class
+]);
+$router->get('/admin/article/{id}', [AdminController::class, 'article'], [
     AdminAuthMiddleware::class
 ]);
 
@@ -54,6 +67,12 @@ $router->post("/product/photos/reorder/{productid}", [ProductController::class, 
 $router->post("/product/variant/delete/{id}", [ProductController::class, 'deleteProductVariant'], [
     APIAdminAuthMiddleware::class
 ]);
+$router->post("/product/variant/edit/{id}", [ProductController::class, 'editProductVariant'], [
+    APIAdminAuthMiddleware::class
+]);
+$router->post("/product/variant/new", [ProductController::class, 'addProductVariant'], [
+    APIAdminAuthMiddleware::class
+]);
 $router->post("/products/list", [ProductController::class, 'loadProductsList'], [
     APIAdminAuthMiddleware::class
 ]);
@@ -70,6 +89,30 @@ $router->post("/category/delete/{id}", [CategoryController::class, 'deleteCatego
 ]);
 
 
+$router->post("/variant/new", [VariantController::class, 'addVariant'], [
+    APIAdminAuthMiddleware::class
+]);
+$router->post("/variant/edit/{id}", [VariantController::class, 'editVariant'], [
+    APIAdminAuthMiddleware::class
+]);
+$router->post("/variant/delete/{id}", [VariantController::class, 'deleteVariant'], [
+    APIAdminAuthMiddleware::class
+]);
 
+$router->post("/article/new", [ArticleController::class, 'addArticle'], [
+    APIAdminAuthMiddleware::class
+]);
+$router->post("/article/delete/{id}", [ArticleController::class, 'deleteArticle'], [
+    APIAdminAuthMiddleware::class
+]);
+$router->post("/article/edit/content/{articleid}", [ArticleController::class, 'editContent'], [
+    APIAdminAuthMiddleware::class
+]);
+$router->post("/article/edit/info/{articleid}", [ArticleController::class, 'editInfo'], [
+    APIAdminAuthMiddleware::class
+]);
+$router->post("/articles/list", [ArticleController::class, 'loadArticlesList'], [
+    APIAdminAuthMiddleware::class
+]);
 
 return $router;

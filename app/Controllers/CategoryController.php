@@ -17,20 +17,6 @@ class CategoryController {
         return true;
     }
 
-    public function loadCategory(Request $request){
-        
-        $id = $request->param("id");
-        if($id == null){
-            echo null;
-            return true;
-        }
-
-        $cat = Category::getByID($id);
-        echo json_encode($cat);
-
-        return true;
-    }
-
     public function addCategory(Request $request){
         $data = $request->json();
         if($data == null){

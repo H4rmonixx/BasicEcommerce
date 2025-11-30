@@ -42,13 +42,15 @@ function loadProduct(id){
                 menubar: false,
                 setup: function(editor){
                     editor.on('init', function() {
-                        editor.setContent(json.description);
+                        if(json.description)
+                            editor.setContent(json.description);
                     });
                 }
 
             });
 
             $(document).prop("title", "H.R.M.X Admin / " + json.name);
+            $("#product-site-link").prop("href", "/product/"+json.product_id);
             $(`option[value="${json.category_id}"]`).prop("selected", "selected");
             $("#input-name").val(json.name);
             $("#input-price").val(parseFloat(json.price));
@@ -82,17 +84,99 @@ function loadCategories(prodid){
     });
 }
 
+function loadVariants(prodid){
+    return $.ajax({
+        type: "post",
+        url: "/variants/load"
+    }).then((success) => {
+        try{
+            let json = JSON.parse(success);
+            let $root = $("#modal-variant-new-vid");
+            json.forEach((variant) => {
+                $root.append($("<option>", {value: variant.variant_id, text: variant.name}));
+            });
+            return prodid;
+        } catch(e) {
+            console.log("Unable to load variants");
+            return $.Deferred().reject("Error occurred.").promise();
+        }
+    });
+}
+
 function showVariants(){
     let $variants_root = $("#tbody-variants");
     $variants_root.empty();
     product_data.variants.forEach((variant, index) => {
         let $tr = $("<tr>");
         $tr.append($("<td>", {text: variant.name}));
-        $tr.append($("<td>", {text: variant.quantity}));
+
+        let $quantitytd = $("<td>");
+        let $quantityform = $("<form>");
+        $quantityform.append($("<input>", {type: "number", class: "visually-hidden quantity-form-pvid", value: variant.product_variant_id}));
+        $quantityform.append($("<div>", {class: "fw-bold mb-1 form-text text-black", text: "Quantity:"}));
+        $quantityform.append($("<input>", {type: "number", class: "form-control form-control-sm quantity-form-quantity mb-2", value: variant.quantity, min: 1, step: 1, disabled: true, required: true}));
+        $quantityform.append($("<div>", {class: "fw-bold mb-1 form-text text-black", text: "Width:"}));
+        $quantityform.append($("<input>", {type: "number", class: "form-control form-control-sm quantity-form-width mb-2", value: variant.width, min: 0.01, step: 0.01, disabled: true, required: true}));
+        $quantityform.append($("<div>", {class: "fw-bold mb-1 form-text text-black", text: "Height:"}));
+        $quantityform.append($("<input>", {type: "number", class: "form-control form-control-sm quantity-form-height", value: variant.height, min: 0.01, step: 0.01, disabled: true, required: true}));
+        let $btndiv = $("<div>", {class: "d-flex justify-content-end"});
+        $btndiv.append($("<button>", {type: "submit", class: "mt-3 btn btn-dark btn-sm d-none", text: "Save"}));
+        $quantityform.append($btndiv);
+
+        $quantityform.on("submit", function(e){
+
+            e.preventDefault();
+            let pvid = $(this).find(".quantity-form-pvid").val();
+            $.ajax({
+                url: "/product/variant/edit/"+pvid,
+                type: "post",
+                data: JSON.stringify({
+                    quantity: $(this).find(".quantity-form-quantity").val(),
+                    width: $(this).find(".quantity-form-width").val(),
+                    height: $(this).find(".quantity-form-height").val()
+                })
+            }).then((success) => {
+                try{
+                    let json = JSON.parse(success);
+                    if(json[0]){
+                        $quantityform.find(".quantity-form-quantity").prop("disabled", !$quantityform.find(".quantity-form-quantity").prop("disabled"));
+                        $quantityform.find(".quantity-form-width").prop("disabled", !$quantityform.find(".quantity-form-width").prop("disabled"));
+                        $quantityform.find(".quantity-form-height").prop("disabled", !$quantityform.find(".quantity-form-height").prop("disabled"));
+                        $quantityform.find("button").toggleClass("d-none");
+                        infobox_show("Variant edited", 3000, [50, 100, 50]);
+                    } else {
+                        console.log("Unable to edit variant");
+                        return $.Deferred().reject(json[1]).promise();
+                    }
+                } catch (e){
+                    console.log("Unable to edit variant");
+                    return $.Deferred().reject("Error occurred.").promise();
+                }
+            }).catch((error) => {
+                if(error.statusText)
+                    infobox_show(error.statusText, 5000);
+                else
+                    infobox_show(error, 5000)
+            });
+
+        });
+        $quantitytd.append($quantityform);
+        $tr.append($quantitytd);
+
         let $steertd = $("<td>");
-        let $deletebtn = $("<i>", {class: "bi bi-trash fs-6 bg-danger rounded text-white photo-btn"})
+        let $steertdcont = $("<div>", {class: "d-flex column-gap-1 row-gap-1 flex-wrap"});
+        let $deletebtn = $("<i>", {class: "bi bi-trash p-1 fs-6 bg-danger rounded text-white photo-btn"})
+        let $editbtn = $("<i>", {class: "bi bi-pencil-square p-1 fs-6 bg-warning rounded text-white photo-btn"})
         $deletebtn.on("click", ()=>{deleteVariant(index, variant.product_variant_id, variant.name)});
-        $steertd.append($deletebtn);
+        $editbtn.on("click", ()=>{
+            $quantityform.find(".quantity-form-quantity").prop("disabled", !$quantityform.find(".quantity-form-quantity").prop("disabled"));
+            $quantityform.find(".quantity-form-width").prop("disabled", !$quantityform.find(".quantity-form-width").prop("disabled"));
+            $quantityform.find(".quantity-form-height").prop("disabled", !$quantityform.find(".quantity-form-height").prop("disabled"));
+            $quantityform.find("button").toggleClass("d-none");
+        });
+        $steertdcont.append($deletebtn);
+        $steertdcont.append($editbtn);
+        $steertd.append($steertdcont);
         $tr.append($steertd);
 
         $variants_root.append($tr);
@@ -218,7 +302,7 @@ function deleteVariant(index, variant_id, name){
 }
 
 $(document).ready(()=>{
-    decodeIDFromURL().then(loadCategories).then(loadProduct).catch((error) => {
+    decodeIDFromURL().then(loadCategories).then(loadVariants).then(loadProduct).catch((error) => {
         if(error.statusText)
             infobox_show(error.statusText, 5000);
         else
@@ -339,7 +423,6 @@ $(document).ready(()=>{
             url: "/product/variant/delete/"+variant_id,
             type: "post"
         }).then((success) => {
-            alert(success)
             try{
                 let json = JSON.parse(success);
                 if(json[0]){
@@ -363,6 +446,49 @@ $(document).ready(()=>{
                 infobox_show(error, 5000)
         });
 
+    });
+
+    $("#modal-variant-new-form").on("submit", function(e){
+        e.preventDefault();
+
+        $.ajax({
+            url: "/product/variant/new",
+            type: "post",
+            data: JSON.stringify({
+                product_id: product_data.product_id,
+                variant_id: $("#modal-variant-new-vid").val(),
+                quantity: $("#modal-variant-new-quantity").val(),
+                width: $("#modal-variant-new-width").val(),
+                height: $("#modal-variant-new-height").val()
+            })
+        }).then((success) => {
+            try{
+                let json = JSON.parse(success);
+                if(json[0]){
+                    window.location.reload();
+                } else {
+                    console.log("Unable to add variant");
+                    return $.Deferred().reject(json[1]).promise();
+                }
+            } catch (e){
+                console.log("Unable to add variant");
+                return $.Deferred().reject("Error occurred.").promise();
+            }
+        }).catch((error) => {
+            bootstrap.Modal.getOrCreateInstance('#modal-variant-new').hide();
+            if(error.statusText)
+                infobox_show(error.statusText, 5000);
+            else
+                infobox_show(error, 5000)
+        });
+
+    });
+
+    $("#variant-new-btn").on("click", ()=>{
+        $("#modal-variant-new-quantity").val("");
+        $("#modal-variant-new-width").val("");
+        $("#modal-variant-new-height").val("");
+        bootstrap.Modal.getOrCreateInstance('#modal-variant-new').show();
     });
 
 });

@@ -47,7 +47,12 @@ class ProductController {
 
     public function loadProductsList(Request $request){
         
-        $products = Product::getProductsList();
+        $data = $request->json();
+        if($data == null){
+            echo json_encode([]);
+            return true;
+        }
+        $products = Product::getProductsList($data['search']);
         echo json_encode($products);
         
         return true;
@@ -114,10 +119,16 @@ class ProductController {
         }
 
         $photos = Product::getPhotos($id);
+        if(Product::deleteProduct($id) <= 0){
+            echo null;
+            return true;
+        }
         foreach($photos as $ph){
-            
+            if(!file_exists(Photo::$fileDir . $ph['filename'])) continue;
+            unlink(Photo::$fileDir . $ph['filename']);
         }
 
+        echo json_encode([true]);
         return true;
     }
 
@@ -272,6 +283,43 @@ class ProductController {
         }
 
         if(Variant::deleteProductVariant($product_variant_id) <= 0){
+            echo null;
+            return true;
+        }
+
+        echo json_encode([true]);
+        return true;
+    }
+
+    public function editProductVariant(Request $request){
+        $product_variant_id = $request->param("id");
+        if($product_variant_id == null){
+            echo null;
+            return true;
+        }
+        $data = $request->json();
+        if($data == null){
+            echo null;
+            return true;
+        }
+
+        if(Variant::editProductVariant($product_variant_id, $data['quantity'], $data['width'], $data['height']) <= 0){
+            echo null;
+            return true;
+        }
+
+        echo json_encode([true]);
+        return true;
+    }
+
+    public function addProductVariant(Request $request){
+        $data = $request->json();
+        if($data == null){
+            echo null;
+            return true;
+        }
+
+        if(Variant::addProductVariant($data) <= 0){
             echo null;
             return true;
         }

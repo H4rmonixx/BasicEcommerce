@@ -1,0 +1,47 @@
+@section("title")
+H.R.M.X Admin / Article
+@endsection
+
+@section("scripts")
+<script src="/js/admin/article.js"></script>
+<script src="/js/infobox.js"></script>
+<script src="https://cdn.tiny.cloud/1/oizg6bmdnjk7fg4wthj19y7p0ez74xodwh4mc6d7vpi1qoxt/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
+@endsection
+
+@section("content")
+<div class="d-flex flex-wrap column-gap-4 align-items-center mb-3">
+    <div class="fw-bold fs-3">Article editor</div>
+    <a id="article-site-link" class="link-success" target="_blank">Article page</a>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="text-decoration-underline mt-3 mb-2">Information</div>
+        <form class="border bg-light py-2 px-3" id="form-info">
+            <div class="mb-2">
+                <label for="input-title" class="form-label fw-bold">Title</label>
+                <input type="text" class="form-control form-control-sm" minlength="3" maxlength="64" id="input-title" required>
+            </div>
+            <div class="mb-3">
+                <label for="input-date" class="form-label fw-bold">Post date</label>
+                <input type="text" class="form-control form-control-sm" id="input-date" required disabled>
+            </div>
+            <div class="mb-2">
+                <input type="checkbox" class="form-check-input me-1" id="input-visible">
+                <label for="input-visible" class="form-check-label">Public</label>
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-dark btn-sm">Save</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-12">
+        <div class="mt-3 mb-2 text-decoration-underline">Content</div>
+        <form class="border bg-light rounded" id="form-desc">
+            <textarea id="desc-editor" name="content"></textarea>
+            <div class="d-flex justify-content-end p-2">
+                <button type="submit" class="btn btn-dark btn-sm">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection

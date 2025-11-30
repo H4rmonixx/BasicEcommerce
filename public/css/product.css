@@ -64,8 +64,7 @@
     background-color: rgba(220,220,220,.7);
 }
 .p-size{
-    width: 50px;
-    height: 50px;
+    padding: 5px 10px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -76,10 +75,6 @@
     position: relative;
 }
 @media (width<=576px){
-    .p-size{
-        width: 30px;
-        height: 30px;
-    }
     .product-sizechart table{
         min-width: 100%;
     }

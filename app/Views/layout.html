@@ -13,7 +13,6 @@
     @showsection("styles")
     <script src="/frameworks/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
     <script src="/frameworks/jquery-3.7.1.min.js"></script>
-    <script src="/js/newsletter.js"></script>
     @showsection("scripts")
 </head>
 <body>
@@ -56,16 +55,18 @@
     </header>
     @showsection("content")
     <div class="m-horizontal-line"></div>
-    <div class="container-xxl my-4 pb-5 pt-5 ps-4 pe-4 ps-xxl-0 pe-xxl-0">
+    <div class="container-xxl my-4 py-5 ps-4 pe-4 ps-xxl-0 pe-xxl-0">
         <div class="row gy-3 gx-5">
-            <div class="col-12 fs-1 newsletter-header">NEWSLETTER</div>
-            <div class="col-12 col-md-6 col-lg-4">Receive notifications about new arrivals, discounts and changes earlier than others!</div>
+            <div class="col-12 fs-1 fw-bold">ARTICLES</div>
+            <div class="col-12 col-md-6 col-lg-4">
+                Stay updated with our latest articles, insights, guides, and expert tips. 
+                Discover fresh content that inspires!
+            </div>
             <div class="col-12 col-md-6 col-lg-8">
-                <form>
-                    <input type="text" class="form-control mb-2" placeholder="Enter your email." id="newsletter-input-mail">
-                    <div class="btn btn-dark" id="newsletter-button">Sign up</div>
-                    <div class="mt-3" id="newsletter-callback"></div>
-                </form>
+                <div class="d-flex flex-column flex-sm-row justify-content-md-center align-items-start align-items-sm-center gap-3">
+                    <a href="/articles" class="btn btn-dark">Read Articles</a>
+                    <div class="text-muted">Explore new posts and trending topics.</div>
+                </div>
             </div>
         </div>
     </div>
@@ -88,8 +89,5 @@
             </div>
         </div>
     </footer>
-    <script>
-        $("#newsletter-button").on("click", signToNewsletter);
-    </script>
 </body>
 </html>

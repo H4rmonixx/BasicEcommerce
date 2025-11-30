@@ -87,10 +87,6 @@ footer{
     background-color: unset !important;
     color: unset !important;
 }
-.m-hr{
-    height: 2px;
-    background-color: black;
-}
 .m-infobox{
     position: fixed;
     width: 100%;
@@ -164,15 +160,6 @@ footer{
         right: -10px;
         bottom: -10px;
     }
-}
-
-/* newsletter */
-.newsletter-header{
-    font-weight: 600;
-    letter-spacing: 3px;
-}
-#newsletter-callback{
-    color: darkred;
 }
 
 /* horizontal line */

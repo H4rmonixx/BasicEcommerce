@@ -9,6 +9,41 @@ H.R.M.X Admin / Product
 @endsection
 
 @section("content")
+<div class="modal" id="modal-variant-new" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <form class="modal-content" method="post" id="modal-variant-new-form">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5"><i class="bi bi-plus-lg"></i> New variant</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2">
+                    <label for="modal-variant-new-vid" class="fw-bold mb-1">Variant:</label>
+                    <select id="modal-variant-new-vid" class="form-control" required>
+                        
+                    </select>
+                    <div class="form-text"><a href="/admin/variants">Manage variants</a></div>
+                </div>
+                <div class="mb-2">
+                    <label for="modal-variant-new-quantity" class="fw-bold mb-1">Quantity:</label>
+                    <input type="number" class="form-control" id="modal-variant-new-quantity" required min="1" step="1">
+                </div>
+                <div class="mb-2">
+                    <label for="modal-variant-new-width" class="fw-bold mb-1">Width:</label>
+                    <input type="number" class="form-control" id="modal-variant-new-width" required min="0.01" step="0.01">
+                </div>
+                <div class="mb-2">
+                    <label for="modal-variant-new-height" class="fw-bold mb-1">Height:</label>
+                    <input type="number" class="form-control" id="modal-variant-new-height" required min="0.01" step="0.01">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-dark">Add</button>
+            </div>
+        </form>
+    </div>
+</div>
 <div class="modal" id="modal-variant-delete" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <form class="modal-content" method="post" id="modal-variant-delete-form">
@@ -25,7 +60,10 @@ H.R.M.X Admin / Product
         </form>
     </div>
 </div>
-<div class="fw-bold fs-3 mb-3">Product editor</div>
+<div class="d-flex flex-wrap column-gap-4 align-items-center mb-3">
+    <div class="fw-bold fs-3">Product editor</div>
+    <a id="product-site-link" class="link-success" target="_blank">Product page</a>
+</div>
 <div class="row">
     <div class="col-md-8">
         <div class="mb-1 text-decoration-underline">Photos</div>
@@ -84,7 +122,7 @@ H.R.M.X Admin / Product
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Variant</th><th>Quantity</th><th></th>
+                        <th>Variant</th><th>Settings</th><th></th>
                     </tr>
                 </thead>
                 <tbody id="tbody-variants">
@@ -92,7 +130,7 @@ H.R.M.X Admin / Product
                 </tbody>
             </table>
             <div class="d-flex justify-content-end py-2">
-                <button type="button" class="btn btn-dark btn-sm">Add</button>
+                <button type="button" class="btn btn-dark btn-sm" id="variant-new-btn">Add</button>
             </div>
         </div>
     </div>

@@ -13,8 +13,9 @@ CREATE TABLE `Configuration` (
 CREATE TABLE `Article` (
     article_id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(64) NOT NULL,
-    public BIT(1) DEFAULT 1 NOT NULL,
-    content TEXT NOT NULL
+    public BIT(1) DEFAULT 0 NOT NULL,
+    date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    content TEXT NOT NULL DEFAULT ""
 );
 
 -- Category
@@ -30,7 +31,7 @@ CREATE TABLE `Product` (
     name VARCHAR(32) NOT NULL,
     description TEXT,
     price DECIMAL(10,2) NOT NULL,
-    visible BIT(1) DEFAULT 1 NOT NULL,
+    visible BIT(1) DEFAULT 0 NOT NULL,
     FOREIGN KEY (category_id) REFERENCES `Category`(category_id) ON UPDATE CASCADE
 );
 
@@ -46,7 +47,7 @@ CREATE TABLE `Photo` (
 -- Variant
 CREATE TABLE `Variant` (
     variant_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
+    name VARCHAR(32) NOT NULL
 );
 
 -- Product-Variant (relacja wiele-do-wielu między Product i Variant)
@@ -55,8 +56,8 @@ CREATE TABLE `Product_Variant` (
     product_id INT NOT NULL,
     variant_id INT NOT NULL,
     quantity INT UNSIGNED NOT NULL DEFAULT 1,
-    width INT UNSIGNED NOT NULL,
-    height INT UNSIGNED NOT NULL,
+    width DECIMAL(10,2) UNSIGNED NOT NULL,
+    height DECIMAL(10,2) UNSIGNED NOT NULL,
     FOREIGN KEY (product_id) REFERENCES `Product`(product_id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (variant_id) REFERENCES `Variant`(variant_id) ON UPDATE CASCADE
 );

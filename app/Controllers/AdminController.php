@@ -7,6 +7,7 @@ require_once __DIR__ . '/../Core/LayoutEngine.php';
 require_once __DIR__ . '/../Models/Product.php';
 use App\Core\Request;
 use App\Core\LayoutEngine;
+use App\Models\Article;
 use App\Models\Product;
 
 class AdminController {
@@ -48,6 +49,41 @@ class AdminController {
     public function categories(Request $request){
 
         $view = file_get_contents(__DIR__ . '/../Views/Admin/categories.html');
+
+        echo LayoutEngine::resolveAdminLayout($view);
+
+        return true;
+    }
+
+    public function variants(Request $request){
+
+        $view = file_get_contents(__DIR__ . '/../Views/Admin/variants.html');
+
+        echo LayoutEngine::resolveAdminLayout($view);
+
+        return true;
+    }
+
+    public function articles(Request $request){
+
+        $view = file_get_contents(__DIR__ . '/../Views/Admin/articles.html');
+
+        echo LayoutEngine::resolveAdminLayout($view);
+
+        return true;
+    }
+
+    public function article(Request $request) {
+
+        $id = $request->param("id");
+        if($id == null){
+            return false;
+        }
+        if(!Article::ifExists($id)){
+            return false;
+        }
+
+        $view = file_get_contents(__DIR__ . '/../Views/Admin/article.html');
 
         echo LayoutEngine::resolveAdminLayout($view);
 

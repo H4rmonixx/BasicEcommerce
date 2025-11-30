@@ -26,6 +26,22 @@ class ArticleController {
         return true;
     }
 
+    public function loadArticles(Request $request){
+
+        $articles = Article::getPublicArticles();
+        echo json_encode($articles);
+        
+        return true;
+    }
+
+    public function loadArticlesList(Request $request){
+
+        $articles = Article::getAllArticles();
+        echo json_encode($articles);
+        
+        return true;
+    }
+
     public function loadArticle(Request $request){
 
         $id = $request->param("id");
@@ -37,6 +53,85 @@ class ArticleController {
         $article = Article::getByID($id);
         echo json_encode($article);
         
+        return true;
+    }
+
+    public function addArticle(Request $request){
+        $data = $request->json();
+        if($data == null){
+            echo null;
+            return true;
+        }
+
+        $artid = Article::createArticle($data);
+        echo json_encode([true, $artid]);
+        return true;
+    }
+
+    public function deleteArticle(Request $request){
+        $id = $request->param("id");
+        if($id == null){
+            echo null;
+            return true;
+        }
+
+        $id_int = intval($id);
+        if($id_int >= 1 && $id_int <= 5){
+            echo json_encode([false, "Article protected"]);
+            return true;
+        }
+
+        $result = Article::deleteArticle($id);
+        echo json_encode([$result]);
+        return true;
+    }
+
+    public function editContent(Request $request){
+        $artid = $request->param("articleid");
+        if($artid == null){
+            echo null;
+            return true;
+        }
+        $data = $request->post('content');
+        if($data == null){
+            echo null;
+            return true;
+        }
+
+        if(!Article::editContent($artid, $data)){
+            echo null;
+            return true;
+        }
+
+        echo json_encode([true]);
+        return true;
+    }
+
+    public function editInfo(Request $request){
+        $artid = $request->param("articleid");
+        if($artid == null){
+            echo null;
+            return true;
+        }
+
+        $id_int = intval($artid);
+        if($id_int >= 1 && $id_int <= 5){
+            echo json_encode([false, "Article info protected"]);
+            return true;
+        }
+
+        $data = $request->json();
+        if($data == null){
+            echo null;
+            return true;
+        }
+
+        if(!Article::editInfo($artid, $data)){
+            echo null;
+            return true;
+        }
+
+        echo json_encode([true]);
         return true;
     }
 

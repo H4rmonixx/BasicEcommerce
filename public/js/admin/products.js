@@ -1,12 +1,16 @@
-function loadProducts(){
+function loadProducts(s){
     return $.ajax({
         type: "post",
-        url: "/products/list"
+        url: "/products/list",
+        data: JSON.stringify({
+            search: s
+        })
     }).then((success) => {
         try{
             let json = JSON.parse(success);
             $("#products-count").html(`<b>Products count: </b>${json.length}`);
             let $root = $("#products-tbody");
+            $root.empty();
             json.forEach((product) => {
                 let variantslist = "";
                 product.variants.forEach((v, index) => {
@@ -42,9 +46,9 @@ function loadCategories(){
         try{
             let json = JSON.parse(success);
             let $root = $("#input-product-category");
+            $root.empty();
             json.forEach((cat) => {
                 $root.append($("<option>", {value: cat.category_id, text: cat.name}));
-
             });
         } catch(e) {
             console.log("Unable to load categories");
@@ -60,16 +64,20 @@ function deleteProduct(product_id, name){
 }
 
 $(document).ready(()=>{
-    loadProducts().then(loadCategories).catch((error) => {
-        if(error.statusText)
-            infobox_show(error.statusText, 5000);
-        else
-            infobox_show(error, 5000)
+    
+    $("#search-form").on("submit", function(e) {
+        e.preventDefault();
+        loadProducts($("#search-form-input").val()).then(loadCategories).catch((error) => {
+            if(error.statusText)
+                infobox_show(error.statusText, 5000);
+            else
+                infobox_show(error, 5000)
+        });
     });
+    $("#search-form-btn")[0].click();
 
     $("#button-new-product").on("click", ()=>{
-        let modal = new bootstrap.Modal(document.getElementById('modal-new-product'));
-        modal.show();
+        bootstrap.Modal.getOrCreateInstance('#modal-new-product').show();
     });
 
     $("#modal-new-product-form").on("submit", function(e){
@@ -116,16 +124,15 @@ $(document).ready(()=>{
                 if(json[0]){
                     window.location.reload();
                 } else {
-                    bootstrap.Modal.getOrCreateInstance('#modal-product-delete').hide();
                     console.log("Unable to delete product");
                     return $.Deferred().reject(json[1]).promise();
                 }
             } catch(e){
-                bootstrap.Modal.getOrCreateInstance('#modal-product-delete').hide();
                 console.log("Unable to add product");
                 return $.Deferred().reject("Error occurred.").promise();
             }
         }).catch((error) => {
+            bootstrap.Modal.getOrCreateInstance('#modal-product-delete').hide();
             if(error.statusText)
                 infobox_show(error.statusText, 5000);
             else

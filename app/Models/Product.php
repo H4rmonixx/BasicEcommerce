@@ -178,9 +178,12 @@ class Product {
         return $data;
     }
 
-    public static function getProductsList(){
+    public static function getProductsList($search){
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare("SELECT * FROM ProductsList");
+        $sql = 'SELECT * FROM ProductsList';
+        if(strlen($search) > 0) $sql .= ' WHERE name LIKE :s OR variant_name LIKE :s';
+        $stmt = $pdo->prepare($sql);
+        if(strlen($search) > 0) $stmt->bindValue(":s", "%".$search."%");
         $stmt->execute();
 
         $data = [];

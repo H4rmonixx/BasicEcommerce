@@ -6,9 +6,6 @@ header object[name="brand-icon"]{
     color: white !important;
 }
 
-main{
-    min-height: 70vh;
-}
 .m-infobox{
     position: fixed;
     width: 100%;
@@ -26,11 +23,6 @@ main{
     text-transform: uppercase;
     border: 1px solid white;
     text-align: center;
-}
-
-#main-content{
-    overflow-x: auto;
-    max-height: 1500px;
 }
 
 .photo-btn:hover{
