@@ -7,11 +7,13 @@ require_once __DIR__ . '/../Controllers/CategoryController.php';
 require_once __DIR__ . '/../Controllers/VariantController.php';
 require_once __DIR__ . '/../Controllers/ArticleController.php';
 require_once __DIR__ . '/../Controllers/OrderController.php';
+require_once __DIR__ . '/../Controllers/UserController.php';
 require_once __DIR__ . '/../Middleware/AdminAuthMiddleware.php';
 require_once __DIR__ . '/../Middleware/APIAdminAuthMiddleware.php';
 
 use App\Core\Router;
 use App\Controllers\AdminController;
+use App\Controllers\UserController;
 use App\Controllers\CategoryController;
 use App\Controllers\VariantController;
 use App\Controllers\ArticleController;
@@ -44,6 +46,9 @@ $router->get('/admin/articles', [AdminController::class, 'articles'], [
     AdminAuthMiddleware::class
 ]);
 $router->get('/admin/article/{id}', [AdminController::class, 'article'], [
+    AdminAuthMiddleware::class
+]);
+$router->get('/admin/users', [AdminController::class, 'users'], [
     AdminAuthMiddleware::class
 ]);
 
@@ -122,7 +127,15 @@ $router->post("/articles/list", [ArticleController::class, 'loadArticlesList'], 
 ]);
 
 
+$router->post("/users/list", [UserController::class, 'loadUsersList'], [
+    APIAdminAuthMiddleware::class
+]);
+
+
 $router->post("/orders/list", [OrderController::class, 'loadOrdersList'], [
+    APIAdminAuthMiddleware::class
+]);
+$router->post("/order/edit/status/{orderid}", [OrderController::class, 'editStatus'], [
     APIAdminAuthMiddleware::class
 ]);
 

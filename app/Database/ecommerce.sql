@@ -75,7 +75,7 @@ CREATE TABLE `User` (
     city VARCHAR(32) NOT NULL,
     post_code VARCHAR(20) NOT NULL,
     country VARCHAR(64) NOT NULL,
-    type ENUM('GUEST', 'CUSTOMER', 'ADMIN') NOT NULL DEFAULT 'GUEST'
+    type ENUM('GUEST', 'CUSTOMER', 'ADMIN', 'SUPERADMIN') NOT NULL DEFAULT 'GUEST'
 );
 
 -- Order
@@ -92,7 +92,7 @@ CREATE TABLE `Order` (
     products_price DECIMAL (10,2) NOT NULL,
     payu_order_id VARCHAR(64) DEFAULT NULL,
     payment_method ENUM('CASH', 'PAYU') NOT NULL DEFAULT 'CASH',
-    status ENUM('PENDING', 'PAID', 'SHIPPED', "COMPLETED", 'CANCELED', 'FAILED') NOT NULL DEFAULT 'PENDING',
+    status ENUM('PENDING', 'PAID', 'PREPARING', 'SHIPPED', 'CANCELED') NOT NULL DEFAULT 'PENDING',
     FOREIGN KEY (user_id) REFERENCES `User`(user_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -148,11 +148,12 @@ INSERT INTO `Product_Variant` (product_id, variant_id, quantity, width, height) 
 -- Password test1234 for both
 INSERT INTO `User` (firstname, lastname, phone_number, email, password, address, building, city, post_code, country, type) VALUES
 ('Alice', 'Nowak', '+48123456789', 'alice@example.com', '$2y$10$PiWxhyQyGIC.H5rlPvbMDezj4CLlrwndFpwwuQt4U35rbeAE1dTty', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 'CUSTOMER'),
-('Diana', 'Zielińska', '+48987654321', 'diana@example.com', '$2y$10$PiWxhyQyGIC.H5rlPvbMDezj4CLlrwndFpwwuQt4U35rbeAE1dTty', 'Forest', '5', 'Gdansk', '80-100', 'Polska', 'ADMIN');
+('Diana', 'Zielińska', '+48987654321', 'diana@example.com', '$2y$10$PiWxhyQyGIC.H5rlPvbMDezj4CLlrwndFpwwuQt4U35rbeAE1dTty', 'Forest', '5', 'Gdansk', '80-100', 'Polska', 'SUPERADMIN'),
+('Kacper', 'Pietrasik', '+48123123123', 'kacper@example.com', '$2y$10$PiWxhyQyGIC.H5rlPvbMDezj4CLlrwndFpwwuQt4U35rbeAE1dTty', 'Skorzecka', '5', 'Dabrowka', '08-114', 'Polska', 'ADMIN');
 
-INSERT INTO `Order` (user_id, date, address, building, city, post_code, country, shipping_price, products_price) VALUES
-(1, '2025-10-01 14:23:00', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 22.0, 149.97),
-(2, '2025-10-10 19:45:00', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 22.0, 369.79);
+INSERT INTO `Order` (user_id, date, address, building, city, post_code, country, shipping_price, products_price, status) VALUES
+(1, '2025-10-01 14:23:00', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 22.0, 149.97, 'PENDING'),
+(2, '2025-10-10 19:45:00', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 22.0, 369.79, 'PAID');
 
 INSERT INTO `Order_Detail` (order_id, product_variant_id, quantity) VALUES
 (1, 1, 2), 

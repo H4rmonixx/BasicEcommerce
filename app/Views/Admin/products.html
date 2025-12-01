@@ -2,6 +2,10 @@
 H.R.M.X Admin / Products
 @endsection
 
+@section("styles")
+<link rel="stylesheet" href="/css/admin/products.css">
+@endsection
+
 @section("scripts")
 <script src="/js/admin/products.js"></script>
 <script src="/js/infobox.js"></script>
@@ -58,20 +62,17 @@ H.R.M.X Admin / Products
         </form>
     </div>
 </div>
-<div class="fs-4 mb-2 fw-bold">Products list:</div>
+<div class="fs-4 mb-2 fw-bold">Products:</div>
 <div class="d-flex justify-content-end mb-2">
     <form class="d-flex column-gap-1" id="search-form">
       <input class="form-control" type="search" placeholder="Name, variant..." id="search-form-input">
       <button class="btn btn-outline-primary" type="submit" id="search-form-btn"><i class="bi bi-search"></i></button>
     </form>
 </div>
-<table class="table table-bordered">
+<table class="table table-bordered" id="table-products">
     <thead>
         <tr><th class="d-none d-lg-table-cell">ID</th><th>Name</th><th class="d-none d-lg-table-cell">Variants</th><th class="d-none d-sm-table-cell">Price</th><th></th></tr>
     </thead>
-    <tbody id="products-tbody">
-        <!-- products list -->
-    </tbody>
 </table>
 <div class="d-flex column-gap-2 justify-content-between">
     <div id="products-count"></div>

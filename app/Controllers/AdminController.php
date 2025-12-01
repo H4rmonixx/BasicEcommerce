@@ -93,7 +93,24 @@ class AdminController {
         }
 
         $view = file_get_contents(__DIR__ . '/../Views/Admin/article.html');
+        echo LayoutEngine::resolveAdminLayout($view);
 
+        return true;
+    }
+
+    public function users(Request $request){
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if($_SESSION['user']['type'] != 'SUPERADMIN'){
+            $view = file_get_contents(__DIR__ . '/../Views/Admin/noaccess.html');
+            echo LayoutEngine::resolveAdminLayout($view);
+            return true;
+        }
+
+        $view = file_get_contents(__DIR__ . '/../Views/Admin/users.html');
         echo LayoutEngine::resolveAdminLayout($view);
 
         return true;

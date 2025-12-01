@@ -21,7 +21,7 @@ class User {
     public $type;
 
 
-    public static function getByID(int $id) {
+    public static function getByID($id) {
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare("SELECT * FROM User WHERE user_id = ?");
         $stmt->execute([$id]);
@@ -45,6 +45,23 @@ class User {
         $user->type = $data['type'];
 
         return $user;
+    }
+
+    public static function getUsersList($search) {
+        $pdo = Database::getConnection();
+
+        $stmt = $pdo->prepare('SELECT * FROM User WHERE type LIKE "ADMIN"');
+        $stmt->execute();
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $stmt = $pdo->prepare('SELECT * FROM User WHERE type LIKE "CUSTOMER" AND (concat(firstname, " ", lastname) LIKE :s OR email LIKE :s OR phone_number LIKE :s)');
+        $stmt->bindValue(":s", "%".$search."%");
+        $stmt->execute();
+        $data2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        return array_merge($data, $data2);
     }
 
     public static function updateUserData($id, $data){

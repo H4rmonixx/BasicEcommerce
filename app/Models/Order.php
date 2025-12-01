@@ -64,6 +64,7 @@ class Order {
         $pdo = Database::getConnection();
         $sql = 'SELECT * FROM OrdersList';
         if(strlen($search) > 0) $sql .= ' WHERE concat(firstname, " ", lastname) LIKE :s';
+        $sql .= ' ORDER BY status, date';
         $stmt = $pdo->prepare($sql);
         if(strlen($search) > 0) $stmt->bindValue(":s", "%".$search."%");
         $stmt->execute();

@@ -18,7 +18,7 @@ class AdminAuthMiddleware
             header("Location: /login");
             exit;
         }
-        if($_SESSION['user']['type'] != 'ADMIN'){
+        if($_SESSION['user']['type'] != 'ADMIN' && $_SESSION['user']['type'] != 'SUPERADMIN'){
             return false;
         }
 

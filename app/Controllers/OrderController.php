@@ -121,5 +121,23 @@ class OrderController {
         echo json_encode(["payment" => 'PAYU', 'orderid' => $order_id]);
         return true;
     }
+
+    public function editStatus(Request $request){
+        $id = $request->param("orderid");
+        if($id == null){
+            echo null;
+            return true;
+        }
+        $data = $request->json();
+        if($data == null){
+            echo null;
+            return true;
+        }
+
+        Order::updateStatus($id, $data['status']);
+
+        echo json_encode([true]);
+        return true;
+    }
     
 }

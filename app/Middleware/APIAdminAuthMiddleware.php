@@ -17,7 +17,7 @@ class APIAdminAuthMiddleware
         if(!isset($_SESSION['user'])){
             return false;
         }
-        if($_SESSION['user']['type'] != 'ADMIN'){
+        if($_SESSION['user']['type'] != 'ADMIN' && $_SESSION['user']['type'] != 'SUPERADMIN'){
             return false;
         }
 

@@ -62,6 +62,19 @@ class UserController {
         return true;
     }
 
+    public function loadUsersList(Request $request){
+        $data = $request->json();
+        if($data == null){
+            echo null;
+            return true;
+        }
+
+        $users = User::getUsersList($data['search']);
+        echo json_encode($users);
+
+        return true;
+    }
+
     public function loadUserOrders(Request $request){
 
         if (session_status() === PHP_SESSION_NONE) {

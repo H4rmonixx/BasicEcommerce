@@ -1,3 +1,5 @@
+let tbodies = {};
+
 function loadProducts(s){
     return $.ajax({
         type: "post",
@@ -9,8 +11,12 @@ function loadProducts(s){
         try{
             let json = JSON.parse(success);
             $("#products-count").html(`<b>Products count: </b>${json.length}`);
-            let $root = $("#products-tbody");
-            $root.empty();
+            
+            for(let key in tbodies){
+                tbodies[key].content.empty();
+                tbodies[key].counter.text(0);
+            }
+
             json.forEach((product) => {
                 let variantslist = "";
                 product.variants.forEach((v, index) => {
@@ -29,7 +35,9 @@ function loadProducts(s){
                 $steer.append($deletebtn);
                 $tr.append($steer);
                 
-                $root.append($tr);
+                tbodies[product.category_id].content.append($tr);
+                tbodies[product.category_id].content.addClass("show");
+                tbodies[product.category_id].counter.text(parseInt(tbodies[product.category_id].counter.text())+1);
             })
         } catch(e) {
             console.log("Unable to load products");
@@ -46,9 +54,20 @@ function loadCategories(){
         try{
             let json = JSON.parse(success);
             let $root = $("#input-product-category");
+            let $table_products = $("#table-products");
             $root.empty();
             json.forEach((cat) => {
                 $root.append($("<option>", {value: cat.category_id, text: cat.name}));
+                let $tbody_header = $("<tbody>", {"data-bs-toggle": "collapse", "data-bs-target": `#products-${cat.category_id}`, class: "group-header"});
+                $tbody_header.append($("<tr>", {html: `<td colspan="5" class="bg-light"><b>Category:</b> ${cat.name} (<span id="products-${cat.category_id}-count">0</span>)</td>`}));
+                let $tbody_content = $("<tbody>", {id: `products-${cat.category_id}`, class: "collapse"});
+                $tbody_content.append($("<tr>", {html: `<td colspan="5">Loading...</td>`}));
+                $table_products.append($tbody_header);
+                $table_products.append($tbody_content);
+                tbodies[cat.category_id] = {
+                    content: $tbody_content,
+                    counter: $tbody_header.find(`#products-${cat.category_id}-count`)
+                };
             });
         } catch(e) {
             console.log("Unable to load categories");
@@ -65,7 +84,6 @@ function deleteProduct(product_id, name){
 
 $(document).ready(()=>{
     
-    loadCategories();
     $("#search-form").on("submit", function(e) {
         e.preventDefault();
         loadProducts($("#search-form-input").val()).catch((error) => {
@@ -75,7 +93,9 @@ $(document).ready(()=>{
                 infobox_show(error, 5000)
         });
     });
-    $("#search-form-btn")[0].click();
+    loadCategories().then(()=>{
+        $("#search-form-btn")[0].click();
+    });
 
     $("#button-new-product").on("click", ()=>{
         bootstrap.Modal.getOrCreateInstance('#modal-new-product').show();
