@@ -46,6 +46,12 @@ $router->get('/product/{id}', [ProductController::class, 'showProduct'], [
     AdminTopbarMiddleware::class
 ]);
 
+$router->get('/articles', [ArticleController::class, 'showArticles'], [
+    AdminTopbarMiddleware::class
+]);
+$router->get('/articles/{page}', [ArticleController::class, 'showArticles'], [
+    AdminTopbarMiddleware::class
+]);
 $router->get('/article/{id}', [ArticleController::class, 'showArticle'], [
     AdminTopbarMiddleware::class
 ]);

@@ -1,6 +1,5 @@
 phpmailer
 payu connect
-dla kazdej strony z url z parametrem sprawdzic, czy dany artykul lub produkt istnieje zanim wyswietlimy strone
 orders
 
 /product/{id} - check if product public is 1 (admin can see unpublic)

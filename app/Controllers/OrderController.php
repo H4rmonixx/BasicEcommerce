@@ -57,6 +57,19 @@ class OrderController {
         return true;
     }
 
+    public function loadOrdersList(Request $request){
+        
+        $data = $request->json();
+        if($data == null){
+            echo json_encode([]);
+            return true;
+        }
+        $orders = Order::getOrdersList($data['search']);
+        echo json_encode($orders);
+        
+        return true;
+    }
+
     public function placeOrder(Request $request){
         
         $data = $request->json();

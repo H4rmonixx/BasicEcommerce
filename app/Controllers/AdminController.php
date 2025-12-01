@@ -20,6 +20,15 @@ class AdminController {
         return true;
     }
 
+    public function orders(Request $request) {
+
+        $view = file_get_contents(__DIR__ . '/../Views/Admin/orders.html');
+
+        echo LayoutEngine::resolveAdminLayout($view);
+
+        return true;
+    }
+
     public function products(Request $request) {
 
         $view = file_get_contents(__DIR__ . '/../Views/Admin/products.html');

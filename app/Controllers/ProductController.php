@@ -26,6 +26,15 @@ class ProductController {
 
     public function showProduct(Request $request) {
 
+        $id = $request->param("id");
+        if($id == null){
+            return false;
+        }
+
+        if(!Product::ifExists($id)){
+            return false;
+        }
+
         $view = file_get_contents(__DIR__ . '/../Views/product.html');
         echo LayoutEngine::resolveLayout($view);
 

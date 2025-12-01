@@ -13,9 +13,6 @@ class Article {
     public $public;
     public $date;
     public $content;
-    
-    
-
 
     public static function getByID(int $id) {
         $pdo = Database::getConnection();
@@ -37,10 +34,25 @@ class Article {
         return $article;
     }
 
-    public static function getPublicArticles(){
+    public static function getPublicArticles($filters){
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare("SELECT * FROM Article WHERE public = 1");
-        $stmt->execute();
+        
+        $sql = "SELECT * FROM Article WHERE public = 1 AND title LIKE ?";
+        $params = ["%".$filters['search']."%"];
+
+        if($filters['omit_id'] != null){
+            $sql .= " AND article_id <> ?";
+            array_push($params, intval($filters['omit_id']));
+        }
+        if($filters['limit'] != null){
+            $sql .= " LIMIT ".intval($filters['limit']);
+            if($filters['page'] != null){
+                $sql .= " OFFSET ".(intval($filters['page']) - 1);
+            }
+        }
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $data;
@@ -51,6 +63,27 @@ class Article {
         $stmt = $pdo->prepare("SELECT * FROM Article");
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $data;
+    }
+
+    public static function getCount($filters){
+        $pdo = Database::getConnection();
+        
+        $sql = "SELECT Count(*) FROM Article WHERE public = 1 AND title LIKE ?";
+        $params = ["%".$filters['search']."%"];
+
+        if($filters['omit_id'] != null){
+            $sql .= " AND article_id <> ?";
+            array_push($params, intval($filters['omit_id']));
+        }
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+
+        if($filters['limit'] == null) $filters['limit'] = 8;
+
+        $data = ["pagesCount" => (int) ($stmt->fetchColumn() / $filters['limit'] + 1)];
 
         return $data;
     }

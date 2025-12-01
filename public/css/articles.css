@@ -1,0 +1,18 @@
+#articles-container{
+    min-height: 30vh;
+}
+
+.page-link{
+    border-color: lightgray;
+    border-radius: 0 !important;
+    color: black;
+}
+.page-link.active{
+    background-color: black;
+    color: white !important;
+    border-color: lightgray;
+}
+.page-link:hover{
+    cursor: pointer;
+    color: black;
+}

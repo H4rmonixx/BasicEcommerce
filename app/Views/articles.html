@@ -1,0 +1,47 @@
+@section("title")
+View articles
+@endsection
+
+@section("styles")
+<link rel="stylesheet" href="/css/articles.css">
+@endsection
+
+@section("scripts")
+<script src="/js/articles.js"></script>
+<script src="/js/loadCartSize.js"></script>
+<script src="/js/infobox.js"></script>
+@endsection
+
+@section("content")
+<div class="container-xxl pt-5 pb-2 mb-3 ps-4 pe-4 ps-xxl-0 pe-xxl-0 fs-4">
+    <div class="m-b-700">OUR LATEST ARTICLES AND MORE!</div>
+</div>
+<div class="border-top border-bottom border-black bg-light mb-5">
+    <div class="container-xxl ps-4 pe-4 ps-xxl-0 pe-xxl-0 fs-5">
+        <form class="d-flex justify-content-end py-2" id="search-form">
+            <div class="d-flex column-gap-1">
+                <input class="form-control" type="search" placeholder="Title..." id="search-form-input">
+                <button class="btn btn-outline-primary" type="submit" id="search-form-btn"><i class="bi bi-search"></i></button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="container-xxl mb-4 pe-xxl-0 ps-xxl-0 pe-4 ps-4">
+    <div class="row mb-5 gy-3" id="articles-container">
+        <!-- -->
+    </div>
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item">
+                <a class="page-link" id="page-link-left"><span>&laquo;</span></a>
+            </li>
+            <div class="d-flex" id="page-link-container">
+
+            </div>
+            <li class="page-item">
+                <a class="page-link" id="page-link-right"><span>&raquo;</span></a>
+            </li>
+        </ul>
+    </nav>
+</div>
+@endsection

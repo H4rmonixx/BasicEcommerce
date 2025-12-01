@@ -10,6 +10,14 @@ use App\Core\LayoutEngine;
 use App\Models\Article;
 
 class ArticleController {
+    public function showArticles(Request $request) {
+
+        $view = file_get_contents(__DIR__ . '/../Views/articles.html');
+        echo LayoutEngine::resolveLayout($view);
+
+        return true;
+    }
+    
     public function showArticle(Request $request) {
 
         $id = $request->param("id");
@@ -26,9 +34,27 @@ class ArticleController {
         return true;
     }
 
+    public function countPages(Request $request){
+
+        $filters = $request->json();
+        if($filters == null){
+            echo null;
+            return true;
+        }
+        $count = Article::getCount($filters);
+        echo json_encode($count);
+
+        return true;
+    }
+
     public function loadArticles(Request $request){
 
-        $articles = Article::getPublicArticles();
+        $filters = $request->json();
+        if($filters == null){
+            echo null;
+            return true;
+        }
+        $articles = Article::getPublicArticles($filters);
         echo json_encode($articles);
         
         return true;

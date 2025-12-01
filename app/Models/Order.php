@@ -47,15 +47,35 @@ class Order {
         $order->payu_order_id = $data['payu_order_id'];
         $order->payment_method = $data['payment_method'];
         $order->status = $data['status'];
-        $order->products = [];
-        
-        $stmt = $pdo->prepare("SELECT product_variant_id, quantity FROM `Order_Detail` WHERE order_id = ?");
-        $stmt->execute([$order_id]);
-        while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-            $order->products[] = $row;
-        }
+        $order->products = self::getOrderDetails($order_id);
 
         return $order;
+    }
+
+    public static function getOrderDetails($order_id){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT product_variant_id, quantity FROM `Order_Detail` WHERE order_id = ?");
+        $stmt->execute([$order_id]);
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function getOrdersList($search){
+        $pdo = Database::getConnection();
+        $sql = 'SELECT * FROM OrdersList';
+        if(strlen($search) > 0) $sql .= ' WHERE concat(firstname, " ", lastname) LIKE :s';
+        $stmt = $pdo->prepare($sql);
+        if(strlen($search) > 0) $stmt->bindValue(":s", "%".$search."%");
+        $stmt->execute();
+
+        $data = [];
+
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+            $row['products'] = self::getOrderDetails($row['order_id']);
+            $data[] = $row;
+        }
+
+        return $data;
     }
 
     public static function getUserID($order_id) {
@@ -77,7 +97,7 @@ class Order {
         $stmt->execute([$user_id]);
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        if(!$result || empty($result)){
+        if(!$result){
             return null;
         }
 

@@ -14,7 +14,7 @@ CREATE TABLE `Article` (
     article_id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(64) NOT NULL,
     public BIT(1) DEFAULT 0 NOT NULL,
-    date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    date DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     content TEXT NOT NULL DEFAULT ""
 );
 
@@ -183,4 +183,10 @@ INSERT INTO `Article` (title, public, content) VALUES
 CREATE VIEW ProductsList AS
 SELECT p.product_id as product_id, p.category_id as category_id, p.name as name, p.price as price, p.visible as visible,
 pv.product_variant_id as product_variant_id, pv.variant_id as variant_id, v.name as variant_name, pv.quantity as quantity
-FROM (Product p LEFT JOIN Product_Variant pv ON p.product_id = pv.product_id) LEFT JOIN Variant v ON pv.variant_id = v.variant_id
+FROM (Product p LEFT JOIN Product_Variant pv ON p.product_id = pv.product_id) LEFT JOIN Variant v ON pv.variant_id = v.variant_id;
+
+CREATE VIEW OrdersList AS
+SELECT o.order_id as order_id, o.date as date, o.shipping_price as shipping_price, o.products_price as products_price, o.payu_order_id as payu_order_id,
+o.payment_method as payment_method, o.status as status, o.address as address, o.building as building, o.city as city, o.post_code as post_code, o.country as country,
+u.user_id as user_id, u.firstname as firstname, u.lastname as lastname, u.phone_number as phone_number, u.email as email
+FROM `Order` o INNER JOIN `User` u ON o.user_id = u.user_id;

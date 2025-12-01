@@ -36,6 +36,7 @@ $router->post('/variants/load', [VariantController::class, 'loadAllVariants']);
 
 $router->post('/articles/load', [ArticleController::class, 'loadArticles']);
 $router->post('/article/load/{id}', [ArticleController::class, 'loadArticle']);
+$router->post('/articles/pages', [ArticleController::class, 'countPages']);
 
 $router->post('/cart/size', [CartController::class, 'getSize']);
 $router->post('/cart/add', [CartController::class, 'addToCart']);

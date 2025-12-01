@@ -65,9 +65,10 @@ function deleteProduct(product_id, name){
 
 $(document).ready(()=>{
     
+    loadCategories();
     $("#search-form").on("submit", function(e) {
         e.preventDefault();
-        loadProducts($("#search-form-input").val()).then(loadCategories).catch((error) => {
+        loadProducts($("#search-form-input").val()).catch((error) => {
             if(error.statusText)
                 infobox_show(error.statusText, 5000);
             else
