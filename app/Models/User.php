@@ -89,25 +89,49 @@ class User {
         return [true];
     }
 
-    public static function updateUserPassword($id, $data){
+    public static function updateUserPassword($id, $data, $override = false){
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare("SELECT password FROM User WHERE user_id = ?");
-        $stmt->execute([$id]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        if(!$override){
+            $stmt = $pdo->prepare("SELECT password FROM User WHERE user_id = ?");
+            $stmt->execute([$id]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
 
-        if (!$user) {
-            return null;
-        }
+            if (!$user) {
+                return null;
+            }
 
-        if(!password_verify($data['password_old'], $user['password'])){
-            return [false];
+            if(!password_verify($data['password_old'], $user['password'])){
+                return [false];
+            }
         }
 
         $stmt = $pdo->prepare("UPDATE User SET password = ? WHERE user_id = ?");
         $stmt->execute([$data['password_new'], $id]);
         $affected = $stmt->rowCount();
 
+        if($affected == 0) return null;
+        
+        return [true];
+    }
+
+    public static function deleteUser($id){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("DELETE FROM User WHERE user_id = ?");
+        $stmt->execute([$id]);
+        $affected = $stmt->rowCount();
+        
+        if($affected == 0) return null;
+        
+        return [true];
+    }
+
+    public static function changeType($id, $type){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("UPDATE User SET type = ? WHERE user_id = ?");
+        $stmt->execute([$type, $id]);
+        $affected = $stmt->rowCount();
+        
         if($affected == 0) return null;
         
         return [true];

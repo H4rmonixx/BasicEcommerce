@@ -8,6 +8,7 @@ require_once __DIR__ . '/../Controllers/VariantController.php';
 require_once __DIR__ . '/../Controllers/ArticleController.php';
 require_once __DIR__ . '/../Controllers/OrderController.php';
 require_once __DIR__ . '/../Controllers/UserController.php';
+require_once __DIR__ . '/../Controllers/ConfigurationController.php';
 require_once __DIR__ . '/../Middleware/AdminAuthMiddleware.php';
 require_once __DIR__ . '/../Middleware/APIAdminAuthMiddleware.php';
 
@@ -19,6 +20,7 @@ use App\Controllers\VariantController;
 use App\Controllers\ArticleController;
 use App\Controllers\OrderController;
 use App\Controllers\ProductController;
+use App\Controllers\ConfigurationController;
 use App\Middleware\AdminAuthMiddleware;
 use App\Middleware\APIAdminAuthMiddleware;
 
@@ -130,12 +132,32 @@ $router->post("/articles/list", [ArticleController::class, 'loadArticlesList'], 
 $router->post("/users/list", [UserController::class, 'loadUsersList'], [
     APIAdminAuthMiddleware::class
 ]);
+$router->post('/user/update/data/{userid}', [UserController::class, 'updateUserDataSuper'], [
+    APIAdminAuthMiddleware::class
+]);
+$router->post('/user/update/password/{userid}', [UserController::class, 'updateUserPasswordSuper'], [
+    APIAdminAuthMiddleware::class
+]);
+$router->post('/user/update/type/{userid}', [UserController::class, 'updateUserType'], [
+    APIAdminAuthMiddleware::class
+]);
+$router->post('/user/delete/{userid}', [UserController::class, 'deleteUser'], [
+    APIAdminAuthMiddleware::class
+]);
 
 
 $router->post("/orders/list", [OrderController::class, 'loadOrdersList'], [
     APIAdminAuthMiddleware::class
 ]);
 $router->post("/order/edit/status/{orderid}", [OrderController::class, 'editStatus'], [
+    APIAdminAuthMiddleware::class
+]);
+
+
+$router->post("/configuration/list", [ConfigurationController::class, 'loadConfigurationList'], [
+    APIAdminAuthMiddleware::class
+]);
+$router->post("/configuration/update/{configid}", [ConfigurationController::class, 'updateConfigurationValue'], [
     APIAdminAuthMiddleware::class
 ]);
 

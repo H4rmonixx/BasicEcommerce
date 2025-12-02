@@ -101,8 +101,10 @@ class OrderController {
         }
 
         $order_id = Order::createOrder($user_id, $data, $shipping_price->value);
+        $cart_not_available = [];
         foreach ($_SESSION['cart'] as $product) {
             if(!Product::ifQuantityInStock($product['product_variant_id'], $product['quantity'])){
+                array_push($cart_not_available, $product);
                 continue;
             }
             Order::addProductToOrder($order_id, $product['product_variant_id'], $product['quantity']);
@@ -110,6 +112,7 @@ class OrderController {
         }
 
         unset($_SESSION['cart']);
+        if(count($cart_not_available) > 0) $_SESSION['cart'] = $cart_not_available;
 
         if($data['payment'] == 'CASH'){
             Order::updateStatus($order_id, "PAID");

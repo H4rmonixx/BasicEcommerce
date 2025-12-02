@@ -114,7 +114,7 @@ function showVariants(){
         let $quantityform = $("<form>");
         $quantityform.append($("<input>", {type: "number", class: "visually-hidden quantity-form-pvid", value: variant.product_variant_id}));
         $quantityform.append($("<div>", {class: "fw-bold mb-1 form-text text-black", text: "Quantity:"}));
-        $quantityform.append($("<input>", {type: "number", class: "form-control form-control-sm quantity-form-quantity mb-2", value: variant.quantity, min: 1, step: 1, disabled: true, required: true}));
+        $quantityform.append($("<input>", {type: "number", class: "form-control form-control-sm quantity-form-quantity mb-2", value: variant.quantity, min: 0, step: 1, disabled: true, required: true}));
         $quantityform.append($("<div>", {class: "fw-bold mb-1 form-text text-black", text: "Width:"}));
         $quantityform.append($("<input>", {type: "number", class: "form-control form-control-sm quantity-form-width mb-2", value: variant.width, min: 0.01, step: 0.01, disabled: true, required: true}));
         $quantityform.append($("<div>", {class: "fw-bold mb-1 form-text text-black", text: "Height:"}));

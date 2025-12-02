@@ -30,4 +30,33 @@ class ConfigurationController {
         return true;
     }
 
+    public function loadConfigurationList(Request $request){
+        $conf = Configuration::getConfigurationList();
+
+        echo json_encode($conf);
+        return true;
+    }
+
+    public function updateConfigurationValue(Request $request){
+        $id = $request->param("configid");
+        if($id == null){
+            echo null;
+            return true;
+        }
+        $data = $request->json();
+        if($data == null){
+            echo null;
+            return true;
+        }
+
+        $conf = Configuration::updateValue($id, $data['value']);
+        if($conf == null){
+            echo null;
+            return true;
+        }
+        
+        echo json_encode($conf);
+        return true;
+    }
+
 }

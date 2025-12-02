@@ -115,6 +115,25 @@ class UserController {
         return true;
     }
 
+    public function updateUserDataSuper(Request $request) {
+
+        $id = $request->param("userid");
+        if($id == null){
+            echo null;
+            return true;
+        }
+        $data = $request->json();
+        if($data == null){
+            echo null;
+            return true;
+        }
+
+        $result = User::updateUserData($id, $data);
+        echo json_encode($result);
+
+        return true;
+    }
+
     public function updateUserPassword(Request $request){
 
         if (session_status() === PHP_SESSION_NONE) {
@@ -135,6 +154,55 @@ class UserController {
         $result = User::updateUserPassword($_SESSION['user']['user_id'], $data);
         echo json_encode($result);
 
+        return true;
+    }
+
+    public function updateUserPasswordSuper(Request $request){
+
+        $id = $request->param("userid");
+        if($id == null){
+            echo null;
+            return true;
+        }
+        $data = $request->json();
+        if($data == null){
+            echo null;
+            return true;
+        }
+
+        $result = User::updateUserPassword($id, $data, true);
+        echo json_encode($result);
+
+        return true;
+    }
+
+    public function deleteUser(Request $request){
+        $id = $request->param("userid");
+        if($id == null){
+            echo null;
+            return true;
+        }
+
+        $result = User::deleteUser($id);
+        echo json_encode($result);
+        return true;
+
+    }
+
+    public function updateUserType(Request $request){
+        $id = $request->param("userid");
+        if($id == null){
+            echo null;
+            return true;
+        }
+        $data = $request->json();
+        if($data == null){
+            echo null;
+            return true;
+        }
+
+        $result = User::changeType($id, $data['type']);
+        echo json_encode($result);
         return true;
     }
 

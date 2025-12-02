@@ -10,6 +10,9 @@ use PDO;
 class Order {
     public $order_id;
     public $user_id;
+    public $fullname;
+    public $phone_number;
+    public $email;
     public $date;
     public $address;
     public $building;
@@ -36,6 +39,9 @@ class Order {
         $order = new self();
         $order->order_id = $data['order_id'];
         $order->user_id = $data['user_id'];
+        $order->fullname = $data['fullname'];
+        $order->phone_number = $data['phone_number'];
+        $order->email = $data['email'];
         $order->date = $data['date'];
         $order->address = $data['address'];
         $order->building = $data['building'];
@@ -62,9 +68,9 @@ class Order {
 
     public static function getOrdersList($search){
         $pdo = Database::getConnection();
-        $sql = 'SELECT * FROM OrdersList';
-        if(strlen($search) > 0) $sql .= ' WHERE concat(firstname, " ", lastname) LIKE :s';
-        $sql .= ' ORDER BY status, date';
+        $sql = 'SELECT * FROM `Order`';
+        if(strlen($search) > 0) $sql .= ' WHERE fullname LIKE :s';
+        $sql .= ' ORDER BY status, date DESC';
         $stmt = $pdo->prepare($sql);
         if(strlen($search) > 0) $stmt->bindValue(":s", "%".$search."%");
         $stmt->execute();
@@ -126,8 +132,8 @@ class Order {
 
     public static function createOrder($user_id, $data, $shipping_price){
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare("INSERT INTO `Order` (user_id, address, building, city, post_code, country, shipping_price) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$user_id, $data['shipment']['address'], $data['shipment']['building'], $data['shipment']['city'], $data['shipment']['postcode'], $data['shipment']['country'], $shipping_price]);
+        $stmt = $pdo->prepare("INSERT INTO `Order` (user_id, fullname, phone_number, email, address, building, city, post_code, country, shipping_price, products_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$user_id, $data['personal']['firstname']." ".$data['personal']['lastname'], $data['personal']['phone'], $data['personal']['email'], $data['shipment']['address'], $data['shipment']['building'], $data['shipment']['city'], $data['shipment']['postcode'], $data['shipment']['country'], $shipping_price, $data['price']]);
 
         return $pdo->lastInsertId();
     }

@@ -42,7 +42,7 @@ function loadOrders(s){
                 let $tr = $("<tr>");
                 $tr.append($("<td>", {class: "d-none d-lg-table-cell", text: order.order_id}));
                 $tr.append($("<td>", {text: order.date}));
-                $tr.append($("<td>", {text: order.firstname + " " + order.lastname}));
+                $tr.append($("<td>", {text: order.fullname}));
                 $tr.append($("<td>", {class: "d-none d-lg-table-cell", text: parseFloat(order.shipping_price) + parseFloat(order.products_price) + " PLN"}));
                 let $steer = $("<td>", {class: "d-flex column-gap-2"});
                 let $morebtn = $("<button>", {class: "btn btn-link btn-sm", html: '<i class="bi bi-three-dots"></i>'});
@@ -134,10 +134,19 @@ function loadOrders(s){
                     });
                 })
 
-                let $div_right = $("<div>");
-                $div_right.append($("<div>", {html: `<b>Products price:</b> ${order.products_price} PLN`}));
-                $div_right.append($("<div>", {html: `<b>Shipment:</b> ${order.shipping_price} PLN`}));
-                $div_right.append($("<div>", {html: `<b>Total price:</b> ${parseFloat(order.products_price) + parseFloat(order.shipping_price)} PLN`}));
+                let $div_right = $("<div>", {class: "d-flex column-gap-3 row-gap-3 flex-wrap"});
+                let $div_right_1 = $("<div>");
+                let $div_right_2 = $("<div>");
+                $div_right_1.append($("<div>", {html: `<b>Full name:</b> ${order.fullname}`}));
+                $div_right_1.append($("<div>", {html: `<b>Email:</b> ${order.email}`}));
+                $div_right_1.append($("<div>", {html: `<b>Phone:</b> ${order.phone_number}`}));
+                $div_right_1.append($("<div>", {html: `<b>Address:</b> ${order.address + " " + order.building}`}));
+                $div_right_1.append($("<div>", {html: `${order.post_code + " " + order.city + ", " + order.country}`}));
+                $div_right_2.append($("<div>", {html: `<b>Products price:</b> ${order.products_price} PLN`}));
+                $div_right_2.append($("<div>", {html: `<b>Shipment:</b> ${order.shipping_price} PLN`}));
+                $div_right_2.append($("<div>", {html: `<b>Total price:</b> ${parseFloat(order.products_price) + parseFloat(order.shipping_price)} PLN`}));
+                $div_right.append($div_right_1);
+                $div_right.append($div_right_2);
 
                 $cont.append($div_left);
                 $cont.append($div_right);

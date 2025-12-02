@@ -76,6 +76,10 @@ class ProductController {
         }
 
         $product = Product::getByID($id);
+        if($product == null){
+            echo null;
+            return true;
+        }
         echo json_encode($product);
         
         return true;
@@ -90,6 +94,10 @@ class ProductController {
         }
 
         $product = Product::getByVariantID($variantid);
+        if($product == null){
+            echo null;
+            return true;
+        }
         echo json_encode($product);
         
         return true;

@@ -28,4 +28,25 @@ class Configuration {
         return $conf;
     }
 
+    public static function getConfigurationList(){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT * FROM `Configuration`");
+        $stmt->execute();
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $data;
+    }
+
+    public static function updateValue($id, $val){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("UPDATE `Configuration` SET value = ? WHERE configuration_id = ?");
+        $stmt->execute([$val, $id]);
+
+        $affected = $stmt->rowCount();
+        
+        if($affected == 0) return null;
+        
+        return [true];
+    }
+
 }

@@ -3,7 +3,19 @@ DROP DATABASE IF EXISTS ecommerce;
 CREATE DATABASE ecommerce;
 USE ecommerce;
 
--- Article
+-- USE m3378_ecommerce;
+-- DROP TABLE IF EXISTS `Configuration`;
+-- DROP TABLE IF EXISTS `Article`;
+-- DROP TABLE IF EXISTS `Category`;
+-- DROP TABLE IF EXISTS `Product`;
+-- DROP TABLE IF EXISTS `Photo`;
+-- DROP TABLE IF EXISTS `Variant`;
+-- DROP TABLE IF EXISTS `Product_Variant`;
+-- DROP TABLE IF EXISTS `User`;
+-- DROP TABLE IF EXISTS `Order`;
+-- DROP TABLE IF EXISTS `Order_Detail`;
+
+-- Configuration
 CREATE TABLE `Configuration` (
     configuration_id VARCHAR(64) PRIMARY KEY,
     value VARCHAR(64) NOT NULL
@@ -14,7 +26,7 @@ CREATE TABLE `Article` (
     article_id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(64) NOT NULL,
     public BIT(1) DEFAULT 0 NOT NULL,
-    date DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    date DATE NOT NULL DEFAULT (CURRENT_TIMESTAMP),
     content TEXT NOT NULL DEFAULT ""
 );
 
@@ -81,8 +93,11 @@ CREATE TABLE `User` (
 -- Order
 CREATE TABLE `Order` (
     order_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    user_id INT,
+    fullname VARCHAR(64) NOT NULL,
+    phone_number VARCHAR(20) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    date DATETIME NOT NULL DEFAULT (CURRENT_TIMESTAMP),
     address VARCHAR(64) NOT NULL,
     building VARCHAR(6) NOT NULL,
     city VARCHAR(32) NOT NULL,
@@ -93,7 +108,7 @@ CREATE TABLE `Order` (
     payu_order_id VARCHAR(64) DEFAULT NULL,
     payment_method ENUM('CASH', 'PAYU') NOT NULL DEFAULT 'CASH',
     status ENUM('PENDING', 'PAID', 'PREPARING', 'SHIPPED', 'CANCELED') NOT NULL DEFAULT 'PENDING',
-    FOREIGN KEY (user_id) REFERENCES `User`(user_id) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES `User`(user_id) ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 -- Order-Detail (relacja między Order i Product-Variant)
@@ -151,9 +166,9 @@ INSERT INTO `User` (firstname, lastname, phone_number, email, password, address,
 ('Diana', 'Zielińska', '+48987654321', 'diana@example.com', '$2y$10$PiWxhyQyGIC.H5rlPvbMDezj4CLlrwndFpwwuQt4U35rbeAE1dTty', 'Forest', '5', 'Gdansk', '80-100', 'Polska', 'SUPERADMIN'),
 ('Kacper', 'Pietrasik', '+48123123123', 'kacper@example.com', '$2y$10$PiWxhyQyGIC.H5rlPvbMDezj4CLlrwndFpwwuQt4U35rbeAE1dTty', 'Skorzecka', '5', 'Dabrowka', '08-114', 'Polska', 'ADMIN');
 
-INSERT INTO `Order` (user_id, date, address, building, city, post_code, country, shipping_price, products_price, status) VALUES
-(1, '2025-10-01 14:23:00', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 22.0, 149.97, 'PENDING'),
-(2, '2025-10-10 19:45:00', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 22.0, 369.79, 'PAID');
+INSERT INTO `Order` (user_id, fullname, phone_number, email, date, address, building, city, post_code, country, shipping_price, products_price, status) VALUES
+(1, 'Alice Nowak', '+48123456789', 'alice@example.com', '2025-10-01 14:23:00', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 22.0, 149.97, 'PENDING'),
+(2, 'Diana Zielińska', '+48987654321', 'diana@example.com', '2025-10-10 19:45:00', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 22.0, 369.79, 'PAID');
 
 INSERT INTO `Order_Detail` (order_id, product_variant_id, quantity) VALUES
 (1, 1, 2), 
@@ -185,9 +200,3 @@ CREATE VIEW ProductsList AS
 SELECT p.product_id as product_id, p.category_id as category_id, p.name as name, p.price as price, p.visible as visible,
 pv.product_variant_id as product_variant_id, pv.variant_id as variant_id, v.name as variant_name, pv.quantity as quantity
 FROM (Product p LEFT JOIN Product_Variant pv ON p.product_id = pv.product_id) LEFT JOIN Variant v ON pv.variant_id = v.variant_id;
-
-CREATE VIEW OrdersList AS
-SELECT o.order_id as order_id, o.date as date, o.shipping_price as shipping_price, o.products_price as products_price, o.payu_order_id as payu_order_id,
-o.payment_method as payment_method, o.status as status, o.address as address, o.building as building, o.city as city, o.post_code as post_code, o.country as country,
-u.user_id as user_id, u.firstname as firstname, u.lastname as lastname, u.phone_number as phone_number, u.email as email
-FROM `Order` o INNER JOIN `User` u ON o.user_id = u.user_id;

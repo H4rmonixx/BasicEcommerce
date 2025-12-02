@@ -14,7 +14,7 @@ H.R.M.X Admin / Users
 @section("content")
 <div class="modal" id="modal-user-delete" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <form class="modal-content" method="post" id="modal-category-delete-form">
+        <form class="modal-content" method="post" id="modal-user-delete-form">
             <div class="modal-header">
                 <h1 class="modal-title fs-5"><i class="bi bi-trash"></i> Delete user <span id="modal-user-delete-name"></span>?</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -29,15 +29,16 @@ H.R.M.X Admin / Users
 </div>
 <div class="modal" id="modal-user-convert" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <form class="modal-content" method="post" id="modal-category-convert-form">
+        <form class="modal-content" method="post" id="modal-user-convert-form">
             <div class="modal-header">
-                <h1 class="modal-title fs-5"><i class="bi bi-trash"></i> Convert user <span id="modal-user-convert-name"></span> to admin?</h1>
+                <h1 class="modal-title fs-5"><i class="bi bi-trash"></i> Convert <span id="modal-user-convert-name"></span> to <span id="modal-user-convert-name-type"></span>?</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <input type="number" id="modal-user-convert-id" class="visually-hidden">
+            <input type="text" id="modal-user-convert-type" class="visually-hidden">
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-danger">Delete</button>
+                <button type="submit" class="btn btn-danger">Convert</button>
             </div>
         </form>
     </div>

@@ -45,7 +45,7 @@ class Product {
         }
         $stmt2->closeCursor();
 
-        $stmt2 = $pdo->prepare("SELECT product_variant_id, name, quantity, width, height FROM product_variant pv INNER JOIN variant v ON pv.variant_id = v.variant_id WHERE product_id = ? ORDER BY name");
+        $stmt2 = $pdo->prepare("SELECT product_variant_id, name, quantity, width, height FROM Product_Variant pv INNER JOIN Variant v ON pv.variant_id = v.variant_id WHERE product_id = ? ORDER BY name");
         $stmt2->execute([$id]);
         while($row = $stmt2->fetch(PDO::FETCH_ASSOC)){
             $product->variants[] = $row;
@@ -81,7 +81,7 @@ class Product {
         }
         $stmt2->closeCursor();
 
-        $stmt2 = $pdo->prepare("SELECT product_variant_id, name, quantity, width, height FROM product_variant pv INNER JOIN variant v ON pv.variant_id = v.variant_id WHERE product_id = ? AND product_variant_id = ? ORDER BY name");
+        $stmt2 = $pdo->prepare("SELECT product_variant_id, name, quantity, width, height FROM product_variant pv INNER JOIN Variant v ON pv.variant_id = v.variant_id WHERE product_id = ? AND product_variant_id = ? ORDER BY name");
         $stmt2->execute([$product->product_id, $variantid]);
         if($row = $stmt2->fetch(PDO::FETCH_ASSOC)){
             $product->variants[] = $row;

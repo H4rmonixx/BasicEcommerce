@@ -2,19 +2,13 @@ phpmailer
 payu connect
 password recover
 
-/admin/users
-convert to admin
-degrade to customer
-delete user
+banners change
 
 /product/{id} - check if product public is 1 (admin can see unpublic)
 /article/{id} - check if article public is 1 (admin can see unpublic)
-
-take order repair (products price)
 
 Widoki:
 1. ProductsList
 Funkcja getFilteredProducts i getProductsList w modelu Product.php używaja tego samego bazowego zapytania początkowego zmienionego tylko o klauzule WHERE.
 Stąd stworzyliśmy widok zawierający listę produktów, którą można swobodnie ograniczać wg potrzeb
-2. OrdersList
-Ze wzgledu na duza ilosc danych w zapytaniu widok ulatwi korzystanie z niego.
+

@@ -1,7 +1,9 @@
 let GlobalCartContent = null;
+let GlobalCartContentAvailableCount = null;
 let GlobalPersonalData = null;
 let GlobalShipmentData = null;
 let GlobalShippingPrice = null;
+let GlobalProductsPrice = null;
 
 function refreshCart(){
     return $.ajax({
@@ -36,17 +38,17 @@ function refreshCart(){
                 url: "/product/load/variant/" + product_variant.product_variant_id,
                 method: "post"
             }).then((success) => {
-
                 let prod = null;
                 try{
                     prod = JSON.parse(success);
                     GlobalCartContent[index].product = prod;
                 } catch (e) {
-                    return $.Deferred().reject("All products not loaded.").promise();
+                    deleteFromCart(index);
+                    return;
                 }
 
                 let $main = $("<div>", {class: "prod-in-cart position-relative row mb-4 gx-0"});
-
+                
                 let $soldDiv = $("<div>", {
                     class: "prod-in-cart-sold rounded d-none position-absolute start-0 top-0 w-100 h-100 justify-content-center align-items-center flex-column"
                 });
@@ -116,15 +118,17 @@ function calcValues(){
         return;
     }
 
-    let totalCartValue = 0;
+    GlobalCartContentAvailableCount = 0;
+    GlobalProductsPrice = 0;
     GlobalCartContent.forEach((variant, index) => {
         if(!variant.product) return;
         if(variant.product.variants[0].quantity < 1) return;
-        totalCartValue += parseFloat(variant.product.price) * variant.quantity;
+        GlobalCartContentAvailableCount += 1;
+        GlobalProductsPrice += parseFloat(variant.product.price) * variant.quantity;
     });
-    $("#cart-products").text(totalCartValue.toFixed(2) + " PLN");
+    $("#cart-products").text(GlobalProductsPrice.toFixed(2) + " PLN");
     $("#cart-shipment").text(GlobalShippingPrice + " PLN");
-    $("#cart-total").text((parseFloat(totalCartValue) + parseFloat(GlobalShippingPrice)).toFixed(2) + " PLN");
+    $("#cart-total").text((parseFloat(GlobalProductsPrice) + parseFloat(GlobalShippingPrice)).toFixed(2) + " PLN");
 
     const date = new Date();
     date.setTime(date.getTime() + (7 * 24 * 60 * 60 * 1000));
@@ -200,6 +204,12 @@ function getUserAdress(){
             $("#input-country").val(json.country);
             $("#user-stage").addClass("d-none");
             $("#shipment-stage").removeClass("d-none");
+            GlobalPersonalData = {
+                firstname: json.firstname,
+                lastname: json.lastname,
+                email: json.email,
+                phone: json.phone_number
+            }
         } catch (e){
             // Guest, no action
         }
@@ -220,16 +230,16 @@ function initPage(){
                 $("#user-stage").addClass("d-none");
                 $("#shipment-stage").removeClass("d-none");
             } else {
-                infobox_show("Fill personal details.", 5000)
+                infobox_show("Fill personal details.", 3000)
             }
         });
         
         $("#take-order-button").on("click", () => {
-            if(GlobalCartContent.length === 0){ 
-                infobox_show("The cart is empty.", 5000);
+            if(GlobalCartContentAvailableCount < 1){ 
+                infobox_show("The cart is empty.", 3000);
                 return;
             }
-            let GlobalShipmentData = {
+            GlobalShipmentData = {
                 postcode: $("#input-postcode").val(),
                 city: $("#input-city").val(),
                 address: $("#input-address").val(),
@@ -245,9 +255,11 @@ function initPage(){
                     data: JSON.stringify({
                         personal: GlobalPersonalData,
                         shipment: GlobalShipmentData,
+                        price: GlobalProductsPrice,
                         payment: payment
                     })
                 }).then((success) => {
+                    alert(success)
                     try{
                         let json = JSON.parse(success);
                         if(json.payment == "CASH"){
