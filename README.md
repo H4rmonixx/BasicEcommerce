@@ -1,6 +1,6 @@
 # BasicEcommerce
 
-Pełnofunkcyjna platforma e-commerce w PHP z nowoczesnym frontendem Bootstrap 5, oferująca zarządzanie produktami, koszyk zakupowy, obsługę zamówień, uwierzytelnianie użytkowników oraz panel administracyjny.
+Platforma e-commerce w PHP z nowoczesnym Bootstrap 5.
 
 ---
 
@@ -643,3 +643,4 @@ BasicEcommerce/
 Ten projekt jest udostępniony w celach edukacyjnych.
 
 ---
+
