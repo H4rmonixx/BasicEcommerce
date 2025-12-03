@@ -259,7 +259,6 @@ function initPage(){
                         payment: payment
                     })
                 }).then((success) => {
-                    alert(success)
                     try{
                         let json = JSON.parse(success);
                         if(json.payment == "CASH"){
