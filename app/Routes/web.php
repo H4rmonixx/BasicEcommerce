@@ -67,6 +67,12 @@ $router->get('/summary/{orderid}', [OrderController::class, 'showSummary'], [
 $router->get('/login', [UserController::class, 'showLogin'], [
     AdminTopbarMiddleware::class
 ]);
+$router->get('/login/reset', [UserController::class, 'showResetLogin'], [
+    AdminTopbarMiddleware::class
+]);
+$router->get('/login/reset/{id}', [UserController::class, 'showResetLoginPanel'], [
+    AdminTopbarMiddleware::class
+]);
 $router->get('/account', [UserController::class, 'showAccount'], [
     UserAuthMiddleware::class,
     AdminTopbarMiddleware::class

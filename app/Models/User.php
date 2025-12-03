@@ -47,6 +47,70 @@ class User {
         return $user;
     }
 
+    public static function getByEmail($email){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT * FROM User WHERE email LIKE ?");
+        $stmt->execute([$email]);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$data) {
+            return null;
+        }
+
+        $user = new self();
+        $user->user_id = $data['user_id'];
+        $user->firstname = $data['firstname'];
+        $user->lastname = $data['lastname'];
+        $user->email = $data['email'];
+        $user->phone_number = $data['phone_number'];
+        $user->address = $data['address'];
+        $user->building = $data['building'];
+        $user->city = $data['city'];
+        $user->post_code = $data['post_code'];
+        $user->country = $data['country'];
+        $user->type = $data['type'];
+
+        return $user;
+    }
+
+    public static function setupReset($id, $user_id){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("INSERT INTO `Password_Reset` (password_reset_id, user_id) VALUES (?, ?)");
+        $stmt->execute([$id, $user_id]);
+
+        return $stmt->rowCount();
+    }
+
+    public static function deleteReset($id){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("DELETE FROM `Password_Reset` WHERE password_reset_id = ?");
+        $stmt->execute([$id]);
+
+        return $stmt->rowCount();
+    }
+
+    public static function getResetByID($id){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT * FROM `Password_Reset` WHERE password_reset_id = ?");
+        $stmt->execute([$id]);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if(!$data) return null;
+
+        return $data;
+    }
+
+    public static function ifResetExists($id,){
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT * FROM `Password_Reset` WHERE password_reset_id = ?");
+        $stmt->execute([$id]);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if(!$data) return false;
+
+        return true;
+    }
+
     public static function getUsersList($search) {
         $pdo = Database::getConnection();
 
@@ -107,7 +171,7 @@ class User {
         }
 
         $stmt = $pdo->prepare("UPDATE User SET password = ? WHERE user_id = ?");
-        $stmt->execute([$data['password_new'], $id]);
+        $stmt->execute([password_hash($data['password_new'], PASSWORD_DEFAULT), $id]);
         $affected = $stmt->rowCount();
 
         if($affected == 0) return null;
@@ -147,7 +211,7 @@ class User {
 
     public static function login($email, $password){
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare('SELECT user_id, password, type, firstname, lastname FROM User WHERE email LIKE ? AND type NOT LIKE "GUEST"');
+        $stmt = $pdo->prepare('SELECT user_id, email, password, type, firstname, lastname FROM User WHERE email LIKE ? AND type NOT LIKE "GUEST"');
         $stmt->execute([$email]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -159,7 +223,7 @@ class User {
             return null;
         }
 
-        return ["user_id" => $data['user_id'], "type" => $data['type'], "firstname" => $data['firstname'], "lastname" => $data['lastname']];
+        return ["user_id" => $data['user_id'], "type" => $data['type'], "firstname" => $data['firstname'], "lastname" => $data['lastname'], "email" => $data['email']];
     }
 
     public static function register($data){

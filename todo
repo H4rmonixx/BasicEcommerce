@@ -1,12 +1,3 @@
-phpmailer
-payu connect
-password recover
-
-cart on logged user
-
-/product/{id} - check if product public is 1 (admin can see unpublic)
-/article/{id} - check if article public is 1 (admin can see unpublic)
-
 photo upload dir on smallhost
 banners upload dir on smallhost
 
@@ -14,4 +5,3 @@ Widoki:
 1. ProductsList
 Funkcja getFilteredProducts i getProductsList w modelu Product.php używaja tego samego bazowego zapytania początkowego zmienionego tylko o klauzule WHERE.
 Stąd stworzyliśmy widok zawierający listę produktów, którą można swobodnie ograniczać wg potrzeb
-

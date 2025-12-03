@@ -43,7 +43,7 @@ function loadOrders(s){
                 $tr.append($("<td>", {class: "d-none d-lg-table-cell", text: order.order_id}));
                 $tr.append($("<td>", {text: order.date}));
                 $tr.append($("<td>", {text: order.fullname}));
-                $tr.append($("<td>", {class: "d-none d-lg-table-cell", text: parseFloat(order.shipping_price) + parseFloat(order.products_price) + " PLN"}));
+                $tr.append($("<td>", {class: "d-none d-lg-table-cell", text: parseFloat(parseFloat(order.shipping_price) + parseFloat(order.products_price)).toFixed(2) + " PLN"}));
                 let $steer = $("<td>", {class: "d-flex column-gap-2"});
                 let $morebtn = $("<button>", {class: "btn btn-link btn-sm", html: '<i class="bi bi-three-dots"></i>'});
                 $morebtn.on("click", function(){
@@ -111,7 +111,9 @@ function loadOrders(s){
                         url: "/order/edit/status/"+order.order_id,
                         type: "post",
                         data: JSON.stringify({
-                            status: $(this).find("select").val()
+                            status: $(this).find("select").val(),
+                            email: order.email,
+                            order_id: order.order_id
                         })
                     }).then((success) => {
                         try{
@@ -144,7 +146,7 @@ function loadOrders(s){
                 $div_right_1.append($("<div>", {html: `${order.post_code + " " + order.city + ", " + order.country}`}));
                 $div_right_2.append($("<div>", {html: `<b>Products price:</b> ${order.products_price} PLN`}));
                 $div_right_2.append($("<div>", {html: `<b>Shipment:</b> ${order.shipping_price} PLN`}));
-                $div_right_2.append($("<div>", {html: `<b>Total price:</b> ${parseFloat(order.products_price) + parseFloat(order.shipping_price)} PLN`}));
+                $div_right_2.append($("<div>", {html: `<b>Total price:</b> ${parseFloat(parseFloat(order.products_price) + parseFloat(order.shipping_price)).toFixed(2)} PLN`}));
                 $div_right.append($div_right_1);
                 $div_right.append($div_right_2);
 

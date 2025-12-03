@@ -156,6 +156,7 @@ function loadUsers(s){
                 let $btndel = $("<button>", {type: "button", class: "btn btn-sm btn-danger", text: "Delete user"});
                 $btndel.on("click", ()=>{
                     $("#modal-user-delete-id").val(user.user_id);
+                    $("#modal-user-delete-email").val(user.email);
                     $("#modal-user-delete-name").text(user.firstname + " " + user.lastname);
                     bootstrap.Modal.getOrCreateInstance('#modal-user-delete').show();
                 });
@@ -223,9 +224,13 @@ $(document).ready(()=>{
     $("#modal-user-delete-form").on("submit", function(e){
         e.preventDefault();
         let uid = $(this).find("#modal-user-delete-id").val();
+        let email = $(this).find("#modal-user-delete-email").val();
         $.ajax({
             url: "/user/delete/"+uid,
             type: "post",
+            data: JSON.stringify({
+                user_email: email
+            })
         }).then((success) => {
             try{
                 let json = JSON.parse(success);

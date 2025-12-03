@@ -4,18 +4,21 @@ namespace App\Controllers;
 
 require_once __DIR__ . '/../Core/Request.php';
 require_once __DIR__ . '/../Core/LayoutEngine.php';
-require_once __DIR__ . '/../Core/PayU.php';
 require_once __DIR__ . '/../Models/Order.php';
 require_once __DIR__ . '/../Models/User.php';
 require_once __DIR__ . '/../Models/Product.php';
 require_once __DIR__ . '/../Models/Configuration.php';
+require_once __DIR__ . '/../Models/Cart_Entry.php';
 use App\Core\Request;
 use App\Core\LayoutEngine;
-use App\Core\PayU;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Configuration;
+use App\Models\Cart_Entry;
+
+require_once __DIR__ . '/../Core/Mailer.php';
+use App\Core\Mailer;
 
 class OrderController {
     public function showSummary(Request $request) {
@@ -77,21 +80,29 @@ class OrderController {
             echo null;
             return true;
         }
-
-        //$config = __DIR__ . '../Core/config.php';
         
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        if(!isset($_SESSION['cart']) && count($_SESSION['cart']) == 0){
+        $cart = [];
+        if(isset($_SESSION['user'])){
+            $cart = Cart_Entry::getCart($_SESSION['user']['user_id']);
+        } else {
+            if(!isset($_SESSION["cart"])) $_SESSION["cart"] = [];
+            $cart = &$_SESSION['cart'];
+        }
+
+        if(!isset($cart) || count($cart) == 0){
             echo null;
             return true;
         }
 
+        $user_email = $_SESSION['user']['email'] ?? null;
         $user_id = $_SESSION['user']['user_id'] ?? null;
         if($user_id == null){
             $user_id = User::createGuest($data);
+            $user_email = $data['personal']['email'];
         }
 
         $shipping_price = Configuration::getByID("shipping_price");
@@ -102,17 +113,35 @@ class OrderController {
 
         $order_id = Order::createOrder($user_id, $data, $shipping_price->value);
         $cart_not_available = [];
-        foreach ($_SESSION['cart'] as $product) {
+        $mail_order_items = "";
+        foreach ($cart as $product) {
             if(!Product::ifQuantityInStock($product['product_variant_id'], $product['quantity'])){
                 array_push($cart_not_available, $product);
                 continue;
             }
             Order::addProductToOrder($order_id, $product['product_variant_id'], $product['quantity']);
             Product::updateVariantQuantity($product['product_variant_id'], (-1) * $product['quantity']);
+
+            $product_data = Product::getByVariantID($product['product_variant_id']);
+            $mail_order_items .= '<tr><td>'.$product_data->name.'</td><td>'.$product_data->variants[0]['name'].'</td><td>'.$product_data->price.'</td><td>'.$product['quantity'].'</td><td style="text-align: right;">'.round($product_data->price * $product['quantity'], 2).' PLN</td></tr>';
         }
 
-        unset($_SESSION['cart']);
-        if(count($cart_not_available) > 0) $_SESSION['cart'] = $cart_not_available;
+        if(isset($_SESSION['user'])){
+            Cart_Entry::clearCart($_SESSION['user']['user_id']);
+            if(count($cart_not_available) > 0) Cart_Entry::setCart($_SESSION['user']['user_id'], $cart_not_available);
+        } else {
+            unset($_SESSION['cart']);
+            if(count($cart_not_available) > 0) $_SESSION['cart'] = $cart_not_available;
+        }
+
+        Mailer::sendMail($user_email, "Order #".$order_id." confirmation", "orderConfirmation.html",
+        [
+            "ORDER_ID" => $order_id,
+            "ORDER_PRODUCTS" => $data['price'] . " PLN",
+            "ORDER_SHIPMENT" => $shipping_price->value . " PLN",
+            "ORDER_TOTAL" => ($data['price'] + $shipping_price->value) . " PLN",
+            "ORDER_ITEMS" => $mail_order_items
+        ]);
 
         if($data['payment'] == 'CASH'){
             Order::updateStatus($order_id, "PAID");
@@ -138,6 +167,12 @@ class OrderController {
         }
 
         Order::updateStatus($id, $data['status']);
+
+        Mailer::sendMail($data['email'], "Order #".$data['order_id']." status changed", "orderStatusChange.html",
+        [
+            "ORDER_ID" => $data['order_id'],
+            "ORDER_STATUS" => $data['status']
+        ]);
 
         echo json_encode([true]);
         return true;

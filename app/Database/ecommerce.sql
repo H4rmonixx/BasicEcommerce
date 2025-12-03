@@ -3,17 +3,21 @@ DROP DATABASE IF EXISTS ecommerce;
 CREATE DATABASE ecommerce;
 USE ecommerce;
 
+-- CONFIG FOR PRODUCTION
 -- USE m3378_ecommerce;
 -- DROP TABLE IF EXISTS `Configuration`;
 -- DROP TABLE IF EXISTS `Article`;
--- DROP TABLE IF EXISTS `Category`;
--- DROP TABLE IF EXISTS `Product`;
--- DROP TABLE IF EXISTS `Photo`;
--- DROP TABLE IF EXISTS `Variant`;
--- DROP TABLE IF EXISTS `Product_Variant`;
--- DROP TABLE IF EXISTS `User`;
--- DROP TABLE IF EXISTS `Order`;
 -- DROP TABLE IF EXISTS `Order_Detail`;
+-- DROP TABLE IF EXISTS `Order`;
+-- DROP TABLE IF EXISTS `Cart_Entry`;
+-- DROP TABLE IF EXISTS `Product_Variant`;
+-- DROP TABLE IF EXISTS `Photo`;
+-- DROP TABLE IF EXISTS `Product`;
+-- DROP TABLE IF EXISTS `Category`;
+-- DROP TABLE IF EXISTS `Variant`;
+-- DROP TABLE IF EXISTS `Password_Reset`;
+-- DROP TABLE IF EXISTS `User`;
+-- DROP VIEW IF EXISTS `ProductsList`;
 
 -- Configuration
 CREATE TABLE `Configuration` (
@@ -80,7 +84,7 @@ CREATE TABLE `User` (
     firstname VARCHAR(32) NOT NULL,
     lastname VARCHAR(32) NOT NULL,
     phone_number VARCHAR(20) NOT NULL,
-    email VARCHAR(150) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
     password VARCHAR(255),
     address VARCHAR(64) NOT NULL,
     building VARCHAR(6) NOT NULL,
@@ -90,14 +94,21 @@ CREATE TABLE `User` (
     type ENUM('GUEST', 'CUSTOMER', 'ADMIN', 'SUPERADMIN') NOT NULL DEFAULT 'GUEST'
 );
 
+-- Password reset
+CREATE TABLE `Password_Reset` (
+    password_reset_id VARCHAR(64) PRIMARY KEY,
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES `User`(user_id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 -- Cart
 CREATE TABLE `Cart_Entry` (
     cart_entry_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     product_variant_id INT NOT NULL,
     quantity INT UNSIGNED NOT NULL DEFAULT 1,
-    FOREIGN KEY user_id REFERENCES `User` (user_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY product_variant_id REFERENCES `Product_Variant` (product_variant_id) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES `User`(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (product_variant_id) REFERENCES `Product_Variant`(product_variant_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Order
@@ -173,12 +184,12 @@ INSERT INTO `Product_Variant` (product_id, variant_id, quantity, width, height) 
 -- Password test1234 for both
 INSERT INTO `User` (firstname, lastname, phone_number, email, password, address, building, city, post_code, country, type) VALUES
 ('Alice', 'Nowak', '+48123456789', 'alice@example.com', '$2y$10$PiWxhyQyGIC.H5rlPvbMDezj4CLlrwndFpwwuQt4U35rbeAE1dTty', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 'CUSTOMER'),
-('Diana', 'Zielińska', '+48987654321', 'diana@example.com', '$2y$10$PiWxhyQyGIC.H5rlPvbMDezj4CLlrwndFpwwuQt4U35rbeAE1dTty', 'Forest', '5', 'Gdansk', '80-100', 'Polska', 'SUPERADMIN'),
+('Krystian', 'Franczak', '+48987654321', 'harmonixxgames@gmail.com', '$2y$10$PiWxhyQyGIC.H5rlPvbMDezj4CLlrwndFpwwuQt4U35rbeAE1dTty', 'Osiedlowa', '60', 'Gołąbek', '08-114', 'Polska', 'SUPERADMIN'),
 ('Kacper', 'Pietrasik', '+48123123123', 'kacper@example.com', '$2y$10$PiWxhyQyGIC.H5rlPvbMDezj4CLlrwndFpwwuQt4U35rbeAE1dTty', 'Skorzecka', '5', 'Dabrowka', '08-114', 'Polska', 'ADMIN');
 
 INSERT INTO `Order` (user_id, fullname, phone_number, email, date, address, building, city, post_code, country, shipping_price, products_price, status) VALUES
 (1, 'Alice Nowak', '+48123456789', 'alice@example.com', '2025-10-01 14:23:00', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 22.0, 149.97, 'PENDING'),
-(2, 'Diana Zielińska', '+48987654321', 'diana@example.com', '2025-10-10 19:45:00', 'Main St', '12', 'Warsaw', '00-001', 'Polska', 22.0, 369.79, 'PAID');
+(2, 'Krystian Franczak', '+48987654321', 'harmonixxgames@gmail.com', '2025-10-10 19:45:00', 'Osiedlowa', '60', 'Gołąbek', '08-114', 'Polska', 22.0, 369.79, 'PAID');
 
 INSERT INTO `Order_Detail` (order_id, product_variant_id, quantity) VALUES
 (1, 1, 2), 

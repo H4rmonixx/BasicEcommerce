@@ -52,6 +52,9 @@ $router->post('/user/update/data', [UserController::class, 'updateUserData'], [A
 $router->post('/user/update/password', [UserController::class, 'updateUserPassword'], [APIUserAuthMiddleware::class]);
 $router->post('/user/orders/load', [UserController::class, 'loadUserOrders'], [APIUserAuthMiddleware::class]);
 
+$router->post('/user/reset/setup', [UserController::class, 'resetPasswordSetup']);
+$router->post('/user/reset/try', [UserController::class, 'resetPasswordTry']);
+
 $router->post('/order/new', [OrderController::class, 'placeOrder']);
 $router->post('/order/load/{id}', [OrderController::class, 'loadOrder']);
 

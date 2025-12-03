@@ -11,6 +11,9 @@ use App\Core\LayoutEngine;
 use App\Models\User;
 use App\Models\Order;
 
+require_once __DIR__ . '/../Core/Mailer.php';
+use App\Core\Mailer;
+
 class UserController {
     
     public function showLogin(Request $request){
@@ -19,15 +22,46 @@ class UserController {
             session_start();
         }
 
-        unset($_SESSION['user']);
-
         if(isset($_SESSION['user'])){
             header("Location: /account");
             exit;
         }
 
         $view = file_get_contents(__DIR__ . '/../Views/login.html');
+        echo LayoutEngine::resolveLayout($view);
 
+        return true;
+    }
+
+    public function showResetLogin(Request $request){
+        
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if(isset($_SESSION['user'])){
+            header("Location: /account");
+            exit;
+        }
+
+        $view = file_get_contents(__DIR__ . '/../Views/loginreset.html');
+        echo LayoutEngine::resolveLayout($view);
+
+        return true;
+    }
+
+    public function showResetLoginPanel(Request $request){
+        
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if(isset($_SESSION['user'])){
+            header("Location: /account");
+            exit;
+        }
+
+        $view = file_get_contents(__DIR__ . '/../Views/loginresetpanel.html');
         echo LayoutEngine::resolveLayout($view);
 
         return true;
@@ -39,9 +73,67 @@ class UserController {
         }
 
         $view = file_get_contents(__DIR__ . '/../Views/account.html');
-
         echo LayoutEngine::resolveLayout($view);
 
+        return true;
+    }
+
+    public function resetPasswordSetup(Request $request){
+        $data = $request->json();
+        if($data == null){
+            echo null;
+            return true;
+        }
+
+        $user = User::getByEmail($data['email']);
+        if($user == null){
+            echo json_encode([false, "User does not exist"]);
+            return true;
+        }
+
+        $uniqueName = "";
+        do{
+            $uniqueName = bin2hex(random_bytes(8)) . '_' . uniqid();
+        } while(User::ifResetExists($uniqueName));
+
+        $result = User::setupReset($uniqueName, $user->user_id);
+        if($result > 0){
+            Mailer::sendMail($data['email'], "Password reset link", "general.html", [
+                "MESSAGE_CONTENT" => '<div><a href="harmonixx.smallhost.pl/login/reset/'.$uniqueName.'">Click this link to reset your password!</a></div><div style="margin-top: 20px;">If you did not send request for password reset, just ignore this message.</div>'
+            ]);
+        }
+        
+        echo json_encode([$result, "Error occurred"]);
+        return true;
+    }
+
+    public function resetPasswordTry(Request $request){
+        $data = $request->json();
+        if($data == null){
+            echo null;
+            return true;
+        }
+
+        if(!User::ifResetExists($data['id'])){
+            echo json_encode([false, "Wrong reset id"]);
+            return true;
+        }
+
+        $reset = User::getResetByID($data['id']);
+        if($reset == null){
+            echo json_encode([false, "Wrong reset id"]);
+            return true;
+        }
+        
+        $result = User::updateUserPassword($reset['user_id'], $data, true);
+        if(!$result[0]){
+            echo null;
+            return true;
+        }
+
+        User::deleteReset($data['id']);
+
+        echo json_encode([true]);
         return true;
     }
     
@@ -110,8 +202,12 @@ class UserController {
         }
 
         $result = User::updateUserData($_SESSION['user']['user_id'], $data);
-        echo json_encode($result);
+        if($result == null){
+            echo null;
+            return true;
+        }
 
+        echo json_encode($result);
         return true;
     }
 
@@ -152,8 +248,14 @@ class UserController {
         }
 
         $result = User::updateUserPassword($_SESSION['user']['user_id'], $data);
+        if($result == null){
+            echo null;
+            return true;
+        }
+        if($result[0]){
+            Mailer::sendMail($_SESSION['user']['email'], "Password changed", "passwordChange.html", ["EMAIL" => $_SESSION['user']['email'], "DATETIME" => date('Y-m-d'), "FULLNAME" => $_SESSION['user']['firstname'] . " " . $_SESSION['user']['lastname']]);
+        }
         echo json_encode($result);
-
         return true;
     }
 
@@ -182,8 +284,18 @@ class UserController {
             echo null;
             return true;
         }
+        $data = $request->json();
+        if($data == null){
+            echo null;
+            return true;
+        }
 
         $result = User::deleteUser($id);
+
+        if($result[0]){
+            Mailer::sendMail($data['user_email'], "Account deleted", "general.html", ["MESSAGE_CONTENT" => "Your account has been deleted."]);
+        }
+
         echo json_encode($result);
         return true;
 
@@ -226,6 +338,7 @@ class UserController {
 
         $_SESSION['user'] = [];
         $_SESSION['user']['user_id'] = $user['user_id'];
+        $_SESSION['user']['email'] = $user['email'];
         $_SESSION['user']['type'] = $user['type'];
         $_SESSION['user']['firstname'] = $user['firstname'];
         $_SESSION['user']['lastname'] = $user['lastname'];
@@ -255,6 +368,12 @@ class UserController {
 
         $_SESSION['user'] = [];
         $_SESSION['user']['user_id'] = $userid;
+        $_SESSION['user']['email'] = $data['email'];
+        $_SESSION['user']['type'] = $data['type'];
+        $_SESSION['user']['firstname'] = $data['firstname'];
+        $_SESSION['user']['lastname'] = $data['lastname'];
+
+        Mailer::sendMail($_SESSION['user']['email'], "Welcome to H.R.M.X!", "registerWelcome.html", ["FULLNAME" => $_SESSION['user']['firstname'] . " " . $_SESSION['user']['lastname']]);
 
         echo json_encode([true]);
         return true;

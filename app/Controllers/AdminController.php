@@ -14,7 +14,6 @@ class AdminController {
     public function index(Request $request) {
 
         $view = file_get_contents(__DIR__ . '/../Views/Admin/index.html');
-
         echo LayoutEngine::resolveAdminLayout($view);
 
         return true;
@@ -23,7 +22,6 @@ class AdminController {
     public function orders(Request $request) {
 
         $view = file_get_contents(__DIR__ . '/../Views/Admin/orders.html');
-
         echo LayoutEngine::resolveAdminLayout($view);
 
         return true;
@@ -32,7 +30,6 @@ class AdminController {
     public function products(Request $request) {
 
         $view = file_get_contents(__DIR__ . '/../Views/Admin/products.html');
-
         echo LayoutEngine::resolveAdminLayout($view);
 
         return true;
@@ -49,7 +46,6 @@ class AdminController {
         }
 
         $view = file_get_contents(__DIR__ . '/../Views/Admin/product.html');
-
         echo LayoutEngine::resolveAdminLayout($view);
 
         return true;
@@ -58,7 +54,6 @@ class AdminController {
     public function categories(Request $request){
 
         $view = file_get_contents(__DIR__ . '/../Views/Admin/categories.html');
-
         echo LayoutEngine::resolveAdminLayout($view);
 
         return true;
@@ -67,7 +62,6 @@ class AdminController {
     public function variants(Request $request){
 
         $view = file_get_contents(__DIR__ . '/../Views/Admin/variants.html');
-
         echo LayoutEngine::resolveAdminLayout($view);
 
         return true;
@@ -76,7 +70,6 @@ class AdminController {
     public function articles(Request $request){
 
         $view = file_get_contents(__DIR__ . '/../Views/Admin/articles.html');
-
         echo LayoutEngine::resolveAdminLayout($view);
 
         return true;

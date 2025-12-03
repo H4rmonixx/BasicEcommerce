@@ -5,9 +5,11 @@ namespace App\Controllers;
 require_once __DIR__ . '/../Core/Request.php';
 require_once __DIR__ . '/../Core/LayoutEngine.php';
 require_once __DIR__ . '/../Models/Product.php';
+require_once __DIR__ . '/../Models/Cart_Entry.php';
 use App\Core\Request;
 use App\Core\LayoutEngine;
 use App\Models\Product;
+use App\Models\Cart_Entry;
 
 
 class CartController {
@@ -26,14 +28,18 @@ class CartController {
             session_start();
         }
 
-        if(!isset($_SESSION["cart"])) $_SESSION["cart"] = [];
-
-        $size = 0;
-        for($i=0; $i<count($_SESSION["cart"]); $i++){
-            $prod = $_SESSION["cart"][$i];
-            $size += $prod['quantity'];
+        $cart = null;
+        if(isset($_SESSION['user'])){
+            $cart = Cart_Entry::getCart($_SESSION['user']['user_id']);
+        } else {
+            if(!isset($_SESSION["cart"])) $_SESSION["cart"] = [];
+            $cart = &$_SESSION['cart'];
         }
 
+        $size = 0;
+        for($i=0; $i<count($cart); $i++){
+            $size += $cart[$i]['quantity'];
+        }
         echo $size;
 
         return true;
@@ -56,21 +62,39 @@ class CartController {
             return true;
         }
 
-        if(!isset($_SESSION["cart"])) $_SESSION["cart"] = [];
-
+        $cart = null;
+        if(isset($_SESSION['user'])){
+            $cart = Cart_Entry::getCart($_SESSION['user']['user_id']);
+        } else {
+            if(!isset($_SESSION["cart"])) $_SESSION["cart"] = [];
+            $cart = &$_SESSION['cart'];
+        }
         $add = true;
-        for($i=0; $i<count($_SESSION['cart']); $i++){
-            if($product['product_variant_id'] == $_SESSION['cart'][$i]['product_variant_id']){
-                if(!Product::ifQuantityInStock($_SESSION['cart'][$i]['product_variant_id'], $_SESSION['cart'][$i]['quantity'] + 1)){
+        for($i=0; $i<count($cart); $i++){
+            if($product['product_variant_id'] == $cart[$i]['product_variant_id']){
+                if(!Product::ifQuantityInStock($cart[$i]['product_variant_id'], $cart[$i]['quantity'] + 1)){
                     echo json_encode([false]);
                     return true;
                 }
-                $_SESSION['cart'][$i]['quantity'] += 1;
+                if(isset($_SESSION['user'])){
+                    Cart_Entry::changeCart($cart[$i]['cart_entry_id'], $cart[$i]['quantity'] + 1);
+                } else {
+                    $cart[$i]['quantity'] += 1;
+                }
                 $add = false;
                 break;
             }
         }
-        if($add) array_push($_SESSION["cart"], $product);
+        if($add){
+            if(isset($_SESSION['user'])){
+                if(Cart_Entry::addToCart($_SESSION['user']['user_id'], $product) <= 0){
+                    echo json_encode([false]);
+                    return true;
+                }
+            } else {
+                array_push($cart, $product);
+            }
+        }
 
         echo json_encode([true]);
         return true;
@@ -85,6 +109,13 @@ class CartController {
         $index = $request->param("index");
         if($index == null){
             echo json_encode(null);
+            return true;
+        }
+
+        if(isset($_SESSION['user'])){
+            $cart = Cart_Entry::getCart($_SESSION['user']['user_id']);
+            Cart_Entry::deleteFromCart($cart[$index]['cart_entry_id']);
+            echo json_encode([true]);
             return true;
         }
 
@@ -116,16 +147,28 @@ class CartController {
             return true;
         }
 
-        if(!isset($_SESSION["cart"])) $_SESSION["cart"] = [];
-        if(isset($_SESSION['cart'][$index])){
+        $cart = null;
+        if(isset($_SESSION['user'])){
+            $cart = Cart_Entry::getCart($_SESSION['user']['user_id']);
+        } else {
+            if(!isset($_SESSION["cart"])) $_SESSION["cart"] = [];
+            $cart = &$_SESSION["cart"];
+        }
 
-            $newQuantity = $_SESSION['cart'][$index]['quantity'] + $data['velocity'];
-            if(!Product::ifQuantityInStock($_SESSION['cart'][$index]['product_variant_id'], $newQuantity)){
+        if(isset($cart[$index])){
+
+            $newQuantity = $cart[$index]['quantity'] + $data['velocity'];
+            if(!Product::ifQuantityInStock($cart[$index]['product_variant_id'], $newQuantity)){
                 echo json_encode([false]);
                 return true;
             }
 
-            $_SESSION['cart'][$index]['quantity'] = $newQuantity;
+            if(isset($_SESSION['user'])){
+                Cart_Entry::changeCart($cart[$index]['cart_entry_id'], $newQuantity);
+            } else {
+                $cart[$index]['quantity'] = $newQuantity;
+            }
+            
             echo json_encode([true]);
             return true;
         }
@@ -140,11 +183,31 @@ class CartController {
             session_start();
         }
 
+        if(isset($_SESSION['user'])){
+            $cart = Cart_Entry::getCart($_SESSION['user']['user_id']);
+            echo json_encode($cart);
+            return true;
+        }
+
         if(!isset($_SESSION["cart"])) $_SESSION["cart"] = [];
-        $products_in_cart = $_SESSION["cart"];
-        echo json_encode($products_in_cart);
+        echo json_encode($_SESSION["cart"]);
 
         return true;
+    }
+
+    public function getCart(Request $request){
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        if(isset($_SESSION['user'])){
+            $cart = Cart_Entry::getCart($_SESSION['user']['user_id']);
+            return $cart;
+        }
+
+        if(!isset($_SESSION["cart"])) $_SESSION["cart"] = [];
+        return $_SESSION["cart"];
+
     }
 
 }
