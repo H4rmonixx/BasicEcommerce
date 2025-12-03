@@ -643,7 +643,3 @@ BasicEcommerce/
 Ten projekt jest udostępniony w celach edukacyjnych.
 
 ---
-
-## Wsparcie
-
-W przypadku problemów i próśb o nowe funkcje, proszę otworzyć zgłoszenie (issue) w repozytorium.
