@@ -100,10 +100,6 @@ class OrderController {
 
         $user_email = $_SESSION['user']['email'] ?? null;
         $user_id = $_SESSION['user']['user_id'] ?? null;
-        if($user_id == null){
-            $user_id = User::createGuest($data);
-            $user_email = $data['personal']['email'];
-        }
 
         $shipping_price = Configuration::getByID("shipping_price");
         if($shipping_price == null) {

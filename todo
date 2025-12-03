@@ -1,7 +1,0 @@
-photo upload dir on smallhost
-banners upload dir on smallhost
-
-Widoki:
-1. ProductsList
-Funkcja getFilteredProducts i getProductsList w modelu Product.php używaja tego samego bazowego zapytania początkowego zmienionego tylko o klauzule WHERE.
-Stąd stworzyliśmy widok zawierający listę produktów, którą można swobodnie ograniczać wg potrzeb

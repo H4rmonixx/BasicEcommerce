@@ -1,7 +1,7 @@
--- Database
-DROP DATABASE IF EXISTS ecommerce;
-CREATE DATABASE ecommerce;
-USE ecommerce;
+-- CONFIG FOR LOCALHOST
+-- DROP DATABASE IF EXISTS ecommerce;
+-- CREATE DATABASE ecommerce;
+-- USE ecommerce;
 
 -- CONFIG FOR PRODUCTION
 -- USE m3378_ecommerce;
@@ -22,7 +22,8 @@ USE ecommerce;
 -- Configuration
 CREATE TABLE `Configuration` (
     configuration_id VARCHAR(64) PRIMARY KEY,
-    value VARCHAR(64) NOT NULL
+    value VARCHAR(64) NOT NULL,
+    CHECK (value <> '')
 );
 
 -- Article
@@ -31,13 +32,13 @@ CREATE TABLE `Article` (
     title VARCHAR(64) NOT NULL,
     public BIT(1) DEFAULT 0 NOT NULL,
     date DATE NOT NULL DEFAULT (CURRENT_TIMESTAMP),
-    content TEXT NOT NULL DEFAULT ""
+    content TEXT
 );
 
 -- Category
 CREATE TABLE `Category` (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(32) NOT NULL
+    name VARCHAR(32) UNIQUE NOT NULL
 );
 
 -- Product
@@ -48,7 +49,8 @@ CREATE TABLE `Product` (
     description TEXT,
     price DECIMAL(10,2) NOT NULL,
     visible BIT(1) DEFAULT 0 NOT NULL,
-    FOREIGN KEY (category_id) REFERENCES `Category`(category_id) ON UPDATE CASCADE
+    FOREIGN KEY (category_id) REFERENCES `Category`(category_id) ON UPDATE CASCADE,
+    CHECK (price >= 0)
 );
 
 -- Photo
@@ -63,7 +65,7 @@ CREATE TABLE `Photo` (
 -- Variant
 CREATE TABLE `Variant` (
     variant_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(32) NOT NULL
+    name VARCHAR(32) UNIQUE NOT NULL
 );
 
 -- Product-Variant (relacja wiele-do-wielu między Product i Variant)
@@ -75,7 +77,9 @@ CREATE TABLE `Product_Variant` (
     width DECIMAL(10,2) UNSIGNED NOT NULL,
     height DECIMAL(10,2) UNSIGNED NOT NULL,
     FOREIGN KEY (product_id) REFERENCES `Product`(product_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (variant_id) REFERENCES `Variant`(variant_id) ON UPDATE CASCADE
+    FOREIGN KEY (variant_id) REFERENCES `Variant`(variant_id) ON UPDATE CASCADE,
+    CHECK (width > 0 AND height > 0),
+    CHECK (quantity >= 0)
 );
 
 -- User
@@ -85,19 +89,21 @@ CREATE TABLE `User` (
     lastname VARCHAR(32) NOT NULL,
     phone_number VARCHAR(20) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
-    password VARCHAR(255),
+    password VARCHAR(255) NOT NULL,
     address VARCHAR(64) NOT NULL,
     building VARCHAR(6) NOT NULL,
     city VARCHAR(32) NOT NULL,
     post_code VARCHAR(20) NOT NULL,
     country VARCHAR(64) NOT NULL,
-    type ENUM('GUEST', 'CUSTOMER', 'ADMIN', 'SUPERADMIN') NOT NULL DEFAULT 'GUEST'
+    type ENUM('CUSTOMER', 'ADMIN', 'SUPERADMIN') NOT NULL DEFAULT 'CUSTOMER',
+    CHECK (type IN ('CUSTOMER', 'ADMIN', 'SUPERADMIN')),
+    CHECK (email LIKE '%@%._%')
 );
 
 -- Password reset
 CREATE TABLE `Password_Reset` (
     password_reset_id VARCHAR(64) PRIMARY KEY,
-    user_id INT,
+    user_id INT UNIQUE,
     FOREIGN KEY (user_id) REFERENCES `User`(user_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -108,7 +114,8 @@ CREATE TABLE `Cart_Entry` (
     product_variant_id INT NOT NULL,
     quantity INT UNSIGNED NOT NULL DEFAULT 1,
     FOREIGN KEY (user_id) REFERENCES `User`(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (product_variant_id) REFERENCES `Product_Variant`(product_variant_id) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (product_variant_id) REFERENCES `Product_Variant`(product_variant_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CHECK (quantity > 0)
 );
 
 -- Order
@@ -129,7 +136,10 @@ CREATE TABLE `Order` (
     payu_order_id VARCHAR(64) DEFAULT NULL,
     payment_method ENUM('CASH', 'PAYU') NOT NULL DEFAULT 'CASH',
     status ENUM('PENDING', 'PAID', 'PREPARING', 'SHIPPED', 'CANCELED') NOT NULL DEFAULT 'PENDING',
-    FOREIGN KEY (user_id) REFERENCES `User`(user_id) ON UPDATE CASCADE ON DELETE SET NULL
+    FOREIGN KEY (user_id) REFERENCES `User`(user_id) ON UPDATE CASCADE ON DELETE SET NULL,
+    CHECK (products_price >= 0 AND shipping_price >= 0),
+    CHECK (status IN ('PENDING', 'PAID' ,'PREPARING' ,'SHIPPED' ,'CANCELED')),
+    CHECK (payment_method IN ('CASH', 'PAYU'))
 );
 
 -- Order-Detail (relacja między Order i Product-Variant)
@@ -139,7 +149,8 @@ CREATE TABLE `Order_Detail` (
     product_variant_id INT NULL,
     quantity INT NOT NULL DEFAULT 1,
     FOREIGN KEY (order_id) REFERENCES `Order`(order_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (product_variant_id) REFERENCES `Product_Variant`(product_variant_id) ON UPDATE CASCADE ON DELETE SET NULL
+    FOREIGN KEY (product_variant_id) REFERENCES `Product_Variant`(product_variant_id) ON UPDATE CASCADE ON DELETE SET NULL,
+    CHECK (quantity > 0)
 );
 
 

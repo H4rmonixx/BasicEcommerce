@@ -75,6 +75,11 @@ class User {
 
     public static function setupReset($id, $user_id){
         $pdo = Database::getConnection();
+        
+        $stmt = $pdo->prepare("DELETE FROM `Password_Reset` WHERE user_id = ?");
+        $stmt->execute([$user_id]);
+        $stmt->closeCursor();
+
         $stmt = $pdo->prepare("INSERT INTO `Password_Reset` (password_reset_id, user_id) VALUES (?, ?)");
         $stmt->execute([$id, $user_id]);
 
@@ -199,14 +204,6 @@ class User {
         if($affected == 0) return null;
         
         return [true];
-    }
-
-    public static function createGuest($data){
-        $pdo = Database::getConnection();
-        $stmt = $pdo->prepare(query: 'INSERT INTO User (firstname, lastname, phone_number, email, address, building, city, post_code, country) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        $stmt->execute([$data['personal']['firstname'], $data['personal']['lastname'], $data['personal']['phone'], $data['personal']['email'], $data['shipment']['address'], $data['shipment']['building'], $data['shipment']['city'], $data['shipment']['postcode'], $data['shipment']['country']]);
-        
-        return $pdo->lastInsertId();
     }
 
     public static function login($email, $password){
