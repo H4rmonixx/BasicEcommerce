@@ -90,6 +90,16 @@ CREATE TABLE `User` (
     type ENUM('GUEST', 'CUSTOMER', 'ADMIN', 'SUPERADMIN') NOT NULL DEFAULT 'GUEST'
 );
 
+-- Cart
+CREATE TABLE `Cart_Entry` (
+    cart_entry_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_variant_id INT NOT NULL,
+    quantity INT UNSIGNED NOT NULL DEFAULT 1,
+    FOREIGN KEY user_id REFERENCES `User` (user_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY product_variant_id REFERENCES `Product_Variant` (product_variant_id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 -- Order
 CREATE TABLE `Order` (
     order_id INT AUTO_INCREMENT PRIMARY KEY,

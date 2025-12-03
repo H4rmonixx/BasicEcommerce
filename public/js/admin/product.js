@@ -331,6 +331,7 @@ $(document).ready(()=>{
                     showPhotos();
                     infobox_show("Photo uploaded", 3000, [50, 100, 50]);
                 } else {
+                    console.log("Unable to upload photo");
                     return $.Deferred().reject(json[1]).promise();
                 }
             } catch (e){

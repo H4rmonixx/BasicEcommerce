@@ -34,26 +34,23 @@ H.R.M.X Admin / Home
     </div>
 </div>
 <div class="fw-bold fs-4 mb-2">Configuration</div>
-<div class="bg-light px-2 py-1">
-    <table class="table table-bordered border-black rounded">
-        <thead>
-            <th>Name</th><th>Value</th>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Shipping price</td>
-                <td>
-                    <form class="form-update-config">
-                        <input type="text" class="visually-hidden input-configuration-id" value="shipping_price">
-                        <div class="d-flex column-gap-1">
-                            <input class="form-control input-configuration-value" id="input-shipping_price" type="number" min="0.01" step="0.01" required>
-                            <button type="submit" class="btn btn-sm btn-success">Update</button>
-                        </div>
-                    </form>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
+<table class="table table-bordered">
+    <thead>
+        <th>Name</th><th>Value</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Shipping price</td>
+            <td>
+                <form class="form-update-config">
+                    <input type="text" class="visually-hidden input-configuration-id" value="shipping_price">
+                    <div class="d-flex column-gap-1">
+                        <input class="form-control input-configuration-value" id="input-shipping_price" type="number" min="0.01" step="0.01" required>
+                        <button type="submit" class="btn btn-sm btn-success">Update</button>
+                    </div>
+                </form>
+            </td>
+        </tr>
+    </tbody>
+</table>
 @endsection

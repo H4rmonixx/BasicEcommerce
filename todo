@@ -2,10 +2,13 @@ phpmailer
 payu connect
 password recover
 
-banners change
+cart on logged user
 
 /product/{id} - check if product public is 1 (admin can see unpublic)
 /article/{id} - check if article public is 1 (admin can see unpublic)
+
+photo upload dir on smallhost
+banners upload dir on smallhost
 
 Widoki:
 1. ProductsList

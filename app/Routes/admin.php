@@ -160,5 +160,8 @@ $router->post("/configuration/list", [ConfigurationController::class, 'loadConfi
 $router->post("/configuration/update/{configid}", [ConfigurationController::class, 'updateConfigurationValue'], [
     APIAdminAuthMiddleware::class
 ]);
+$router->post("/configuration/banner/set", [ConfigurationController::class, 'updateBanner'], [
+    APIAdminAuthMiddleware::class
+]);
 
 return $router;
